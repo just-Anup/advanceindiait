@@ -7,7 +7,7 @@ import { ID } from 'appwrite'
 
 const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID
 const COLLECTION_ID = 'marketing_materials'
-const BUCKET_ID = '6a1d6a3f00191ec61913'
+const BUCKET_ID = '6a44e849001ad5b7cc0b'
 
 export default function EditPage() {
   const { id } = useParams()

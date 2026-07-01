@@ -29,12 +29,12 @@ const storage = new Storage(client);
 
 /* ================= IDS ================= */
 const DATABASE_ID =
-  "6a182b3d00083605cba6";
+  "6a3f68390018f40d999e";
 
 const COLLECTION_ID = "website";
 
 const BUCKET_ID =
-  "6a1d6a3f00191ec61913";
+  "6a44e849001ad5b7cc0b";
 
 export default function AboutCMS() {
   const [docId, setDocId] =

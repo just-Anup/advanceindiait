@@ -13,9 +13,9 @@ client
 
 const databases = new Databases(client);
 
-const DATABASE_ID = "6a182b3d00083605cba6";
+const DATABASE_ID = "6a3f68390018f40d999e";
 const COLLECTION_ID = "brand_logos";
-const BUCKET_ID = "6a1d6a3f00191ec61913";
+const BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
 
 export default function PremiumBrandSlider() {
 
