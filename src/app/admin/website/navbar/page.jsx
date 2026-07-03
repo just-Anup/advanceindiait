@@ -18,54 +18,79 @@ export default function NavbarCMS() {
     showFranchiseBtn: true,
     showAdminBtn: true,
   })
-
-  useEffect(() => {
-    const fetchData = async () => {
+useEffect(() => {
+  const fetchData = async () => {
+    try {
       const res = await databases.listDocuments(
         DATABASE_ID,
         COLLECTION_ID,
         [Query.limit(1)]
       )
 
-      if (res.documents.length) {
+      if (res.documents.length > 0) {
         const d = res.documents[0]
+
         setDocId(d.$id)
+
         setForm({
-          topBarText: d.topBarText || '',
-          phone: d.phone || '',
-          logoUrl: d.logoUrl || '',
-          navMenus: d.navMenus || '',
+          topBarText: d.topBarText || "",
+          phone: d.phone || "",
+          logoUrl: d.logoUrl || "",
+          navMenus: d.navMenus || "",
           showFranchiseBtn: d.showFranchiseBtn ?? true,
           showAdminBtn: d.showAdminBtn ?? true,
         })
       }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  fetchData()
+}, [])
+
+const uploadLogo = async (file) => {
+  if (!file) return;
+
+  const uploaded = await storage.createFile(
+    BUCKET_ID,
+    ID.unique(),
+    file
+  );
+
+  const url = `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${uploaded.$id}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`;
+
+  setForm(prev => ({
+    ...prev,
+    logoUrl: url,
+  }));
+};
+const saveNavbar = async () => {
+  try {
+    if (docId) {
+      await databases.updateDocument(
+        DATABASE_ID,
+        COLLECTION_ID,
+        docId,
+        form
+      )
+    } else {
+      const doc = await databases.createDocument(
+        DATABASE_ID,
+        COLLECTION_ID,
+        ID.unique(),
+        form
+      )
+
+      setDocId(doc.$id)
     }
 
-    fetchData()
-  }, [])
-
-  const uploadLogo = async (file) => {
-    const uploaded = await storage.createFile(
-      BUCKET_ID,
-      ID.unique(),
-      file
-    )
-
-    const url = `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${uploaded.$id}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`
-
-    setForm(prev => ({ ...prev, logoUrl: url }))
+    alert("Navbar updated ✅")
+  } catch (err) {
+    console.error(err)
+    alert(err.message)
   }
-
-  const saveNavbar = async () => {
-    await databases.updateDocument(
-      DATABASE_ID,
-      COLLECTION_ID,
-      docId,
-      form
-    )
-    alert('Navbar updated ✅')
-  }
-
+}
   return (
 
     <div className="max-w-5xl mx-auto p-8">

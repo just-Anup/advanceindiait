@@ -1,3 +1,5 @@
+import { Star, Quote } from 'lucide-react'
+
 export default function TestimonialCard({
   name,
   role,
@@ -5,14 +7,16 @@ export default function TestimonialCard({
   text,
 }) {
   return (
-    <div className="min-w-[420px] max-w-[420px] bg-white border border-gray-200 rounded-2xl shadow-md p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <div className="bnmi-font-body min-w-[420px] max-w-[420px] bg-[#0F1936] border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.35)] p-7 transition-all duration-300 hover:shadow-[0_25px_60px_rgba(201,162,75,0.12)] hover:border-[#C9A24B]/30 hover:-translate-y-1">
 
       {/* Top Row */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-5">
 
         {/* Stars */}
-        <div className="flex text-yellow-400 text-sm">
-          ★★★★★
+        <div className="flex gap-1 text-[#C9A24B]">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star key={i} size={15} fill="#C9A24B" strokeWidth={0} />
+          ))}
         </div>
 
         {/* Image */}
@@ -20,31 +24,31 @@ export default function TestimonialCard({
           <img
             src={image}
             alt={name || 'student'}
-            className="w-14 h-14 rounded-full object-cover border-2 border-white shadow"
+            className="w-14 h-14 rounded-full object-cover border-2 border-[#C9A24B]/40 shadow"
           />
         )}
       </div>
 
       {/* Text */}
-      <div className="relative mb-6">
-        <span className="absolute -top-4 -left-2 text-5xl text-gray-200">
-          “
-        </span>
+      <div className="relative mb-7">
+        <Quote
+          size={34}
+          className="absolute -top-2 -left-1 text-[#C9A24B]/15"
+          fill="currentColor"
+          strokeWidth={0}
+        />
 
-        <p className="text-gray-700 text-sm leading-relaxed pl-6">
+        <p className="relative text-[#C4CAE0] text-[15px] leading-relaxed pl-7">
           {text}
         </p>
-        <span className="absolute top-30 left-30 text-5xl text-gray-200">
-          ”
-        </span>
       </div>
 
       {/* Name + Role */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900">
+      <div className="border-t border-white/10 pt-4">
+        <h3 className="bnmi-font-display text-lg font-semibold text-[#FBF9F4]">
           {name || 'Student Name'}
         </h3>
-        <p className="text-sm text-[#19b9f1] font-medium">
+        <p className="text-sm text-[#C9A24B] font-medium mt-0.5">
           {role || 'Student'}
         </p>
       </div>

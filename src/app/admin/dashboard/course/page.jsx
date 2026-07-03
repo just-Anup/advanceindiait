@@ -216,11 +216,9 @@ export default function CourseCMS() {
     loadCategories()
 
   } catch (err) {
-
-    console.log(err)
-    alert("Error adding category")
-
-  }
+  console.error("Category Error:", err)
+  alert(err.message || JSON.stringify(err))
+}
 
 }
 

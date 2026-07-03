@@ -596,7 +596,7 @@ useEffect(() => {
     {/* MOTHER NAME */}
   {student.showMotherInCertificate && (
       <span className="text-3xl font-semibold">
-        M/O {student.motherName || ""}
+         {student.motherName || ""}
       </span>
     )}
 
