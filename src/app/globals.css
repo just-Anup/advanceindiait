@@ -6,6 +6,7 @@
   --foreground: #000000; /* ✅ FORCE BLACK TEXT */
 }
 
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -32,6 +33,17 @@ body {
   width: 100%;
   border: 1px solid #ddd;
   padding: 12px;
+}
+
+/* Desktop only */
+@media (min-width:768px){
+
+html,
+body,
+*{
+cursor:none !important;
+}
+
 }
 
 /* ✅ PRINT FIX (UNCHANGED) */

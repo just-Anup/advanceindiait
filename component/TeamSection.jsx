@@ -84,20 +84,64 @@ export default function TeamSlider() {
 
   if (!team.length) {
     return (
-      <section className="py-16 text-center text-white bg-[#1e1e1e]">
+      <section className="py-16 text-center text-[#FBF9F4] bg-[#0A1229]">
         Loading team...
       </section>
     );
   }
 
   return (
-    <section className="relative overflow-hidden bg-[#1e1e1e] py-20 text-white">
+    <section className="relative overflow-hidden bg-[#0A1229] py-20 text-[#FBF9F4]">
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+        
+        .bnmi-font-display {
+          font-family: 'Playfair Display', Georgia, serif;
+        }
+        
+        .bnmi-font-body {
+          font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        @keyframes slideTeam {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-1000px);
+          }
+        }
+
+        .team-slider-motion {
+          animation: slideTeam 28s linear infinite;
+        }
+
+        .team-slider-motion.paused {
+          animation-play-state: paused;
+        }
+      `}</style>
 
       {/* BACKGROUND */}
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.12),transparent_65%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(201,162,75,0.08),transparent_65%)]" />
 
-      <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[140px]" />
+      {/* GOLD GLOW */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[650px] h-[650px] rounded-full opacity-[0.08] blur-[170px] pointer-events-none"
+        style={{
+          background: "radial-gradient(circle,#C9A24B 0%,transparent 70%)"
+        }}
+      />
+
+      {/* GRID */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(#C9A24B 1px, transparent 1px),linear-gradient(90deg,#C9A24B 1px, transparent 1px)",
+          backgroundSize: "70px 70px"
+        }}
+      />
 
       {/* CONTENT */}
 
@@ -105,16 +149,22 @@ export default function TeamSlider() {
 
         {/* HEADING */}
 
-        <div className="text-center mb-14">
+        <div className="text-center mb-14 relative z-10">
 
-          <h2 className="text-4xl md:text-5xl font-bold">
-            Our{" "}
-            <span className="text-cyan-400">
-              Team
+          <span className="inline-flex items-center gap-3 text-[#C9A24B] uppercase tracking-[0.28em] text-[11px] font-medium mb-6">
+            <span className="w-10 h-[1px] bg-[#C9A24B]" />
+            Our Team
+            <span className="w-10 h-[1px] bg-[#C9A24B]" />
+          </span>
+
+          <h2 className="bnmi-font-display text-4xl md:text-5xl font-bold text-[#FBF9F4]">
+            Meet Our{" "}
+            <span className="text-[#C9A24B]">
+              Professional Team
             </span>
           </h2>
 
-          <p className="text-gray-400 mt-4 max-w-2xl mx-auto">
+          <p className="bnmi-font-body text-[#D5D8E3] mt-4 max-w-2xl mx-auto">
             Meet the creative minds and skilled professionals
             powering our vision forward.
           </p>
@@ -122,16 +172,16 @@ export default function TeamSlider() {
 
         {/* LEFT FADE */}
 
-        <div className="absolute left-0 top-0 z-20 h-full w-32 bg-gradient-to-r from-[#1e1e1e] to-transparent pointer-events-none" />
+        <div className="absolute left-0 top-0 z-20 h-full w-32 bg-gradient-to-r from-[#0A1229] to-transparent pointer-events-none" />
 
         {/* RIGHT FADE */}
 
-        <div className="absolute right-0 top-0 z-20 h-full w-32 bg-gradient-to-l from-[#1e1e1e] to-transparent pointer-events-none" />
+        <div className="absolute right-0 top-0 z-20 h-full w-32 bg-gradient-to-l from-[#0A1229] to-transparent pointer-events-none" />
 
         {/* ================= SLIDER ================= */}
 
         <div
-          className="overflow-hidden"
+          className="overflow-hidden relative z-10"
           onMouseEnter={() =>
             setIsPaused(true)
           }
@@ -141,23 +191,14 @@ export default function TeamSlider() {
         >
 
           <motion.div
-            animate={{
-              x: isPaused
-                ? undefined
-                : ["0%", "-50%"],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 35,
-              ease: "linear",
-            }}
-            className="
+            className={`
               flex
-              min-w-max
               items-center
               gap-8
               pr-8
-            "
+              team-slider-motion
+              ${isPaused ? 'paused' : ''}
+            `}
           >
 
             {[...team, ...team].map(
@@ -179,17 +220,20 @@ export default function TeamSlider() {
                     rounded-[32px]
                     border
                     border-white/10
-                    bg-black
-                    shadow-[0_10px_60px_rgba(0,0,0,0.45)]
+                    bg-white/5
+                    shadow-[0_10px_60px_rgba(201,162,75,0.08)]
                     w-[320px]
                     flex-shrink-0
+                    hover:border-[#C9A24B]/30
+                    transition-all
+                    duration-300
                   "
                 >
 
                   {/* GLOW */}
 
                   <div className="absolute inset-0 opacity-0 transition duration-700 hover:opacity-100">
-                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-blue-500/10 to-cyan-500/20 blur-3xl" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#C9A24B]/20 via-[#C9A24B]/10 to-[#C9A24B]/20 blur-3xl" />
                   </div>
 
                   {/* IMAGE */}
@@ -215,22 +259,22 @@ export default function TeamSlider() {
 "
                     />
 
-                    <div className="absolute inset-0 rounded-[26px] bg-cyan-500/0 hover:bg-cyan-500/10 transition duration-500" />
+                    <div className="absolute inset-0 rounded-[26px] bg-[#C9A24B]/0 hover:bg-[#C9A24B]/10 transition duration-500" />
                   </div>
 
                   {/* CONTENT */}
 
                   <div className="p-5 text-center relative z-10">
 
-                    <h4 className="font-bold text-xl">
+                    <h4 className="bnmi-font-display font-bold text-xl text-[#FBF9F4]">
                       {member.name}
                     </h4>
 
-                    <p className="text-cyan-400 text-sm mt-2">
+                    <p className="bnmi-font-body text-[#C9A24B] text-sm mt-2">
                       {member.role}
                     </p>
 
-                    <p className="text-gray-400 text-xs mt-3 leading-relaxed">
+                    <p className="bnmi-font-body text-[#D5D8E3] text-xs mt-3 leading-relaxed">
                       {member.experience}
                     </p>
 

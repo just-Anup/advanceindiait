@@ -100,17 +100,46 @@ export default function InstituteLogin() {
 
   return (
 
-    <div className="min-h-screen flex items-center justify-center bg-gray-200 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0A1229] px-4 relative overflow-hidden">
 
-      <div className="w-full max-w-6xl bg-white rounded-3xl overflow-hidden shadow-xl flex flex-col md:flex-row">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+        
+        .bnmi-font-display {
+          font-family: 'Playfair Display', Georgia, serif;
+        }
+        
+        .bnmi-font-body {
+          font-family: 'Inter', system-ui, sans-serif;
+        }
+      `}</style>
+
+      {/* BG GLOW */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[650px] h-[650px] rounded-full opacity-[0.08] blur-[170px] pointer-events-none"
+        style={{
+          background: "radial-gradient(circle,#C9A24B 0%,transparent 70%)"
+        }}
+      />
+
+      {/* GRID */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(#C9A24B 1px, transparent 1px),linear-gradient(90deg,#C9A24B 1px, transparent 1px)",
+          backgroundSize: "70px 70px"
+        }}
+      />
+
+      <div className="w-full max-w-6xl bg-white/5 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-xl flex flex-col md:flex-row relative z-10 border border-white/10">
 
         {/* ================= LEFT SIDE ================= */}
-        <div className="hidden md:flex w-1/2 bg-gradient-to-br from-[#2b4ea2] to-[#5fa0ff] items-center justify-center relative p-10">
+        <div className="hidden md:flex w-1/2 bg-gradient-to-br from-[#C9A24B]/20 to-[#C9A24B]/5 items-center justify-center relative p-10 border-r border-white/10">
 
           {/* circles */}
-          <div className="absolute top-10 right-10 w-40 h-40 bg-white/10 rounded-full"></div>
+          <div className="absolute top-10 right-10 w-40 h-40 bg-white/5 rounded-full border border-white/10"></div>
 
-          <div className="absolute bottom-10 left-10 w-52 h-52 bg-white/10 rounded-full"></div>
+          <div className="absolute bottom-10 left-10 w-52 h-52 bg-white/5 rounded-full border border-white/10"></div>
 
           {/* logo */}
           <div className="z-10 text-center">
@@ -128,11 +157,11 @@ export default function InstituteLogin() {
         {/* ================= RIGHT SIDE ================= */}
         <div className="w-full md:w-1/2 p-8 sm:p-12">
 
-          <h2 className="text-3xl font-bold mb-2 text-gray-800">
+          <h2 className="bnmi-font-display text-3xl font-bold mb-2 text-[#FBF9F4]">
             Welcome Back
           </h2>
 
-          <p className="text-gray-500 mb-8">
+          <p className="bnmi-font-body text-[#D5D8E3] mb-8">
             Please login to your account to continue
           </p>
 
@@ -141,14 +170,14 @@ export default function InstituteLogin() {
             {/* EMAIL */}
             <div>
 
-              <label className="text-sm text-gray-600 block mb-2">
+              <label className="bnmi-font-body text-sm text-[#D5D8E3] block mb-2">
                 Email Address
               </label>
 
               <input
                 type="email"
                 placeholder="youremail@gmail.com"
-                className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[#FBF9F4] placeholder-[#D5D8E3]/50 focus:outline-none focus:ring-2 focus:ring-[#C9A24B] focus:border-[#C9A24B] hover:border-white/20 transition-all"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -159,14 +188,14 @@ export default function InstituteLogin() {
             {/* PASSWORD */}
             <div className="relative">
 
-              <label className="text-sm text-gray-600 block mb-2">
+              <label className="bnmi-font-body text-sm text-[#D5D8E3] block mb-2">
                 Password
               </label>
 
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter your password"
-                className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-12 text-[#FBF9F4] placeholder-[#D5D8E3]/50 focus:outline-none focus:ring-2 focus:ring-[#C9A24B] focus:border-[#C9A24B] hover:border-white/20 transition-all"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -175,7 +204,7 @@ export default function InstituteLogin() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[42px] text-gray-500"
+                className="absolute right-3 top-[42px] text-[#D5D8E3] hover:text-[#C9A24B] transition"
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -186,10 +215,10 @@ export default function InstituteLogin() {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-3 rounded-xl font-semibold text-white transition ${
+              className={`bnmi-font-body w-full py-3 rounded-xl font-semibold text-[#0A1229] transition-all duration-300 ${
                 loading
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-blue-500 to-blue-700 hover:opacity-90'
+                  ? 'bg-[#C9A24B]/50 cursor-not-allowed'
+                  : 'bg-[#C9A24B] hover:bg-[#d4b05a] shadow-[0_10px_30px_rgba(201,162,75,0.25)] hover:shadow-[0_15px_40px_rgba(201,162,75,0.35)]'
               }`}
             >
               {loading ? 'Logging in...' : 'SIGN IN'}
@@ -198,20 +227,20 @@ export default function InstituteLogin() {
           </form>
 
           {/* DIVIDER */}
-          <div className="my-8 border-t border-dashed"></div>
+          <div className="my-8 border-t border-white/10"></div>
 
           {/* PWA SECTION */}
           <div className="text-center">
 
-            <p className="font-semibold text-gray-700 mb-2">
+            <p className="bnmi-font-display font-semibold text-[#FBF9F4] mb-2">
               📱 Install as Progressive Web App (Mobile App) for Students
             </p>
 
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="bnmi-font-body text-sm text-[#D5D8E3] mb-4">
               Access your courses anytime, anywhere with our mobile app experience
             </p>
 
-            <button className="w-full border border-blue-500 text-blue-600 py-3 rounded-xl font-medium hover:bg-blue-50 transition">
+            <button className="w-full border border-[#C9A24B] text-[#C9A24B] py-3 rounded-xl font-medium hover:bg-[#C9A24B]/10 hover:border-[#C9A24B] transition-all duration-300">
               📲 App is under progress (Coming soon)
             </button>
 

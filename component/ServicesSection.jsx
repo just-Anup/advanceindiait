@@ -46,179 +46,305 @@ export default function ServicesSection() {
   }, [])
 
   return (
-    <section
+
+<section className="bnmi-font-body relative py-28 overflow-hidden bg-[#0A1229]">
+
+  <style>{`
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+    .bnmi-font-display{
+      font-family:'Playfair Display',Georgia,serif;
+    }
+
+    .bnmi-font-body{
+      font-family:'Inter',system-ui,sans-serif;
+    }
+
+    @keyframes bnmiFadeUp{
+      from{
+        opacity:0;
+        transform:translateY(35px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    .bnmiFadeUp{
+      animation:bnmiFadeUp .8s cubic-bezier(.2,.9,.3,1) both;
+    }
+
+    .service-card{
+      transition:all .45s cubic-bezier(.2,.9,.3,1);
+    }
+
+    .service-card:hover{
+      transform:translateY(-8px);
+      border-color:rgba(201,162,75,.35);
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+
+    .service-icon{
+      transition:transform .45s ease;
+    }
+
+    .service-card:hover .service-icon{
+      transform:scale(1.08);
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      .bnmiFadeUp{
+        animation:none!important;
+      }
+
+      .service-card,
+      .service-icon{
+        transition:none!important;
+      }
+    }
+  `}</style>
+
+  {/* GOLD GLOW */}
+
+  <div
+    className="absolute top-0 left-1/2 -translate-x-1/2 w-[650px] h-[650px] rounded-full opacity-[0.12] blur-[170px] pointer-events-none"
+    style={{
+      background:"radial-gradient(circle,#C9A24B 0%,transparent 70%)"
+    }}
+  />
+
+  {/* SECOND GLOW */}
+
+  <div
+    className="absolute -bottom-52 -right-44 w-[500px] h-[500px] rounded-full opacity-[0.08] blur-[170px] pointer-events-none"
+    style={{
+      background:"radial-gradient(circle,#C9A24B 0%,transparent 70%)"
+    }}
+  />
+
+  {/* GRID */}
+
+  <div
+    className="absolute inset-0 opacity-[0.03] pointer-events-none"
+    style={{
+      backgroundImage:
+        "linear-gradient(#C9A24B 1px, transparent 1px),linear-gradient(90deg,#C9A24B 1px, transparent 1px)",
+      backgroundSize:"70px 70px"
+    }}
+  />
+
+  <div className="relative z-10 max-w-7xl mx-auto px-8">
+
+    {/* ================= HEADING START ================= */}
+
+    <div className="text-center max-w-4xl mx-auto bnmiFadeUp">
+
+  {/* SMALL LABEL */}
+
+  <span
+    className="
+      inline-flex
+      items-center
+      gap-3
+      text-[#C9A24B]
+      uppercase
+      tracking-[0.28em]
+      text-[11px]
+      font-medium
+      mb-6
+    "
+  >
+
+    <span className="w-10 h-[1px] bg-[#C9A24B]" />
+
+    Our Expertise
+
+    <span className="w-10 h-[1px] bg-[#C9A24B]" />
+
+  </span>
+
+  {/* HEADING */}
+
+  <h2
+    className="
+      bnmi-font-display
+      text-[#FBF9F4]
+      text-4xl
+      md:text-5xl
+      lg:text-6xl
+      font-bold
+      leading-tight
+    "
+  >
+
+    Explore Our
+
+    <br />
+
+    <span className="text-[#C9A24B]">
+      Professional Services
+    </span>
+
+  </h2>
+
+  {/* DESCRIPTION */}
+
+  <p
+    className="
+      mt-8
+      text-[#D5D8E3]
+      text-lg
+      leading-9
+      max-w-3xl
+      mx-auto
+    "
+  >
+    Discover a wide range of professional IT services,
+    career-oriented training programs, digital solutions,
+    and industry-recognized courses designed to help
+    individuals and organizations grow with confidence
+    in today's technology-driven world.
+  </p>
+
+</div>
+
+{/* ================= SERVICES GRID START ================= */}
+
+<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-16">
+  {services.map((item, index) => (
+
+    <motion.div
+      key={item.$id}
+      initial={{
+        opacity: 0,
+        y: 40,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      transition={{
+        duration: 0.6,
+        delay: index * 0.06,
+      }}
+      viewport={{ once: true }}
+      whileHover={{
+        y: -8,
+      }}
       className="
+        service-card
+        group
         relative
         overflow-hidden
-        py-28
-        px-6
-        bg-gradient-to-r
-        from-[#fff4e9]
-        via-[#f9f7ec]
-        to-[#eef0ff]
+        rounded-2xl
+        bg-white/5
+        backdrop-blur-xl
+        border
+        border-white/10
+        p-4
+        cursor-pointer
+        flex
+        flex-col
+        items-center
+        justify-center
+        text-center
       "
     >
 
-      {/* BG GLOW */}
+      {/* GOLD GLOW */}
+
       <div
         className="
           absolute
-          top-0
-          left-1/2
-          -translate-x-1/2
-          w-[600px]
-          h-[600px]
-          bg-[#fff1c7]
-          opacity-40
-          blur-[140px]
+          -top-20
+          -right-20
+          w-48
+          h-48
           rounded-full
+          blur-[90px]
+          opacity-0
+          group-hover:opacity-20
+          transition-all
+          duration-500
         "
+        style={{
+          background:
+            "radial-gradient(circle,#C9A24B 0%,transparent 70%)",
+        }}
       />
 
-      {/* CONTENT */}
-      <div className="relative z-10 max-w-7xl mx-auto">
+      {/* ICON */}
 
-        {/* HEADING */}
-        <div className="text-center">
+      <div
+        className="
+          service-icon
+          w-16
+          h-16
+          rounded-xl
+          bg-[#C9A24B]/10
+          border
+          border-[#C9A24B]/20
+          flex
+          items-center
+          justify-center
+          mb-3
+        "
+      >
 
-          <h2
+        {item.imageUrl ? (
+
+          <img
+            src={item.imageUrl}
+            alt={item.title}
             className="
-              text-4xl
-              md:text-6xl
-              font-black
-              text-[#08104d]
-              leading-tight
+              w-10
+              h-10
+              object-cover
+              rounded-lg
             "
-          >
-            Find out by popular Categories
-          </h2>
+          />
 
-          <p
+        ) : (
+
+          <div
             className="
-              mt-6
-              text-[#4b5563]
-              max-w-4xl
-              mx-auto
-              text-lg
-              leading-9
+              w-10
+              h-10
+              rounded-lg
+              bg-[#C9A24B]/20
             "
-          >
-            We offer a brand new approach to the most
-            basic learning paradigms. Choose from a
-            wide range of learning options and gain
-            new skills.
-          </p>
+          />
 
-        </div>
-
-        {/* CATEGORY PILLS */}
-        <div
-          className="
-            mt-20
-            flex
-            flex-wrap
-            justify-center
-            gap-6
-          "
-        >
-
-          {services.map((item, index) => (
-
-            <motion.div
-              key={item.$id}
-              initial={{
-                opacity: 0,
-                y: 40,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.05,
-              }}
-              viewport={{ once: true }}
-              whileHover={{
-                y: -8,
-                scale: 1.03,
-              }}
-              className="
-                bg-white
-                border
-                border-[#e9e9e9]
-                rounded-full
-                px-6
-                py-4
-                flex
-                items-center
-                gap-4
-                shadow-[0_8px_30px_rgba(0,0,0,0.05)]
-                hover:shadow-[0_15px_40px_rgba(0,0,0,0.08)]
-                transition-all
-                duration-300
-                cursor-pointer
-              "
-            >
-
-              {/* ICON */}
-              <div
-                className="
-                  w-14
-                  h-14
-                  rounded-full
-                  overflow-hidden
-                  bg-[#f5f5ff]
-                  border
-                  border-[#ececff]
-                  flex
-                  items-center
-                  justify-center
-                  shrink-0
-                "
-              >
-
-                {item.imageUrl && (
-
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="
-                      w-10
-                      h-10
-                      object-cover
-                      rounded-full
-                    "
-                  />
-
-                )}
-
-              </div>
-
-              {/* TITLE */}
-              <div>
-
-                <h3
-                  className="
-                    text-[#5b5f97]
-                    font-semibold
-                    text-lg
-                    whitespace-nowrap
-                  "
-                >
-                  {item.title}
-                </h3>
-
-              </div>
-
-            </motion.div>
-
-          ))}
-
-        </div>
+        )}
 
       </div>
 
-    </section>
-  )
-}
+      {/* TITLE */}
+
+      <h3
+        className="
+          bnmi-font-display
+          text-sm
+          md:text-base
+          font-bold
+          text-[#FBF9F4]
+          group-hover:text-[#C9A24B]
+          transition-colors
+          duration-300
+          line-clamp-2
+        "
+      >
+        {item.title}
+      </h3>
+
+    </motion.div>
+  ))}
+</div>
+
+    </div>
+
+  </section>
+
+)}
+

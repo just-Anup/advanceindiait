@@ -112,10 +112,22 @@ export default function Footer() {
       className="
         relative
         overflow-hidden
-        bg-[#f3f3fb]
-        text-[#08104d]
+        bg-[#0A1229]
+        text-[#FBF9F4]
       "
     >
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+        
+        .bnmi-font-display {
+          font-family: 'Playfair Display', Georgia, serif;
+        }
+        
+        .bnmi-font-body {
+          font-family: 'Inter', system-ui, sans-serif;
+        }
+      `}</style>
 
       {/* BG GLOW */}
 
@@ -127,11 +139,23 @@ export default function Footer() {
           -translate-x-1/2
           w-[700px]
           h-[700px]
-          bg-[#fff0c7]
-          opacity-30
+          opacity-[0.08]
           blur-[160px]
           rounded-full
         "
+        style={{
+          background: "radial-gradient(circle,#C9A24B 0%,transparent 70%)"
+        }}
+      />
+
+      {/* GRID */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(#C9A24B 1px, transparent 1px),linear-gradient(90deg,#C9A24B 1px, transparent 1px)",
+          backgroundSize: "70px 70px"
+        }}
       />
 
       {/* ================= MAIN ================= */}
@@ -165,14 +189,14 @@ export default function Footer() {
                 w-14
                 h-14
                 rounded-full
-                bg-[#5865F2]
+                bg-[#C9A24B]
                 flex
                 items-center
                 justify-center
               "
             >
               <GraduationCap
-                className="text-white"
+                className="text-[#0A1229]"
                 size={28}
               />
             </div>
@@ -181,9 +205,10 @@ export default function Footer() {
 
               <h2
                 className="
+                  bnmi-font-display
                   text-2xl
                   font-black
-                  text-[#08104d]
+                  text-[#FBF9F4]
                 "
               >
                 AdvanceIndiaIT
@@ -191,7 +216,7 @@ export default function Footer() {
 
               <p
                 className="
-                  text-[#5865F2]
+                  text-[#C9A24B]
                   font-semibold
                   text-sm
                 "
@@ -206,8 +231,9 @@ export default function Footer() {
           {/* ABOUT */}
           <p
             className="
+              bnmi-font-body
               mt-8
-              text-[#5b5f97]
+              text-[#D5D8E3]
               leading-9
               text-[16px]
             "
@@ -232,15 +258,16 @@ export default function Footer() {
                   w-14
                   h-14
                   rounded-full
-                  bg-white
+                  bg-white/5
                   border
-                  border-[#ececec]
+                  border-white/10
                   flex
                   items-center
                   justify-center
-                  text-[#08104d]
-                  hover:bg-[#5865F2]
-                  hover:text-white
+                  text-[#C9A24B]
+                  hover:bg-[#C9A24B]
+                  hover:text-[#0A1229]
+                  hover:border-[#C9A24B]
                   transition-all
                   duration-300
                   shadow-sm
@@ -263,9 +290,11 @@ export default function Footer() {
 
           <h3
             className="
+              bnmi-font-display
               text-2xl
               font-black
               mb-8
+              text-[#FBF9F4]
             "
           >
             About AdvanceindiaIT
@@ -273,29 +302,30 @@ export default function Footer() {
 
           <ul
             className="
+              bnmi-font-body
               space-y-5
-              text-[#5b5f97]
+              text-[#D5D8E3]
               font-medium
             "
           >
 
-            <li className="hover:text-[#5865F2] transition cursor-pointer">
+            <li className="hover:text-[#C9A24B] transition cursor-pointer">
               About Us
             </li>
 
-            <li className="hover:text-[#5865F2] transition cursor-pointer">
+            <li className="hover:text-[#C9A24B] transition cursor-pointer">
               Franchise Registration
             </li>
 
-            <li className="hover:text-[#5865F2] transition cursor-pointer">
+            <li className="hover:text-[#C9A24B] transition cursor-pointer">
               Become A Teacher
             </li>
 
-            <li className="hover:text-[#5865F2] transition cursor-pointer">
+            <li className="hover:text-[#C9A24B] transition cursor-pointer">
               All Institutes
             </li>
 
-            <li className="hover:text-[#5865F2] transition cursor-pointer">
+            <li className="hover:text-[#C9A24B] transition cursor-pointer">
               Contact Us
             </li>
 
@@ -309,9 +339,11 @@ export default function Footer() {
 
           <h3
             className="
+              bnmi-font-display
               text-2xl
               font-black
               mb-8
+              text-[#FBF9F4]
             "
           >
             Popular Courses
@@ -319,17 +351,18 @@ export default function Footer() {
 
           <ul
             className="
+              bnmi-font-body
               space-y-5
-              text-[#5b5f97]
+              text-[#D5D8E3]
               font-medium
             "
           >
 
-            <li>Development</li>
-            <li>Arts & Design</li>
-            <li>Visual Design</li>
-            <li>Graphic Design</li>
-            <li>Digital Marketing</li>
+            <li className="hover:text-[#C9A24B] transition cursor-pointer">Development</li>
+            <li className="hover:text-[#C9A24B] transition cursor-pointer">Arts & Design</li>
+            <li className="hover:text-[#C9A24B] transition cursor-pointer">Visual Design</li>
+            <li className="hover:text-[#C9A24B] transition cursor-pointer">Graphic Design</li>
+            <li className="hover:text-[#C9A24B] transition cursor-pointer">Digital Marketing</li>
 
           </ul>
 
@@ -341,22 +374,24 @@ export default function Footer() {
 
           <h3
             className="
+              bnmi-font-display
               text-2xl
               font-black
               mb-8
+              text-[#FBF9F4]
             "
           >
             Contact Info
           </h3>
 
-          <div className="space-y-8">
+          <div className="bnmi-font-body space-y-8">
 
             {/* ADDRESS */}
             <div className="flex gap-4">
 
               <MapPinned
                 className="
-                  text-[#5865F2]
+                  text-[#C9A24B]
                   shrink-0
                   mt-1
                 "
@@ -364,7 +399,7 @@ export default function Footer() {
 
               <p
                 className="
-                  text-[#5b5f97]
+                  text-[#D5D8E3]
                   leading-8
                 "
               >
@@ -378,7 +413,7 @@ export default function Footer() {
 
               <Phone
                 className="
-                  text-[#5865F2]
+                  text-[#C9A24B]
                   shrink-0
                   mt-1
                 "
@@ -386,7 +421,7 @@ export default function Footer() {
 
               <p
                 className="
-                  text-[#5b5f97]
+                  text-[#D5D8E3]
                 "
               >
                 {data.footerPhone}
@@ -399,7 +434,7 @@ export default function Footer() {
 
               <Mail
                 className="
-                  text-[#5865F2]
+                  text-[#C9A24B]
                   shrink-0
                   mt-1
                 "
@@ -407,7 +442,7 @@ export default function Footer() {
 
               <p
                 className="
-                  text-[#5b5f97]
+                  text-[#D5D8E3]
                 "
               >
                 {data.footerEmail}
@@ -425,9 +460,11 @@ export default function Footer() {
 
           <h3
             className="
+              bnmi-font-display
               text-2xl
               font-black
               mb-8
+              text-[#FBF9F4]
             "
           >
             Verification
@@ -435,7 +472,8 @@ export default function Footer() {
 
           <p
             className="
-              text-[#5b5f97]
+              bnmi-font-body
+              text-[#D5D8E3]
               leading-9
             "
           >
@@ -451,15 +489,16 @@ export default function Footer() {
               className="
                 mt-8
                 w-full
-                bg-[#5865F2]
-                hover:bg-[#4452eb]
-                text-white
+                bg-[#C9A24B]
+                hover:bg-[#d4b05a]
+                text-[#0A1229]
                 py-5
                 rounded-2xl
                 font-bold
                 transition-all
                 duration-300
-                shadow-[0_10px_30px_rgba(88,101,242,0.25)]
+                shadow-[0_10px_30px_rgba(201,162,75,0.25)]
+                hover:shadow-[0_15px_40px_rgba(201,162,75,0.35)]
               "
             >
               STUDENT VERIFICATION
@@ -478,11 +517,12 @@ export default function Footer() {
           relative
           z-10
           border-t
-          border-[#e5e7eb]
+          border-white/10
           py-7
           text-center
-          text-[#5b5f97]
+          text-[#D5D8E3]
           text-sm
+          bnmi-font-body
         "
       >
         © Copyright 2026 BNMI. All Rights Reserved.

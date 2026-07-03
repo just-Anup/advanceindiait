@@ -69,12 +69,21 @@ export default function PremiumBrandSlider() {
         relative
         overflow-hidden
         py-28
-        bg-gradient-to-r
-        from-[#fff4e9]
-        via-[#f9f7ec]
-        to-[#eef0ff]
+        bg-[#0A1229]
       "
     >
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+        
+        .bnmi-font-display {
+          font-family: 'Playfair Display', Georgia, serif;
+        }
+        
+        .bnmi-font-body {
+          font-family: 'Inter', system-ui, sans-serif;
+        }
+      `}</style>
 
       {/* SOFT BG GLOW */}
 
@@ -86,11 +95,23 @@ export default function PremiumBrandSlider() {
           -translate-x-1/2
           w-[700px]
           h-[700px]
-          bg-[#fff0c7]
-          opacity-40
+          opacity-[0.08]
           blur-[160px]
           rounded-full
         "
+        style={{
+          background: "radial-gradient(circle,#C9A24B 0%,transparent 70%)"
+        }}
+      />
+
+      {/* GRID */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(#C9A24B 1px, transparent 1px),linear-gradient(90deg,#C9A24B 1px, transparent 1px)",
+          backgroundSize: "70px 70px"
+        }}
       />
 
       {/* ================= TOP MARQUEE ================= */}
@@ -101,8 +122,8 @@ export default function PremiumBrandSlider() {
           mb-16
           overflow-hidden
           border-y
-          border-[#dfe3ff]
-          bg-white/40
+          border-white/10
+          bg-white/5
           py-5
           backdrop-blur-xl
         "
@@ -138,7 +159,7 @@ export default function PremiumBrandSlider() {
               <span
                 className="
                   text-2xl
-                  text-[#5865F2]
+                  text-[#C9A24B]
                 "
               >
                 ✦
@@ -146,18 +167,19 @@ export default function PremiumBrandSlider() {
 
               <h2
                 className="
+                  bnmi-font-body
                   whitespace-nowrap
                   text-2xl
                   font-semibold
                   tracking-wide
-                  text-[#08104d]
+                  text-[#FBF9F4]
                 "
               >
                 BNMIINDIA.COM{" "}
 
                 <span
                   className="
-                    text-[#5865F2]
+                    text-[#C9A24B]
                   "
                 >
                   BNMIINDIA.ORG
@@ -184,11 +206,14 @@ export default function PremiumBrandSlider() {
           overflow-hidden
           rounded-[48px]
           border
-          border-[#ececec]
-          bg-white/50
+          border-white/10
+          bg-white/5
           backdrop-blur-2xl
           py-24
-          shadow-[0_20px_80px_rgba(0,0,0,0.05)]
+          shadow-[0_20px_80px_rgba(201,162,75,0.08)]
+          hover:border-[#C9A24B]/30
+          transition-all
+          duration-300
         "
       >
 
@@ -203,8 +228,8 @@ export default function PremiumBrandSlider() {
             h-full
             w-52
             bg-gradient-to-r
-            from-[#fff4e9]
-            via-[#fff4e9]/90
+            from-[#0A1229]
+            via-[#0A1229]/90
             to-transparent
           "
         />
@@ -220,8 +245,8 @@ export default function PremiumBrandSlider() {
             h-full
             w-52
             bg-gradient-to-l
-            from-[#eef0ff]
-            via-[#eef0ff]/90
+            from-[#0A1229]
+            via-[#0A1229]/90
             to-transparent
           "
         />
@@ -252,17 +277,18 @@ export default function PremiumBrandSlider() {
                 w-20
                 bg-gradient-to-r
                 from-transparent
-                to-[#5865F2]
+                to-[#C9A24B]
               "
             />
 
             <h2
               className="
+                bnmi-font-display
                 whitespace-nowrap
                 text-sm
                 font-bold
                 tracking-[0.5em]
-                text-[#08104d]
+                text-[#C9A24B]
               "
             >
               BRANDS WE WORK WITH
@@ -274,7 +300,7 @@ export default function PremiumBrandSlider() {
                 w-20
                 bg-gradient-to-l
                 from-transparent
-                to-[#5865F2]
+                to-[#C9A24B]
               "
             />
 
@@ -327,11 +353,14 @@ export default function PremiumBrandSlider() {
                     justify-center
                     rounded-[34px]
                     border
-                    border-[#ececec]
-                    bg-white/80
+                    border-white/10
+                    bg-white/5
                     backdrop-blur-2xl
                     overflow-hidden
-                    shadow-[0_10px_40px_rgba(0,0,0,0.05)]
+                    shadow-[0_10px_40px_rgba(201,162,75,0.08)]
+                    hover:border-[#C9A24B]/30
+                    transition-all
+                    duration-300
                   "
                 >
 
@@ -352,9 +381,9 @@ export default function PremiumBrandSlider() {
                         absolute
                         inset-0
                         bg-gradient-to-r
-                        from-[#5865F2]/10
-                        via-[#8b5cf6]/5
-                        to-[#5865F2]/10
+                        from-[#C9A24B]/20
+                        via-[#C9A24B]/10
+                        to-[#C9A24B]/20
                         blur-3xl
                       "
                     />
@@ -367,7 +396,7 @@ export default function PremiumBrandSlider() {
                       absolute
                       inset-[1px]
                       rounded-[32px]
-                      bg-white/90
+                      bg-white/5
                     "
                   />
 
@@ -389,7 +418,7 @@ export default function PremiumBrandSlider() {
                       max-h-[90px]
                       max-w-[180px]
                       object-contain
-                      opacity-90
+                      opacity-100
                     "
                   />
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { databases } from '@/lib/appwrite'
 import Link from 'next/link'
 import { Query } from 'appwrite'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu, X, ChevronDown, GraduationCap } from 'lucide-react'
 
 const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID
 const WEBSITE_COLLECTION = 'website'
@@ -12,8 +12,6 @@ const WEBSITE_COLLECTION = 'website'
 export default function Navbar() {
   const [navbarData, setNavbarData] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [mounted, setMounted] = useState(false)
 
   /* ---------------- FETCH CMS DATA ---------------- */
   useEffect(() => {
@@ -36,322 +34,551 @@ export default function Navbar() {
     }
 
     fetchNavbar()
-    setMounted(true)
   }, [])
-
-  /* ---------------- SCROLL LISTENER ---------------- */
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  /* ---------------- LOCK BODY SCROLL ON MOBILE MENU ---------------- */
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [menuOpen])
 
   return (
-    <>
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
-        .bnmi-font-display { font-family: 'Playfair Display', Georgia, serif; }
-        .bnmi-font-body { font-family: 'Inter', system-ui, sans-serif; }
+<header className="bnmi-font-body fixed top-0 left-0 w-full z-50">
 
-        @keyframes bnmi-fade-down {
-          from { opacity: 0; transform: translateY(-14px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes bnmi-fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes bnmi-scale-in {
-          from { opacity: 0; transform: scale(0.94); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes bnmi-sheen {
-          0% { transform: translateX(-120%) skewX(-15deg); }
-          100% { transform: translateX(220%) skewX(-15deg); }
-        }
-        @keyframes bnmi-slide-in {
-          from { opacity: 0; transform: translateX(24px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
+  <style>{`
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
-        .bnmi-nav-item {
-          position: relative;
-          padding-bottom: 4px;
-        }
-        .bnmi-nav-item::after {
-          content: '';
-          position: absolute;
-          left: 0;
-          bottom: 0;
-          width: 0%;
-          height: 1.5px;
-          background: #C9A24B;
-          transition: width 0.35s cubic-bezier(0.65, 0, 0.35, 1);
-        }
-        .bnmi-nav-item:hover::after {
-          width: 100%;
-        }
+    .bnmi-font-display{
+      font-family:'Playfair Display',Georgia,serif;
+    }
 
-        .bnmi-cta {
-          position: relative;
-          overflow: hidden;
-        }
-        .bnmi-cta::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 40%;
-          height: 100%;
-          background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
-          transform: translateX(-120%) skewX(-15deg);
-        }
-        .bnmi-cta:hover::before {
-          animation: bnmi-sheen 0.9s ease;
-        }
+    .bnmi-font-body{
+      font-family:'Inter',system-ui,sans-serif;
+    }
 
-        @media (prefers-reduced-motion: reduce) {
-          .bnmi-nav-item::after { transition: none; }
-          .bnmi-cta::before { animation: none !important; }
-        }
-      `}</style>
+    .navbar-glass{
+      background:rgba(10,18,41,.92);
+      backdrop-filter:blur(22px);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
 
-      <header
-        className={`bnmi-font-body fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-          scrolled
-            ? 'bg-[#0A1229]/95 backdrop-blur-md shadow-[0_4px_30px_rgba(10,18,41,0.25)] py-3'
-            : 'bg-[#0A1229] py-5'
-        }`}
-        style={{
-          borderBottom: '1px solid rgba(201,162,75,0.18)',
-        }}
-      >
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-16">
-          <div className="flex items-center justify-between">
+    .gold-hover{
+      transition:all .35s ease;
+    }
 
-            {/* ================= LOGO / SEAL ================= */}
-            <Link
-              href="/"
-              className="flex items-center gap-3 group"
-              style={mounted ? { animation: 'bnmi-fade-down 0.7s cubic-bezier(0.2,0.9,0.3,1) both' } : { opacity: 0 }}
-            >
-              {navbarData?.logoUrl ? (
-                <img
-                  src={navbarData.logoUrl}
-                  alt="logo"
-                  className={`object-contain transition-all duration-500 ${scrolled ? 'h-12' : 'h-16'}`}
-                />
-              ) : (
-                <>
-                  <div
-                    className={`relative flex items-center justify-center rounded-full border transition-all duration-500 ${
-                      scrolled ? 'w-10 h-10' : 'w-12 h-12'
-                    }`}
-                    style={{
-                      borderColor: '#C9A24B',
-                      background: 'radial-gradient(circle at 30% 30%, #16204A, #0A1229)',
-                    }}
-                  >
-                    <span
-                      className="bnmi-font-display text-[#C9A24B] font-bold"
-                      style={{ fontSize: scrolled ? '15px' : '18px' }}
-                    >
-                      B
-                    </span>
-                    <span
-                      className="absolute inset-0 rounded-full border transition-all duration-500 group-hover:scale-125 group-hover:opacity-0"
-                      style={{ borderColor: '#C9A24B', opacity: 0.5 }}
-                    />
-                  </div>
+    .gold-hover:hover{
+      color:#C9A24B;
+    }
 
-                  <div className="flex flex-col leading-none">
-                    <h1
-                      className={`bnmi-font-display font-bold text-[#FBF9F4] tracking-tight transition-all duration-500 ${
-                        scrolled ? 'text-[22px]' : 'text-[28px]'
-                      }`}
-                    >
-                      {navbarData?.siteName || 'BNMI India'}
-                    </h1>
-                    <span className="text-[10px] uppercase tracking-[0.28em] text-[#C9A24B] font-medium mt-1">
-                      Accredited &middot; Est. Excellence
-                    </span>
-                  </div>
-                </>
-              )}
-            </Link>
+    .nav-btn{
+      transition:all .35s ease;
+    }
 
-            {/* ================= DESKTOP MENU ================= */}
-            <nav className="hidden lg:flex items-center gap-9">
-              {[
-                { title: 'Home', href: '/' },
-                { title: 'About', href: '/aboutus' },
-                { title: 'Course', href: '/#courses', dropdown: true },
-                { title: 'Certification', href: '/certificate-demo', dropdown: true },
-                { title: 'Verification', href: '/verify/verification', dropdown: true },
-                { title: 'Franchise Form', href: '/franchise/signup' },
-              ].map((item, i) => (
-                <div
-                  key={item.title}
-                  style={mounted ? { animation: `bnmi-fade-down 0.6s cubic-bezier(0.2,0.9,0.3,1) both`, animationDelay: `${0.08 * i}s` } : { opacity: 0 }}
-                >
-                  {item.dropdown ? (
-                    <NavDropdown title={item.title} href={item.href} />
-                  ) : (
-                    <NavItem title={item.title} href={item.href} />
-                  )}
-                </div>
-              ))}
-            </nav>
+    .nav-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 12px 30px rgba(201,162,75,.25);
+    }
 
-            {/* ================= RIGHT BUTTONS ================= */}
-            <div
-              className="hidden lg:flex items-center gap-7"
-              style={mounted ? { animation: 'bnmi-fade-down 0.7s cubic-bezier(0.2,0.9,0.3,1) both', animationDelay: '0.4s' } : { opacity: 0 }}
-            >
-              <Link
-                href="/login/institute"
-                className="bnmi-nav-item text-[#EDE7D9] font-medium text-[15px] tracking-wide hover:text-[#C9A24B] transition-colors duration-300"
-              >
-                Institute Login
-              </Link>
+    .logo-hover{
+      transition:transform .35s ease;
+    }
 
-              <Link href="/student/login">
-                <button
-                  className="bnmi-cta bg-[#C9A24B] hover:bg-[#D9B564] text-[#0A1229] font-semibold text-[14px] tracking-wide px-7 py-3 rounded-sm transition-all duration-300 shadow-[0_4px_18px_rgba(201,162,75,0.3)] hover:shadow-[0_6px_24px_rgba(201,162,75,0.45)] hover:-translate-y-0.5"
-                >
-                  Student Login
-                </button>
-              </Link>
-            </div>
+    .logo-hover:hover{
+      transform:scale(1.05);
+    }
 
-            {/* ================= MOBILE BUTTON ================= */}
-            <button
-              className="lg:hidden text-[#FBF9F4] relative z-[60]"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Toggle menu"
-            >
-              <span className="relative block w-7 h-7">
-                <Menu
-                  size={28}
-                  className={`absolute inset-0 transition-all duration-300 ${menuOpen ? 'opacity-0 rotate-90 scale-75' : 'opacity-100 rotate-0 scale-100'}`}
-                />
-                <X
-                  size={28}
-                  className={`absolute inset-0 transition-all duration-300 ${menuOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-75'}`}
-                />
-              </span>
-            </button>
-          </div>
-        </div>
-      </header>
+    @media(prefers-reduced-motion:reduce){
+      .gold-hover,
+      .nav-btn,
+      .logo-hover{
+        transition:none!important;
+      }
+    }
+  `}</style>
 
-      {/* ================= MOBILE MENU OVERLAY ================= */}
-      {menuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 z-40 bg-[#0A1229]/60 backdrop-blur-sm"
-          style={{ animation: 'bnmi-fade-in 0.3s ease both' }}
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
+  {/* GOLD GLOW */}
 
-      <div
-        className={`lg:hidden fixed top-0 right-0 h-full w-[82%] max-w-[360px] z-50 bg-[#0F1936] border-l border-[#C9A24B]/20 shadow-[-10px_0_40px_rgba(0,0,0,0.4)] transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] ${
-          menuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className="flex flex-col h-full pt-28 px-8 pb-10 bnmi-font-body">
-          <nav className="flex flex-col gap-1">
-            {[
-              { title: 'Home', href: '/' },
-              { title: 'About', href: '/aboutus' },
-              { title: 'Course', href: '/#courses' },
-              { title: 'Certification', href: '/certificate-demo' },
-              { title: 'Verification', href: '/verify/verification' },
-              { title: 'Contact', href: '/contact' },
-            ].map((item, i) => (
-              <MobileNav
-                key={item.title}
-                href={item.href}
-                title={item.title}
-                delay={i * 0.06}
-                open={menuOpen}
-                onClick={() => setMenuOpen(false)}
-              />
-            ))}
-          </nav>
+  <div
+    className="absolute inset-x-0 top-0 h-24 pointer-events-none opacity-20"
+    style={{
+      background:
+        "radial-gradient(circle at top,#C9A24B 0%,transparent 70%)",
+    }}
+  />
 
-          <div className="border-t border-[#C9A24B]/15 mt-8 pt-8 flex flex-col gap-4">
-            <Link
-              href="/login/institute"
-              onClick={() => setMenuOpen(false)}
-              className="w-full border border-[#C9A24B]/50 text-[#EDE7D9] text-center py-3.5 font-medium tracking-wide rounded-sm hover:bg-[#C9A24B]/10 transition-colors duration-300"
-              style={menuOpen ? { animation: 'bnmi-slide-in 0.5s cubic-bezier(0.2,0.9,0.3,1) both', animationDelay: '0.4s' } : {}}
-            >
-              Institute Login
-            </Link>
+  <div className="navbar-glass">
 
-            <Link href="/student/login" onClick={() => setMenuOpen(false)}>
-              <button
-                className="w-full bg-[#C9A24B] text-[#0A1229] py-3.5 font-semibold tracking-wide rounded-sm shadow-[0_4px_18px_rgba(201,162,75,0.3)]"
-                style={menuOpen ? { animation: 'bnmi-slide-in 0.5s cubic-bezier(0.2,0.9,0.3,1) both', animationDelay: '0.48s' } : {}}
-              >
-                Student Login
-              </button>
-            </Link>
+    {/* ================= TOP BAR START ================= */}
+
+    <div className="border-b border-[#C9A24B]/15">
+
+  <div className="max-w-7xl mx-auto px-8 py-5">
+
+    <div className="flex items-center justify-between">
+
+      {/* ================= LEFT LOGO ================= */}
+
+      <div className="flex items-center gap-4 logo-hover">
+
+        {navbarData?.logoUrl ? (
+
+          <img
+            src={navbarData.logoUrl}
+            alt="Logo"
+            className="h-20 w-auto object-contain"
+          />
+
+        ) : (
+
+          <div
+            className="
+              w-20
+              h-20
+              rounded-full
+              border
+              border-[#C9A24B]/25
+              bg-white/5
+              backdrop-blur-xl
+              flex
+              items-center
+              justify-center
+            "
+          >
+            <GraduationCap
+              size={40}
+              className="text-[#C9A24B]"
+            />
           </div>
 
-          <p className="mt-auto text-[11px] uppercase tracking-[0.2em] text-[#5B6478]">
-            Accredited &middot; Est. Excellence
-          </p>
-        </div>
+        )}
+
       </div>
-    </>
+
+      {/* ================= CENTER ================= */}
+
+      <div className="text-center px-6">
+
+        <span
+          className="
+            block
+            uppercase
+            tracking-[0.35em]
+            text-[11px]
+            text-[#C9A24B]
+            mb-3
+          "
+        >
+          Excellence • Innovation • Success
+        </span>
+
+        <h1
+          className="
+            bnmi-font-display
+            text-[#FBF9F4]
+            text-3xl
+            md:text-4xl
+            lg:text-5xl
+            font-bold
+            leading-tight
+          "
+        >
+          {navbarData?.topBarText || "ADVANCE INDIA IT"}
+        </h1>
+
+      </div>
+
+      {/* ================= RIGHT LOGO ================= */}
+
+      <div className="flex items-center gap-4 logo-hover">
+
+        {navbarData?.logoUrl ? (
+
+          <img
+            src={navbarData.logoUrl}
+            alt="Logo"
+            className="h-20 w-auto object-contain"
+          />
+
+        ) : (
+
+          <div
+            className="
+              w-20
+              h-20
+              rounded-full
+              border
+              border-[#C9A24B]/25
+              bg-white/5
+              backdrop-blur-xl
+              flex
+              items-center
+              justify-center
+            "
+          >
+            <GraduationCap
+              size={40}
+              className="text-[#C9A24B]"
+            />
+          </div>
+
+        )}
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+{/* ================= MENU BAR START ================= */}
+<div className="border-b border-white/5">
+
+  <div className="max-w-7xl mx-auto px-8">
+
+    <div className="h-[78px] flex items-center justify-between">
+
+      {/* ================= NAVIGATION ================= */}
+
+      <nav className="hidden lg:flex items-center gap-10">
+
+        <NavItem title="HOME" href="/" />
+        <NavItem title="ABOUT" href="/aboutus" />
+        <NavItem title="COURSES" href="/#courses" />
+        <NavItem title="CERTIFICATION" href="/certificate-demo" />
+        <NavItem title="VERIFICATION" href="/verify/verification" />
+        <NavItem title="FRANCHISE" href="/franchise/signup" />
+        <NavItem title="CONTACT" href="/contact" />
+
+      </nav>
+
+      {/* ================= RIGHT SIDE ================= */}
+
+      <div className="hidden lg:flex items-center gap-5">
+
+        {/* LOGIN */}
+
+        <Link
+          href="/login/institute"
+          className="
+            gold-hover
+            text-[#FBF9F4]
+            font-medium
+            tracking-wide
+          "
+        >
+          Login
+        </Link>
+
+        {/* STUDENT LOGIN */}
+
+        <Link href="/student/login">
+
+          <button
+            className="
+              nav-btn
+              px-7
+              py-3
+              rounded-full
+              border
+              border-[#C9A24B]
+              bg-[#C9A24B]
+              text-[#0A1229]
+              font-semibold
+              hover:bg-transparent
+              hover:text-[#C9A24B]
+              transition-all
+              duration-300
+            "
+          >
+            Student Login
+          </button>
+
+        </Link>
+
+      </div>
+
+      {/* ================= MOBILE MENU BUTTON ================= */}
+
+      <button
+        onClick={() => setMenuOpen(!menuOpen)}
+        className="
+          lg:hidden
+          w-12
+          h-12
+          rounded-xl
+          border
+          border-[#C9A24B]/30
+          bg-white/5
+          backdrop-blur-xl
+          flex
+          items-center
+          justify-center
+          text-[#C9A24B]
+          hover:bg-[#C9A24B]/10
+          transition-all
+          duration-300
+        "
+      >
+
+        {menuOpen ? (
+          <X size={24} />
+        ) : (
+          <Menu size={24} />
+        )}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+{/* ================= MOBILE MENU START ================= */}
+
+{menuOpen && (
+
+  <div
+    className="
+      lg:hidden
+      bg-[#0A1229]/95
+      backdrop-blur-2xl
+      border-t
+      border-[#C9A24B]/15
+      shadow-2xl
+    "
+  >
+
+    <div className="px-6 py-8 flex flex-col">
+
+      {/* MENU ITEMS */}
+
+      <div className="flex flex-col">
+
+        <MobileNav href="/" title="HOME" />
+        <MobileNav href="/aboutus" title="ABOUT" />
+        <MobileNav href="/#courses" title="COURSES" />
+        <MobileNav href="/certificate-demo" title="CERTIFICATION" />
+        <MobileNav href="/verify/verification" title="VERIFICATION" />
+        <MobileNav href="/franchise/signup" title="FRANCHISE FORM" />
+        <MobileNav href="/contact" title="CONTACT" />
+
+      </div>
+
+      {/* GOLD DIVIDER */}
+
+      <div className="my-8 h-px bg-gradient-to-r from-transparent via-[#C9A24B]/50 to-transparent" />
+
+      {/* LOGIN BUTTONS */}
+
+      <div className="flex flex-col gap-4">
+
+        {/* INSTITUTE LOGIN */}
+
+        <Link
+          href="/login/institute"
+          className="
+            w-full
+            text-center
+            py-3.5
+            rounded-xl
+            border
+            border-white/10
+            bg-white/5
+            backdrop-blur-xl
+            text-[#FBF9F4]
+            font-medium
+            hover:border-[#C9A24B]/40
+            hover:text-[#C9A24B]
+            transition-all
+            duration-300
+          "
+          onClick={() => setMenuOpen(false)}
+        >
+          Institute Login
+        </Link>
+
+        {/* STUDENT LOGIN */}
+
+        <Link
+          href="/student/login"
+          onClick={() => setMenuOpen(false)}
+        >
+
+          <button
+            className="
+              w-full
+              py-3.5
+              rounded-xl
+              bg-[#C9A24B]
+              text-[#0A1229]
+              font-semibold
+              hover:bg-[#d6b15a]
+              transition-all
+              duration-300
+              shadow-[0_12px_35px_rgba(201,162,75,.25)]
+            "
+          >
+            Student Login
+          </button>
+
+        </Link>
+
+      </div>
+
+      {/* FOOTER TEXT */}
+
+      <div className="mt-8 text-center">
+
+        <p className="text-xs tracking-[0.25em] uppercase text-[#C9A24B]/80">
+          Excellence • Innovation • Success
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+)}
+
+</div>
+
+</header>
+
   )
 }
-
 /* ================= NAV ITEM ================= */
+
 function NavItem({ title, href }) {
   return (
     <Link
       href={href}
-      className="bnmi-nav-item text-[#EDE7D9] font-medium text-[15px] tracking-wide hover:text-[#C9A24B] transition-colors duration-300"
+      className="
+        relative
+        group
+        text-[15px]
+        font-medium
+        tracking-[0.12em]
+        uppercase
+        text-[#FBF9F4]
+        transition-all
+        duration-300
+      "
     >
-      {title}
+      <span className="group-hover:text-[#C9A24B] transition-colors duration-300">
+        {title}
+      </span>
+
+      <span
+        className="
+          absolute
+          left-0
+          -bottom-2
+          h-[2px]
+          w-0
+          bg-[#C9A24B]
+          transition-all
+          duration-300
+          group-hover:w-full
+        "
+      />
     </Link>
   )
 }
 
-/* ================= DROPDOWN STYLE ITEM ================= */
+/* ================= DROPDOWN ================= */
+
 function NavDropdown({ title, href }) {
   return (
     <Link
       href={href}
-      className="bnmi-nav-item flex items-center gap-1 text-[#EDE7D9] font-medium text-[15px] tracking-wide hover:text-[#C9A24B] transition-colors duration-300 group"
+      className="
+        relative
+        group
+        flex
+        items-center
+        gap-2
+        text-[15px]
+        uppercase
+        tracking-[0.12em]
+        text-[#FBF9F4]
+        transition-all
+        duration-300
+      "
     >
-      {title}
-      <ChevronDown size={15} strokeWidth={2.25} className="transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#C9A24B]" />
+      <span className="group-hover:text-[#C9A24B] transition-colors duration-300">
+        {title}
+      </span>
+
+      <ChevronDown
+        size={16}
+        className="transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#C9A24B]"
+      />
+
+      <span
+        className="
+          absolute
+          left-0
+          -bottom-2
+          h-[2px]
+          w-0
+          bg-[#C9A24B]
+          transition-all
+          duration-300
+          group-hover:w-full
+        "
+      />
     </Link>
   )
 }
 
 /* ================= MOBILE NAV ================= */
-function MobileNav({ title, href, delay = 0, open, onClick }) {
+
+function MobileNav({ title, href }) {
   return (
     <Link
       href={href}
-      onClick={onClick}
-      className="text-[#EDE7D9] font-medium text-[17px] border-b border-white/5 py-4 hover:text-[#C9A24B] transition-colors duration-300"
-      style={open ? { animation: 'bnmi-slide-in 0.5s cubic-bezier(0.2,0.9,0.3,1) both', animationDelay: `${delay}s` } : { opacity: 0 }}
+      className="
+        group
+        flex
+        items-center
+        justify-between
+        py-4
+        border-b
+        border-white/5
+        text-[#FBF9F4]
+        uppercase
+        tracking-[0.15em]
+        text-[14px]
+        font-medium
+        transition-all
+        duration-300
+      "
     >
-      {title}
+      <span className="group-hover:text-[#C9A24B] transition-colors duration-300">
+        {title}
+      </span>
+
+      <span
+        className="
+          w-8
+          h-8
+          rounded-full
+          border
+          border-[#C9A24B]/25
+          flex
+          items-center
+          justify-center
+          text-[#C9A24B]
+          opacity-0
+          -translate-x-2
+          group-hover:opacity-100
+          group-hover:translate-x-0
+          transition-all
+          duration-300
+        "
+      >
+        →
+      </span>
     </Link>
   )
 }
