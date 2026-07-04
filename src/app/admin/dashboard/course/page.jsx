@@ -439,335 +439,303 @@ export default function CourseCMS() {
   }
 
   return (
-
-    <div className="min-h-screen bg-gray-100 p-4 md:p-6 space-y-6">
-
-      {/* HEADER */}
-
-      <div>
-
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-          Course CMS Panel
-        </h1>
-
-        <p className="text-gray-500 text-sm">
-          Manage categories and courses easily
-        </p>
-
+    <div className="min-h-screen bg-[#0A1229] text-[#FBF9F4] p-4 md:p-8 relative overflow-hidden">
+      {/* ambient glow + subtle grid */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,162,75,0.18),transparent_55%)]" />
+        <div className="absolute inset-0 opacity-[0.08] bg-[linear-gradient(to_right,rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:42px_42px]" />
       </div>
 
-      {/* =========================
-          ADD CATEGORY
-      ========================= */}
+      <div className="relative">
+        {/* HEADER */}
+        <div className="mb-6 py-5 px-8 rounded-3xl">
+          <div className="space-y-3">
+            <h1 className="font-[Playfair_Display] text-2xl md:text-3xl font-semibold tracking-wide">
+              Course CMS Panel
+            </h1>
+            <p className="font-[Inter] text-white/70 text-sm">
+              Manage categories and courses easily
+            </p>
+          </div>
+        </div>
 
-      <div className="bg-white rounded-xl shadow-sm p-5 md:p-6 border border-gray-200">
-
-        <h2 className="text-lg font-semibold mb-4 text-gray-800">
-          Add Category
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-          <input
-            name="name"
-            value={categoryForm.name || ""}
-            onChange={handleCategoryChange}
-            placeholder="Category Name"
-            className="input-clean"
-          />
-
-          <input
-            name="slug"
-            value={categoryForm.slug || ""}
-            disabled
-            placeholder="Slug auto-generated"
-            className="input-clean bg-gray-100"
-          />
-
-          <input
-            name="subtitle"
-            value={categoryForm.subtitle || ""}
-            onChange={handleCategoryChange}
-            placeholder="Subtitle"
-            className="input-clean"
-          />
-
-          <input
-            type="file"
-            onChange={(e) => setCatImage(e.target.files[0])}
-            className="input-clean"
-          />
-
-          <button
-            onClick={addCategory}
-            className="btn-primary col-span-full"
-          >
+        {/* =========================
+            ADD CATEGORY
+        ========================= */}
+        <Panel>
+          <h2 className="font-[Playfair_Display] text-lg font-semibold mb-4 tracking-wide">
             Add Category
-          </button>
+          </h2>
 
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              name="name"
+              value={categoryForm.name || ""}
+              onChange={handleCategoryChange}
+              placeholder="Category Name"
+              className="input-clean-dark"
+            />
 
-      </div>
-      
-      {/* =========================
-          MANAGE CATEGORIES
-      ========================= */}
+            <input
+              name="slug"
+              value={categoryForm.slug || ""}
+              disabled
+              placeholder="Slug auto-generated"
+              className="input-clean-dark bg-white/5 cursor-not-allowed"
+            />
 
-      <div className="bg-white rounded-xl shadow-sm p-5 md:p-6 border border-gray-200">
+            <input
+              name="subtitle"
+              value={categoryForm.subtitle || ""}
+              onChange={handleCategoryChange}
+              placeholder="Subtitle"
+              className="input-clean-dark"
+            />
 
-        <h2 className="text-lg font-semibold mb-4 text-gray-800">
-          Manage Categories
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-
-          {categories.map(cat => (
-
-            <div
-              key={cat.$id}
-              className="border rounded-xl p-4 hover:shadow-md transition"
-            >
-
-              {cat.imageId && (
-
-                <img
-                  src={getImage(cat.imageId)}
-                  className="h-36 w-full object-cover rounded-lg mb-3"
-                />
-
-              )}
-
-              <h3 className="font-semibold text-gray-800 text-lg">
-                {cat.name}
-              </h3>
-
-              <p className="text-sm text-blue-600 mt-1">
-                Slug: {cat.slug}
-              </p>
-
-              <p className="text-sm text-gray-500 mt-2">
-                {cat.subtitle}
-              </p>
-
-             <div className="flex gap-2 mt-4">
-
-  <button
-    onClick={() => editCategory(cat)}
-    className="btn-primary flex-1"
-  >
-    Edit
-  </button>
-
-  <button
-    onClick={() => deleteCategory(cat.$id)}
-    className="btn-danger flex-1"
-  >
-    Delete
-  </button>
-
-</div>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </div>
-
-      {/* =========================
-          ADD COURSE
-      ========================= */}
-
-      <div className="bg-white rounded-xl shadow-sm p-5 md:p-6 border border-gray-200">
-
-        <h2 className="text-lg font-semibold mb-4 text-gray-800 bg-white/6 ">
-          {editingCourseId ? "Edit Course" : "Add Course"}
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-          <input
-            name="title"
-            value={courseForm.title || ""}
-            onChange={handleCourseChange}
-            placeholder="Course Title"
-            className="input-clean"
-          />
-
-          <input
-            value={
-              (courseForm.title || "")
-                .toLowerCase()
-                .replace(/[^a-z0-9 ]/g, "")
-                .replace(/\s+/g, "-")
-            }
-            disabled
-            placeholder="Course Slug"
-            className="input-clean bg-gray-100"
-          />
-
-          <select
-            name="category"
-            value={courseForm.category || ""}
-            onChange={handleCourseChange}
-            className="input-clean"
-          >
-
-            <option value="">
-              Select Category
-            </option>
-
-            {categories.map(cat => (
-
-              <option
-                key={cat.$id}
-                value={cat.slug}
-              >
-                {cat.name}
-              </option>
-
-            ))}
-
-          </select>
-
-          <input
-            name="duration"
-            value={courseForm.duration || ""}
-            onChange={handleCourseChange}
-            placeholder="Course Duration"
-            className="input-clean"
-          />
-
-          <input
-            name="fees"
-            value={courseForm.fees || ""}
-            onChange={handleCourseChange}
-            placeholder="Course Rating (out of 5)"
-            className="input-clean"
-          />
-
-          <input
-            type="file"
-            onChange={(e) => setCourseImage(e.target.files[0])}
-            className="input-clean"
-          />
-
-          <textarea
-            name="description"
-            value={courseForm.description || ""}
-            onChange={handleCourseChange}
-            placeholder="Course Description"
-            className="input-clean col-span-full h-28"
-          />
-
-          <button
-            onClick={saveCourse}
-            className="btn-success col-span-full"
-          >
-            {editingCourseId ? "Update Course" : "Add Course"}
-          </button>
-
-          {editingCourseId && (
+            <input
+              type="file"
+              onChange={(e) => setCatImage(e.target.files[0])}
+              className="input-clean-dark file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border file:border-white/10 file:bg-white/5 file:text-[#FBF9F4] hover:file:border-[#C9A24B]/60 file:transition-all file:cursor-pointer"
+            />
 
             <button
-              onClick={cancelEdit}
-              className="btn-secondary col-span-full"
+              onClick={addCategory}
+              className="btn-primary-dark col-span-full"
             >
-              Cancel Edit
+              Add Category
+            </button>
+          </div>
+        </Panel>
+
+        {/* =========================
+            MANAGE CATEGORIES
+        ========================= */}
+        <Panel>
+          <h2 className="font-[Playfair_Display] text-lg font-semibold mb-4 tracking-wide">
+            Manage Categories
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+            {categories.map((cat) => (
+              <div
+                key={cat.$id}
+                className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-4 hover:border-[#C9A24B]/60 transition-all duration-300 group relative overflow-hidden"
+              >
+                <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{
+                  background:
+                    'radial-gradient(ellipse at top, rgba(201,162,75,0.22), transparent 55%), radial-gradient(ellipse at bottom, rgba(201,162,75,0.14), transparent 60%)'
+                }} />
+
+                {cat.imageId && (
+                  <div className="mb-3 overflow-hidden rounded-xl border border-white/10">
+                    <img
+                      src={getImage(cat.imageId)}
+                      className="h-36 w-full object-cover rounded-xl transform transition-transform duration-500 group-hover:scale-105"
+                      alt={cat.name}
+                    />
+                  </div>
+                )}
+
+                <h3 className="font-[Inter] font-semibold text-white/90 text-lg">
+                  {cat.name}
+                </h3>
+
+                <p className="text-sm text-[#C9A24B] mt-1 font-[Inter]">
+                  Slug: {cat.slug}
+                </p>
+
+                <p className="text-sm text-white/70 mt-2 font-[Inter]">
+                  {cat.subtitle}
+                </p>
+
+                <div className="flex gap-2 mt-4">
+                  <button
+                    onClick={() => editCategory(cat)}
+                    className="btn-primary-dark flex-1"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() => deleteCategory(cat.$id)}
+                    className="btn-danger-dark flex-1"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Panel>
+
+        {/* =========================
+            ADD COURSE
+        ========================= */}
+        <Panel>
+          <h2 className="font-[Playfair_Display] text-lg font-semibold mb-4 tracking-wide">
+            {editingCourseId ? "Edit Course" : "Add Course"}
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              name="title"
+              value={courseForm.title || ""}
+              onChange={handleCourseChange}
+              placeholder="Course Title"
+              className="input-clean-dark"
+            />
+
+            <input
+              value={
+                (courseForm.title || "")
+                  .toLowerCase()
+                  .replace(/[^a-z0-9 ]/g, "")
+                  .replace(/\s+/g, "-")
+              }
+              disabled
+              placeholder="Course Slug"
+              className="input-clean-dark bg-white/5 cursor-not-allowed"
+            />
+
+            <select
+              name="category"
+              value={courseForm.category || ""}
+              onChange={handleCourseChange}
+              className="input-clean-dark"
+            >
+              <option value="">Select Category</option>
+              {categories.map((cat) => (
+                <option key={cat.$id} value={cat.slug}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+
+            <input
+              name="duration"
+              value={courseForm.duration || ""}
+              onChange={handleCourseChange}
+              placeholder="Course Duration"
+              className="input-clean-dark"
+            />
+
+            <input
+              name="fees"
+              value={courseForm.fees || ""}
+              onChange={handleCourseChange}
+              placeholder="Course Rating (out of 5)"
+              className="input-clean-dark"
+            />
+
+            <input
+              type="file"
+              onChange={(e) => setCourseImage(e.target.files[0])}
+              className="input-clean-dark file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border file:border-white/10 file:bg-white/5 file:text-[#FBF9F4] hover:file:border-[#C9A24B]/60 file:transition-all file:cursor-pointer"
+            />
+
+            <textarea
+              name="description"
+              value={courseForm.description || ""}
+              onChange={handleCourseChange}
+              placeholder="Course Description"
+              className="input-clean-dark col-span-full h-28"
+            />
+
+            <button onClick={saveCourse} className="btn-primary-dark col-span-full">
+              {editingCourseId ? "Update Course" : "Add Course"}
             </button>
 
-          )}
+            {editingCourseId && (
+              <button
+                onClick={cancelEdit}
+                className="btn-secondary-dark col-span-full"
+              >
+                Cancel Edit
+              </button>
+            )}
+          </div>
+        </Panel>
 
-        </div>
+        {/* =========================
+            ALL COURSES
+        ========================= */}
+        <Panel>
+          <h2 className="font-[Playfair_Display] text-lg font-semibold mb-4 tracking-wide">
+            All Courses
+          </h2>
 
-      </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+            {courses.map((course) => (
+              <div
+                key={course.$id}
+                className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-4 hover:border-[#C9A24B]/60 transition-all duration-300 group relative overflow-hidden"
+              >
+                <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{
+                  background:
+                    'radial-gradient(ellipse at top, rgba(201,162,75,0.22), transparent 55%), radial-gradient(ellipse at bottom, rgba(201,162,75,0.14), transparent 60%)'
+                }} />
 
+                {course.imageId && (
+                  <div className="mb-3 overflow-hidden rounded-xl border border-white/10">
+                    <img
+                      src={getImage(course.imageId)}
+                      className="h-36 w-full object-cover rounded-xl transform transition-transform duration-500 group-hover:scale-105"
+                      alt={course.title}
+                    />
+                  </div>
+                )}
 
-      {/* =========================
-          ALL COURSES
-      ========================= */}
+                <h3 className="font-[Inter] font-semibold text-white/90">
+                  {course.title}
+                </h3>
 
-      <div className="bg-white rounded-xl shadow-sm p-5 md:p-6 border border-gray-200">
+                <p className="text-sm text-[#C9A24B] mt-1 font-[Inter]">
+                  Slug: {course.slug}
+                </p>
 
-        <h2 className="text-lg font-semibold mb-4 text-gray-800">
-          All Courses
-        </h2>
+                <p className="text-sm text-white/70 font-[Inter]">
+                  Category: {course.category}
+                </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                <p className="text-sm mt-2 text-white/80 line-clamp-2 font-[Inter]">
+                  {course.description}
+                </p>
 
-          {courses.map(course => (
+                <div className="flex justify-between mt-3 text-sm font-[Inter]">
+                  <span className="text-white/75">⏱ {course.duration}</span>
+                  <span className="text-[#C9A24B] font-semibold">⭐ {course.fees}</span>
+                </div>
 
-            <div
-              key={course.$id}
-              className="border rounded-xl p-4 hover:shadow-md transition"
-            >
+                <div className="flex gap-2 mt-4">
+                  <button
+                    onClick={() => editCourse(course)}
+                    className="btn-primary-dark flex-1"
+                  >
+                    Edit
+                  </button>
 
-              {course.imageId && (
-
-                <img
-                  src={getImage(course.imageId)}
-                  className="h-36 w-full object-cover rounded-lg mb-3"
-                />
-
-              )}
-
-              <h3 className="font-semibold text-gray-800">
-                {course.title}
-              </h3>
-
-              <p className="text-sm text-green-600 mt-1">
-                Slug: {course.slug}
-              </p>
-
-              <p className="text-sm text-gray-500">
-                Category: {course.category}
-              </p>
-
-              <p className="text-sm mt-2 line-clamp-2">
-                {course.description}
-              </p>
-
-              <div className="flex justify-between mt-3 text-sm">
-
-                <span>
-                  ⏱ {course.duration}
-                </span>
-
-                <span className="text-yellow-500 font-semibold">
-                  ⭐ {course.fees}
-                </span>
-
+                  <button
+                    onClick={() => deleteCourse(course.$id)}
+                    className="btn-danger-dark flex-1"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-
-              <div className="flex gap-2 mt-4">
-
-                <button
-                  onClick={() => editCourse(course)}
-                  className="btn-primary flex-1"
-                >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() => deleteCourse(course.$id)}
-                  className="btn-danger flex-1"
-                >
-                  Delete
-                </button>
-
-              </div>
-
-            </div>
-
-          ))}
-
-        </div>
-
+            ))}
+          </div>
+        </Panel>
       </div>
-
     </div>
-
-  )
+  );
 
 }
+
+function Panel({ children }) {
+  return (
+    <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-5 md:p-6 hover:border-[#C9A24B]/60 transition-all duration-300">
+      {children}
+    </div>
+  );
+}
+

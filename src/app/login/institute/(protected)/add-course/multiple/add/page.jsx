@@ -63,29 +63,41 @@ const fetchCourses = async () => {
   setFilteredCourses(sorted);
 };
   // FETCH USER PLAN
-  const fetchPlan = async () => {
+const fetchPlan = async () => {
+  const user = await account.get();
 
-    const user = await account.get();
+  const res = await databases.listDocuments(
+    DATABASE_ID,
+    "franchise_approved",
+    [
+      Query.equal("email", user.email)
+    ]
+  );
 
-    const res = await databases.listDocuments(
-      DATABASE_ID,
-      "franchise_approved",
-      [Query.equal("email", user.email)]
-    );
+  if (res.documents.length === 0) {
+    console.error("No franchise found for:", user.email);
+    return;
+  }
 
-    const plan = res.documents[0]?.plan;
+  const plan = res.documents[0].plan;
 
-    const planRes = await databases.listDocuments(
-      DATABASE_ID,
-      "franchise_plans",
-      [Query.equal("name", plan)]
-    );
+  if (!plan) {
+    console.error("Plan is missing.");
+    return;
+  }
 
-    const fee = planRes.documents[0]?.amount || 0;
+  const planRes = await databases.listDocuments(
+    DATABASE_ID,
+    "franchise_plans",
+    [
+      Query.equal("name", plan)
+    ]
+  );
 
-    setExamFee(fee);
-  };
+  const fee = planRes.documents[0]?.amount || 0;
 
+  setExamFee(fee);
+};
   // FETCH ADDED COURSES
   const fetchAddedCourses = async () => {
 
@@ -93,7 +105,7 @@ const fetchCourses = async () => {
 
     const res = await databases.listDocuments(
       DATABASE_ID,
-      "courses_multiple",
+      "franchise_multiple_courses",
       [Query.equal("franchiseEmail", user.email)]
     );
 
@@ -212,11 +224,10 @@ const fetchCourses = async () => {
                         <span className="bg-gray-700 text-gray-300 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm inline-block whitespace-nowrap">
                           Already Added
                         </span>
-
                       ) : (
 
                         <Link
-                          href={`/login/institute/add-course/multiple/subjects/${course.$id}?name=${course.courseName}&code=${course.courseCode}&duration=${course.duration}`}
+                       href={`/login/institute/add-course/multiple/subjects/${course.$id}?name=${course.courseName}&code=${course.courseCode}&duration=${course.duration}&examFee=${examFee}`}
                           className="bg-orange-500 hover:bg-orange-600 transition px-3 sm:px-4 py-2 rounded-lg text-black font-semibold shadow text-xs sm:text-sm inline-block whitespace-nowrap"
                         >
                           Add Subjects

@@ -9,7 +9,6 @@ import { Eye, EyeOff } from 'lucide-react'
 const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID
 
 export default function InstituteLogin() {
-
   const router = useRouter()
 
   const [email, setEmail] = useState('')
@@ -19,238 +18,232 @@ export default function InstituteLogin() {
 
   /* ---------------- AUTO FILL FROM URL ---------------- */
   useEffect(() => {
-
     const params = new URLSearchParams(window.location.search)
 
     const urlEmail = params.get('email')
     const urlPassword = params.get('password')
 
-    if (urlEmail) setEmail(urlEmail)
-    if (urlPassword) setPassword(urlPassword)
-
+    // Avoid cascading renders by batching updates.
+    if (urlEmail || urlPassword) {
+      if (urlEmail) setEmail(urlEmail)
+      if (urlPassword) setPassword(urlPassword)
+    }
   }, [])
 
   /* ---------------- LOGIN ---------------- */
   const login = async (e) => {
+    e.preventDefault()
 
-  e.preventDefault();
+    if (loading) return
 
-  if (loading) return;
+    setLoading(true)
 
-  setLoading(true);
-
-  try {
-
-    // DELETE OLD SESSION FIRST
     try {
-      await account.deleteSession("current");
-    } catch (err) {
-      // ignore if no session exists
+      // DELETE OLD SESSION FIRST
+      try {
+        await account.deleteSession('current')
+      } catch (err) {
+        // ignore if no session exists
+      }
+
+      // CREATE NEW SESSION
+      await account.createEmailPasswordSession(email, password)
+
+      /* ---------------- ADMIN LOGIN ---------------- */
+      if (email === 'bnmiindia@gmail.com') {
+        localStorage.setItem('adminAuth', 'true')
+
+        setTimeout(() => {
+          router.push('/admin')
+        }, 500)
+
+        return
+      }
+
+      /* ---------------- FRANCHISE CHECK ---------------- */
+      const res = await databases.listDocuments(
+        DATABASE_ID,
+        'franchise_approved',
+        [Query.equal('email', email)]
+      )
+
+      if (!res.documents.length) {
+        alert('Your franchise is not approved yet')
+
+        await account.deleteSession('current')
+
+        setLoading(false)
+        return
+      }
+
+      /* ---------------- NORMAL USER LOGIN ---------------- */
+      router.push('/login/institute/dashboard')
+    } catch (error) {
+      console.error(error)
+      alert(error?.message || 'Invalid credentials')
+    } finally {
+      setLoading(false)
     }
-
-    // CREATE NEW SESSION
-    await account.createEmailPasswordSession(email, password);
-
-    /* ---------------- ADMIN LOGIN ---------------- */
-    if (email === "bnmiindia@gmail.com") {
-
-      localStorage.setItem("adminAuth", "true");
-
-      setTimeout(() => {
-        router.push("/admin");
-      }, 500);
-
-      return;
-    }
-
-    /* ---------------- FRANCHISE CHECK ---------------- */
-    const res = await databases.listDocuments(
-      DATABASE_ID,
-      "franchise_approved",
-      [Query.equal("email", email)]
-    );
-
-    if (!res.documents.length) {
-
-      alert("Your franchise is not approved yet");
-
-      await account.deleteSession("current");
-
-      setLoading(false);
-
-      return;
-    }
-
-    /* ---------------- NORMAL USER LOGIN ---------------- */
-    router.push("/login/institute/dashboard");
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(error?.message || "Invalid credentials");
-
-  } finally {
-
-    setLoading(false);
-
   }
 
-};
-
   return (
-
-    <div className="min-h-screen flex items-center justify-center bg-[#0A1229] px-4 relative overflow-hidden">
-
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
-        
-        .bnmi-font-display {
-          font-family: 'Playfair Display', Georgia, serif;
-        }
-        
-        .bnmi-font-body {
-          font-family: 'Inter', system-ui, sans-serif;
-        }
-      `}</style>
-
-      {/* BG GLOW */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[650px] h-[650px] rounded-full opacity-[0.08] blur-[170px] pointer-events-none"
-        style={{
-          background: "radial-gradient(circle,#C9A24B 0%,transparent 70%)"
-        }}
-      />
-
-      {/* GRID */}
+    <div className="min-h-screen bg-[#edf0f5] flex items-center justify-center p-5 overflow-hidden">
+      {/* Background Glow */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        className="absolute w-[900px] h-[900px] rounded-full blur-[170px] opacity-20"
         style={{
-          backgroundImage:
-            "linear-gradient(#C9A24B 1px, transparent 1px),linear-gradient(90deg,#C9A24B 1px, transparent 1px)",
-          backgroundSize: "70px 70px"
+          background: 'radial-gradient(circle,#F7D354 0%,transparent 70%)'
         }}
       />
 
-      <div className="w-full max-w-6xl bg-white/5 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-xl flex flex-col md:flex-row relative z-10 border border-white/10">
-
-        {/* ================= LEFT SIDE ================= */}
-        <div className="hidden md:flex w-1/2 bg-gradient-to-br from-[#C9A24B]/20 to-[#C9A24B]/5 items-center justify-center relative p-10 border-r border-white/10">
-
-          {/* circles */}
-          <div className="absolute top-10 right-10 w-40 h-40 bg-white/5 rounded-full border border-white/10"></div>
-
-          <div className="absolute bottom-10 left-10 w-52 h-52 bg-white/5 rounded-full border border-white/10"></div>
-
-          {/* logo */}
-          <div className="z-10 text-center">
-
-            <img
-              src="/logo.png"
-              alt="logo"
-              className="w-64 mx-auto"
-            />
-
-          </div>
-
-        </div>
-
-        {/* ================= RIGHT SIDE ================= */}
-        <div className="w-full md:w-1/2 p-8 sm:p-12">
-
-          <h2 className="bnmi-font-display text-3xl font-bold mb-2 text-[#FBF9F4]">
-            Welcome Back
-          </h2>
-
-          <p className="bnmi-font-body text-[#D5D8E3] mb-8">
-            Please login to your account to continue
-          </p>
-
-          <form onSubmit={login} className="space-y-6">
-
-            {/* EMAIL */}
+      {/* Main Card */}
+      <div className="relative w-full max-w-7xl bg-[#FAFAFA] rounded-[40px] overflow-hidden shadow-[0_35px_80px_rgba(0,0,0,0.12)]">
+        <div className="grid lg:grid-cols-2">
+          {/* ================= LEFT PANEL (FORM) ================= */}
+          <div className="relative flex flex-col justify-between px-8 sm:px-12 lg:px-16 py-10 lg:py-14">
+            {/* Logo + Heading */}
             <div>
+              <div className="flex items-center justify-between">
+                <div className="px-6 py-3 rounded-full border border-gray-300 bg-white shadow-sm">
+                  <img src="/login-bg.jpg" alt="logo" className="h-8 object-contain" />
+                </div>
+              </div>
 
-              <label className="bnmi-font-body text-sm text-[#D5D8E3] block mb-2">
-                Email Address
-              </label>
-
-              <input
-                type="email"
-                placeholder="youremail@gmail.com"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[#FBF9F4] placeholder-[#D5D8E3]/50 focus:outline-none focus:ring-2 focus:ring-[#C9A24B] focus:border-[#C9A24B] hover:border-white/20 transition-all"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-
+              <div className="mt-10">
+                <h1 className="text-4xl sm:text-5xl font-bold text-[#1C1C1C] leading-tight">
+                  Institute
+                  <br />
+                  Login
+                </h1>
+                <p className="mt-3 text-gray-500 text-base sm:text-lg">
+                  Secure access to your BNMI portal
+                </p>
+              </div>
             </div>
 
-            {/* PASSWORD */}
-            <div className="relative">
+            {/* ================= FORM ================= */}
+            <form onSubmit={login} className="mt-8 flex-1 flex flex-col">
+              <div className="flex-1">
+                {/* Email */}
+                <label className="block">
+                  <span className="text-sm font-medium text-gray-700">Email</span>
+                  <div className="mt-2 relative">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      required
+                      className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-[15px] outline-none focus:ring-4 focus:ring-[#FFD54F]/30 focus:border-[#FFD54F]"
+                    />
+                  </div>
+                </label>
 
-              <label className="bnmi-font-body text-sm text-[#D5D8E3] block mb-2">
-                Password
-              </label>
+                {/* Password */}
+                <label className="block mt-5">
+                  <span className="text-sm font-medium text-gray-700">Password</span>
+                  <div className="mt-2 relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      required
+                      className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-[15px] outline-none focus:ring-4 focus:ring-[#FFD54F]/30 focus:border-[#FFD54F] pr-14"
+                    />
 
-              <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-12 text-[#FBF9F4] placeholder-[#D5D8E3]/50 focus:outline-none focus:ring-2 focus:ring-[#C9A24B] focus:border-[#C9A24B] hover:border-white/20 transition-all"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((s) => !s)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl flex items-center justify-center bg-white/70 hover:bg-white border border-gray-200"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </label>
 
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[42px] text-[#D5D8E3] hover:text-[#C9A24B] transition"
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
+                {/* Helper */}
+                <div className="mt-4 text-sm text-gray-500">
+                  Use your registered institute email to continue.
+                </div>
+              </div>
 
-            </div>
+              {/* Login Button pinned bottom */}
+              <div className="mt-8">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded-[22px] bg-[#FFD54F] hover:bg-[#F8CB3F] transition-all duration-300 font-semibold text-[#1C1C1C] shadow-md hover:shadow-xl px-6 py-4 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Logging in...' : 'Login'}
+                </button>
 
-            {/* BUTTON */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`bnmi-font-body w-full py-3 rounded-xl font-semibold text-[#0A1229] transition-all duration-300 ${
-                loading
-                  ? 'bg-[#C9A24B]/50 cursor-not-allowed'
-                  : 'bg-[#C9A24B] hover:bg-[#d4b05a] shadow-[0_10px_30px_rgba(201,162,75,0.25)] hover:shadow-[0_15px_40px_rgba(201,162,75,0.35)]'
-              }`}
-            >
-              {loading ? 'Logging in...' : 'SIGN IN'}
-            </button>
-
-          </form>
-
-          {/* DIVIDER */}
-          <div className="my-8 border-t border-white/10"></div>
-
-          {/* PWA SECTION */}
-          <div className="text-center">
-
-            <p className="bnmi-font-display font-semibold text-[#FBF9F4] mb-2">
-              📱 Install as Progressive Web App (Mobile App) for Students
-            </p>
-
-            <p className="bnmi-font-body text-sm text-[#D5D8E3] mb-4">
-              Access your courses anytime, anywhere with our mobile app experience
-            </p>
-
-            <button className="w-full border border-[#C9A24B] text-[#C9A24B] py-3 rounded-xl font-medium hover:bg-[#C9A24B]/10 hover:border-[#C9A24B] transition-all duration-300">
-              📲 App is under progress (Coming soon)
-            </button>
-
+                <div className="mt-4 flex justify-between items-center text-xs sm:text-sm text-gray-500">
+                  <p>© {new Date().getFullYear()} Advance India IT </p>
+                  <p className="hover:text-black cursor-pointer transition">Secure Login</p>
+                </div>
+              </div>
+            </form>
           </div>
 
+          {/* ================= RIGHT PANEL (IMAGE) ================= */}
+          <div className="hidden lg:block relative p-6">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#FFF5CC] via-[#FFF8E6] to-[#FFE89A] rounded-l-[60px]" />
+
+            <div className="relative h-full rounded-[36px] overflow-hidden shadow-2xl">
+              <img src="/login-bg.webp" alt="AIIt" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10" />
+
+              {/* Top badge */}
+              <div className="absolute top-8 left-8 bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-5 py-3 shadow-xl">
+                <p className="text-sm font-semibold text-gray-900">Welcome to ADVANCE INDIA IT Portal</p>
+                <p className="text-xs text-gray-600 mt-1">Education • Certificates • Results</p>
+              </div>
+
+              {/* Side decorative card */}
+              <div className="absolute bottom-10 left-10 w-72 bg-white/15 backdrop-blur-xl border border-white/25 rounded-3xl px-6 py-5 shadow-2xl">
+                <p className="text-sm text-white font-semibold">Fast & Secure</p>
+                <p className="text-xs text-white/80 mt-1">
+                  Your credentials are verified using Appwrite.
+                </p>
+                <div className="mt-4 flex gap-2">
+                  {[1, 2, 3].map((n) => (
+                    <div
+                      key={n}
+                      className="flex-1 h-2 rounded-full bg-white/20 overflow-hidden"
+                    >
+                      <div className="h-full w-2/3 bg-[#FFD54F] rounded-full" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Decorative dots */}
+              <div className="absolute right-10 top-24 flex flex-col gap-4">
+                <div className="w-3 h-3 rounded-full bg-white/70" />
+                <div className="w-2 h-2 rounded-full bg-white/60" />
+                <div className="w-4 h-4 rounded-full bg-[#FFD54F]/90" />
+              </div>
+            </div>
+          </div>
         </div>
 
+        {/* Decorative Blobs */}
+        <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[#FFD54F]/20 blur-[120px] pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-[#FFD54F]/20 blur-[120px] pointer-events-none" />
       </div>
 
+      {/* Custom Animation */}
+      <style jsx>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        *{ font-family:'Poppins',sans-serif; }
+        img{ user-select:none; -webkit-user-drag:none; }
+        button{ transition:.35s; }
+        button:hover{ transform:translateY(-2px); }
+        input{ transition:.3s; }
+      `}</style>
     </div>
-
   )
 }
+

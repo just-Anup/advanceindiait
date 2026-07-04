@@ -84,3 +84,25 @@ cursor:none !important;
 .btn-secondary {
   @apply bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition;
 }
+
+/* =========================
+   BNMI Admin Luxury Dark UI
+   (used by admin dashboard pages)
+========================= */
+
+.input-clean-dark {
+  @apply w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/40 outline-none backdrop-blur-xl focus:border-[#C9A24B]/70 transition-all;
+}
+
+.btn-primary-dark {
+  @apply rounded-xl border border-[#C9A24B]/60 bg-[#0A1229]/30 px-4 py-3 text-[#FBF9F4] font-[Inter] hover:border-[#C9A24B] hover:shadow-[0_0_20px_rgba(201,162,75,0.25)] transition-all duration-300;
+}
+
+.btn-secondary-dark {
+  @apply rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80 hover:border-[#C9A24B]/50 hover:text-white transition-all duration-300;
+}
+
+.btn-danger-dark {
+  @apply rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80 hover:border-[#C9A24B]/60 hover:text-white transition-all duration-300;
+}
+
