@@ -222,7 +222,7 @@ export default function SubjectPage() {
                   </label>
                 ))}
 
-              </div>
+              </div>  
 
             </div>
           )}
