@@ -7,13 +7,13 @@ import { useRouter } from "next/navigation";
 
 const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
 const COLLECTION_ID = "student_admissions";
-const BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
+const BUCKET_ID = "6986e8a4001925504f6b";
 
 export default function AdmissionList() {
 
   const [students, setStudents] = useState([]);
   const router = useRouter();
-  const [courseMap, setCourseMap] = useState({});
+
 
   useEffect(() => {
 
@@ -30,14 +30,15 @@ export default function AdmissionList() {
       COLLECTION_ID,
       [
         Query.equal("createdById", user.$id),
-        Query.orderDesc("createdAt")
+        Query.orderDesc("createdAt"),
+        Query.limit(500)
 
       ]
     );
 
     setStudents(res.documents);
 
-    loadSemesterCourseNames(res.documents);
+
 
   };
   const loadSemesterCourseNames = async (students) => {
@@ -150,8 +151,10 @@ export default function AdmissionList() {
                   {item.studentName}
                 </td>
 
+              
                 <td className="border p-2">
-                  {courseMap[item.courseName] || item.courseName}
+  {item.courseName}
+
                 </td>
 
                 <td className="border p-2">
