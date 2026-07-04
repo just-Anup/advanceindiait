@@ -84,6 +84,11 @@ const generateATCCode = (state) => {
 export default function FranchiseSignup() {
   const router = useRouter()
 
+  const fieldClass =
+    'bnmi-font-body w-full rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-[#FBF9F4] placeholder-[#D5D8E3]/50 outline-none transition-all duration-300 [color-scheme:dark] hover:border-[#C9A24B]/35 focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/30'
+
+  const optionClass = 'bg-[#0A1229] text-[#FBF9F4]'
+
   const [form, setForm] = useState({
     name: '',
     instituteName: '',
@@ -197,316 +202,295 @@ export default function FranchiseSignup() {
   }
 
   return (
-    <div
-      className="
-        min-h-screen
-        flex
-        items-center
-        justify-center
-        bg-gradient-to-br
-        from-[#0f172a]
-        via-[#394d6e]
-        to-[#020617]
-        p-6
-      "
-    >
-      <form
-        onSubmit={handleSignup}
-        className="
-          w-full
-          max-w-5xl
-          bg-white/10
-          backdrop-blur-lg
-          border
-          border-white/20
-          rounded-3xl
-          shadow-2xl
-          p-10
-          space-y-6
-          text-white
-        "
-      >
-        <h2 className="text-3xl font-bold text-center tracking-wide">
-          Franchise Registration
-        </h2>
+    <section className="relative min-h-screen overflow-hidden bg-[#0A1229] px-4 py-16 sm:px-6">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
-        <p className="text-center text-gray-300 text-sm">
-          Fill in your details to apply for
-          franchise
-        </p>
+        .bnmi-font-display {
+          font-family: 'Playfair Display', Georgia, serif;
+        }
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        .bnmi-font-body {
+          font-family: 'Inter', system-ui, sans-serif;
+        }
+      `}</style>
 
-         
+      <div className="absolute inset-0 bg-[radial-gradient(#C9A24B_1px,transparent_1px)] bg-size-[70px_70px] opacity-[0.03]" />
+      <div className="absolute -top-28 left-1/2 h-162.5 w-162.5 -translate-x-1/2 rounded-full bg-[#C9A24B]/15 blur-[170px]" />
+      <div className="absolute bottom-0 left-0 h-110 w-110 rounded-full bg-linear-to-r from-[#C9A24B]/20 to-transparent blur-[140px]" />
+      <div className="absolute right-0 top-1/3 h-120 w-120 rounded-full bg-linear-to-l from-[#C9A24B]/15 to-transparent blur-[140px]" />
 
-          {/* INSTITUTE */}
-          <input
-            placeholder="Institute Name"
-            className="input"
-            style={{
-              textTransform: 'uppercase',
-            }}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                instituteName:
-                  e.target.value.toUpperCase(),
-              })
-            }
-            required
-          />
+      <div className="relative z-10 mx-auto max-w-6xl">
+        <div className="mb-10 text-center">
+          <div className="bnmi-font-body mb-5 inline-flex items-center rounded-full border border-[#C9A24B]/30 bg-[#C9A24B]/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-[#C9A24B]">
+            Franchise Application
+          </div>
 
-           {/* NAME */}
-          <input
-            placeholder="Owner's Name"
-            className="input"
-            style={{
-              textTransform: 'uppercase',
-            }}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                name:
-                  e.target.value.toUpperCase(),
-              })
-            }
-            required
-          />
+          <h1 className="bnmi-font-display text-4xl font-black leading-tight text-[#FBF9F4] sm:text-6xl">
+            Start Your Premium Institute
+          </h1>
 
+          <p className="bnmi-font-body mx-auto mt-5 max-w-2xl text-base leading-8 text-[#D5D8E3] sm:text-lg">
+            Fill in your details to apply for a BNMI franchise and wait for admin approval.
+          </p>
+        </div>
 
-          {/* EMAIL */}
-          <input
-            type="email"
-            placeholder="Email"
-            className="input"
-            style={{
-              textTransform: 'lowercase',
-            }}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                email:
-                  e.target.value.toLowerCase(),
-              })
-            }
-            required
-          />
+        <form
+          onSubmit={handleSignup}
+          className="group relative overflow-hidden rounded-[40px] border border-white/10 bg-white/5 p-6 shadow-[0_30px_120px_rgba(201,162,75,0.10)] backdrop-blur-2xl transition-all duration-300 hover:border-[#C9A24B]/30 sm:p-10"
+        >
+          <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-[#C9A24B]/10 opacity-70" />
+          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#C9A24B]/10 blur-[100px] transition duration-500 group-hover:bg-[#C9A24B]/15" />
 
-          {/* PASSWORD */}
-          <input
-            type="password"
-            placeholder="Password"
-            className="input"
-            onChange={(e) =>
-              setForm({
-                ...form,
-                password: e.target.value,
-              })
-            }
-            required
-          />
-
-          {/* MOBILE */}
-          <input
-            placeholder="Mobile"
-            className="input"
-            style={{
-              textTransform: 'uppercase',
-            }}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                mobile:
-                  e.target.value.toUpperCase(),
-              })
-            }
-          />
-
-          {/* AMC */}
-          <input
-            placeholder="AMC Code"
-            className="input"
-            style={{
-              textTransform: 'uppercase',
-            }}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                amcCode:
-                  e.target.value.toUpperCase(),
-              })
-            }
-          />
-
-          {/* DESIGNATION */}
-<select
-  className="input text-black border border-gray-300"
-  value={form.designation}
-  onChange={(e) =>
-    setForm({
-      ...form,
-      designation: e.target.value,
-    })
-  }
->
-  <option value="">
-    Select Designation
-  </option>
-
-  <option value="DIRECTOR">Director</option>
-  <option value="EMPLOYEE">Employee</option>
-  <option value="PARTNER">Partner</option>
-  <option value="PROPRIETOR">Proprietor</option>
-  <option value="TRUSTEE">Trustee</option>
-  <option value="OTHER">Other</option>
-</select>
-
-          {/* DOB */}
-          <input
-            type="date"
-            className="input text-black border border-gray-300"
-            onChange={(e) =>
-              setForm({
-                ...form,
-                dob: e.target.value,
-              })
-            }
-          />
-
-          {/* ADDRESS */}
-          <input
-            placeholder="Address"
-            className="input md:col-span-2 text-black border border-gray-300"
-            style={{
-              textTransform: 'uppercase',
-            }}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                address:
-                  e.target.value.toUpperCase(),
-              })
-            }
-          />
-
-          {/* PINCODE */}
-          <input
-            placeholder="Pincode"
-            className="input text-black border border-gray-300"
-            style={{
-              textTransform: 'uppercase',
-            }}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                pincode:
-                  e.target.value.toUpperCase(),
-              })
-            }
-          />
-
-          {/* STATE */}
-          <select
-            value={form.state}
-            className="input text-black border border-gray-300"
-            style={{
-              textTransform: 'uppercase',
-            }}
-            onChange={(e) =>
-              handleStateChange(
-                e.target.value
-              )
-            }
-          >
-            <option value="">
-              Select State
-            </option>
-
-            {Object.keys(
-              statesAndCities
-            ).map((state) => (
-              <option
-                key={state}
-                value={state}
-              >
-                {state}
-              </option>
-            ))}
-          </select>
-
-          {/* CITY */}
-          <select
-            value={form.city}
-            className="w-full p-3 rounded-xl text-black border border-gray-300"
-            style={{
-              textTransform: 'uppercase',
-            }}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                city: e.target.value,
-              })
-            }
-          >
-            <option value="">
-              Select City
-            </option>
-
-            {cities.map((city) => (
-              <option
-                key={city}
-                value={city}
-              >
-                {city}
-              </option>
-            ))}
-
-            <option value="Other">
-              Other
-            </option>
-          </select>
-
-          {/* CUSTOM CITY */}
-          {form.city === 'Other' && (
+          <div className="relative grid grid-cols-1 gap-5 md:grid-cols-2">
             <input
-              placeholder="Enter your city"
-              className="input md:col-span-2"
+              placeholder="Institute Name"
+              className={fieldClass}
               style={{
                 textTransform: 'uppercase',
               }}
-              value={customCity}
               onChange={(e) =>
-                setCustomCity(
-                  e.target.value.toUpperCase()
-                )
+                setForm({
+                  ...form,
+                  instituteName:
+                    e.target.value.toUpperCase(),
+                })
+              }
+              required
+            />
+
+            <input
+              placeholder="Owner's Name"
+              className={fieldClass}
+              style={{
+                textTransform: 'uppercase',
+              }}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  name:
+                    e.target.value.toUpperCase(),
+                })
+              }
+              required
+            />
+
+            <input
+              type="email"
+              placeholder="Email"
+              className={fieldClass}
+              style={{
+                textTransform: 'lowercase',
+              }}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  email:
+                    e.target.value.toLowerCase(),
+                })
+              }
+              required
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              className={fieldClass}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  password: e.target.value,
+                })
+              }
+              required
+            />
+
+            <input
+              placeholder="Mobile"
+              className={fieldClass}
+              style={{
+                textTransform: 'uppercase',
+              }}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  mobile:
+                    e.target.value.toUpperCase(),
+                })
               }
             />
-          )}
-        </div>
 
-        {/* BUTTON */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="
-            w-full
-            py-3
-            rounded-xl
-            font-semibold
-            text-black
-            bg-gradient-to-r
-            from-orange-400
-            to-pink-500
-            hover:opacity-90
-            transition
-            shadow-lg
-          "
-        >
-          {loading
-            ? 'Creating...'
-            : 'Create Account'}
-        </button>
-      </form>
-    </div>
+            <input
+              placeholder="AMC Code"
+              className={fieldClass}
+              style={{
+                textTransform: 'uppercase',
+              }}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  amcCode:
+                    e.target.value.toUpperCase(),
+                })
+              }
+            />
+
+            <select
+              className={fieldClass}
+              value={form.designation}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  designation: e.target.value,
+                })
+              }
+            >
+              <option value="" className={optionClass}>
+                Select Designation
+              </option>
+
+              <option value="DIRECTOR" className={optionClass}>Director</option>
+              <option value="EMPLOYEE" className={optionClass}>Employee</option>
+              <option value="PARTNER" className={optionClass}>Partner</option>
+              <option value="PROPRIETOR" className={optionClass}>Proprietor</option>
+              <option value="TRUSTEE" className={optionClass}>Trustee</option>
+              <option value="OTHER" className={optionClass}>Other</option>
+            </select>
+
+            <input
+              type="date"
+              className={fieldClass}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  dob: e.target.value,
+                })
+              }
+            />
+
+            <input
+              placeholder="Address"
+              className={`${fieldClass} md:col-span-2`}
+              style={{
+                textTransform: 'uppercase',
+              }}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  address:
+                    e.target.value.toUpperCase(),
+                })
+              }
+            />
+
+            <input
+              placeholder="Pincode"
+              className={fieldClass}
+              style={{
+                textTransform: 'uppercase',
+              }}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  pincode:
+                    e.target.value.toUpperCase(),
+                })
+              }
+            />
+
+            <select
+              value={form.state}
+              className={fieldClass}
+              style={{
+                textTransform: 'uppercase',
+              }}
+              onChange={(e) =>
+                handleStateChange(
+                  e.target.value
+                )
+              }
+            >
+              <option value="" className={optionClass}>
+                Select State
+              </option>
+
+              {Object.keys(
+                statesAndCities
+              ).map((state) => (
+                <option
+                  key={state}
+                  value={state}
+                  className={optionClass}
+                >
+                  {state}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={form.city}
+              className={fieldClass}
+              style={{
+                textTransform: 'uppercase',
+              }}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  city: e.target.value,
+                })
+              }
+            >
+              <option value="" className={optionClass}>
+                Select City
+              </option>
+
+              {cities.map((city) => (
+                <option
+                  key={city}
+                  value={city}
+                  className={optionClass}
+                >
+                  {city}
+                </option>
+              ))}
+
+              <option value="Other" className={optionClass}>
+                Other
+              </option>
+            </select>
+
+            {form.city === 'Other' && (
+              <input
+                placeholder="Enter your city"
+                className={`${fieldClass} md:col-span-2`}
+                style={{
+                  textTransform: 'uppercase',
+                }}
+                value={customCity}
+                onChange={(e) =>
+                  setCustomCity(
+                    e.target.value.toUpperCase()
+                  )
+                }
+              />
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`bnmi-font-body relative mt-8 w-full rounded-2xl py-4 font-bold uppercase tracking-[0.18em] text-[#0A1229] shadow-[0_14px_40px_rgba(201,162,75,0.25)] transition-all duration-300 ${
+              loading
+                ? 'cursor-not-allowed bg-[#C9A24B]/50'
+                : 'bg-[#C9A24B] hover:-translate-y-1 hover:bg-[#d4b05a] hover:shadow-[0_20px_55px_rgba(201,162,75,0.35)]'
+            }`}
+          >
+            {loading
+              ? 'Creating...'
+              : 'Create Account'}
+          </button>
+        </form>
+      </div>
+    </section>
   )
 }

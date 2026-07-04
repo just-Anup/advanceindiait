@@ -788,19 +788,61 @@ const getExpiryDate = () => {
   return base;
 };
 
-  if (loading) return <div className="p-10">Loading...</div>
+  const fieldClass =
+    "w-full rounded-2xl border border-white/10 bg-white/5 p-3 text-[#FBF9F4] outline-none transition-all duration-300 placeholder-[#D5D8E3]/50 [color-scheme:dark] hover:border-[#C9A24B]/35 focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/30";
+
+  const labelClass = "mb-2 block text-sm font-medium text-[#D5D8E3]";
+
+  if (loading) return (
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0A1229] p-10 text-[#FBF9F4]">
+      <div className="absolute inset-0 bg-[radial-gradient(#C9A24B_1px,transparent_1px)] bg-size-[70px_70px] opacity-[0.03]" />
+      <div className="absolute h-96 w-96 rounded-full bg-[#C9A24B]/15 blur-[140px]" />
+      <div className="relative rounded-4xl border border-white/10 bg-white/5 px-10 py-8 font-semibold backdrop-blur-2xl">
+        Loading...
+      </div>
+    </div>
+  )
 
   return (
     <>
-  <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+  <main className="relative min-h-screen overflow-hidden bg-[#0A1229] p-4 md:p-6 lg:p-8">
+
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+          .bnmi-font-display {
+            font-family: 'Playfair Display', Georgia, serif;
+          }
+
+          .bnmi-font-body {
+            font-family: 'Inter', system-ui, sans-serif;
+          }
+        `}</style>
+
+        <div className="absolute inset-0 bg-[radial-gradient(#C9A24B_1px,transparent_1px)] bg-size-[70px_70px] opacity-[0.03]" />
+        <div className="absolute -top-28 left-1/2 h-162.5 w-162.5 -translate-x-1/2 rounded-full bg-[#C9A24B]/15 blur-[170px]" />
+        <div className="absolute bottom-0 left-0 h-120 w-120 rounded-full bg-linear-to-r from-[#C9A24B]/20 to-transparent blur-[140px]" />
+        <div className="absolute right-0 top-1/3 h-110 w-110 rounded-full bg-linear-to-l from-[#C9A24B]/15 to-transparent blur-[140px]" />
+
+        <div className="relative z-10 mx-auto max-w-7xl">
 
         {/* Header */}
-        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-6 md:mb-8">
-          Franchise Dashboard
-        </h1>
+        <div className="mb-8">
+          <div className="bnmi-font-body mb-4 inline-flex rounded-full border border-[#C9A24B]/30 bg-[#C9A24B]/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-[#C9A24B]">
+            Admin Console
+          </div>
+
+          <h1 className="bnmi-font-display text-4xl font-black leading-tight text-[#FBF9F4] md:text-5xl">
+            Franchise Dashboard
+          </h1>
+
+          <p className="bnmi-font-body mt-3 max-w-2xl text-base leading-7 text-[#D5D8E3]">
+            Review franchise requests, approvals, wallets, certificates, and institute access from one premium control panel.
+          </p>
+        </div>
 
         {/* Tabs */}
-   <div className="flex flex-wrap gap-3 mb-6">
+   <div className="mb-6 flex flex-wrap gap-3">
          <Tab
   label={`Pending (${
     pending.filter((item) => {
@@ -829,7 +871,7 @@ const getExpiryDate = () => {
             placeholder="Search by name, email, institute..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white border border-gray-200 px-5 py-3 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="bnmi-font-body w-full rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-[#FBF9F4] shadow-[0_10px_60px_rgba(201,162,75,0.08)] outline-none backdrop-blur-2xl transition-all duration-300 placeholder-[#D5D8E3]/50 hover:border-[#C9A24B]/35 focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/30"
           />
         </div>
 
@@ -837,7 +879,7 @@ const getExpiryDate = () => {
         <div className="grid gap-6">
 
           {getCurrentData().length === 0 && (
-            <div className="text-center text-gray-500 py-10">
+            <div className="rounded-4xl border border-white/10 bg-white/5 py-12 text-center text-[#D5D8E3] backdrop-blur-2xl">
               No records found
             </div>
           )}
@@ -845,46 +887,50 @@ const getExpiryDate = () => {
        {getCurrentData().map((req) => (
             <div
               key={req.$id}
-            className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition p-4 md:p-6 flex flex-col lg:flex-row justify-between gap-4 md:gap-6"
+            className="group relative overflow-hidden rounded-4xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_80px_rgba(201,162,75,0.08)] backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:border-[#C9A24B]/35 hover:shadow-[0_24px_100px_rgba(201,162,75,0.14)] md:p-6"
             >
 
-              {/* LEFT */}
-             <div className="flex-1 min-w-[250px] space-y-1 text-sm text-gray-700">
+              <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-[#C9A24B]/10 opacity-60" />
 
-                <h3 className="text-lg font-semibold text-gray-900">
+              <div className="relative flex flex-col justify-between gap-4 md:gap-6 lg:flex-row">
+
+              {/* LEFT */}
+             <div className="min-w-62.5 flex-1 space-y-1 text-sm text-[#D5D8E3]">
+
+                <h3 className="bnmi-font-display text-2xl font-black text-[#FBF9F4]">
                   
                    Institute: {req?.instituteName}
                 </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-  <p><b>Name:</b> {req.name}</p>
-  <p><b>Email:</b> {req.email}</p>
-  <p><b>Password:</b> {req.password}</p>
-  <p><b>Mobile:</b> {req.mobile}</p>
-  <p><b>State:</b> {req.state}</p>
-  <p><b>City:</b> {req.city}</p>
-  <p><b>Pincode:</b> {req.pincode}</p>
-  <p><b>ATC Code:</b> {req.atcCode}</p>
-  <p><b>Address:</b> {req.address}</p>
-  <p><b>Amc Code:</b> {req.amcCode}</p>
+              <div className="bnmi-font-body mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+  <p><b className="text-[#C9A24B]">Name:</b> {req.name}</p>
+  <p><b className="text-[#C9A24B]">Email:</b> {req.email}</p>
+  <p><b className="text-[#C9A24B]">Password:</b> {req.password}</p>
+  <p><b className="text-[#C9A24B]">Mobile:</b> {req.mobile}</p>
+  <p><b className="text-[#C9A24B]">State:</b> {req.state}</p>
+  <p><b className="text-[#C9A24B]">City:</b> {req.city}</p>
+  <p><b className="text-[#C9A24B]">Pincode:</b> {req.pincode}</p>
+  <p><b className="text-[#C9A24B]">ATC Code:</b> {req.atcCode}</p>
+  <p><b className="text-[#C9A24B]">Address:</b> {req.address}</p>
+  <p><b className="text-[#C9A24B]">Amc Code:</b> {req.amcCode}</p>
 </div>
                 {/* Stats */}
                
                <div className="flex flex-wrap gap-4 mt-4">
 
-  <span className="bg-blue-100 text-blue-700 px-5 py-3 rounded-xl text-base font-bold shadow-sm">
+  <span className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-base font-bold text-[#FBF9F4] shadow-sm">
     Admissions: {stats[req.email]?.admissions || 0}
   </span>
 
-  <span className="bg-purple-100 text-purple-700 px-5 py-3 rounded-xl text-base font-bold shadow-sm">
+  <span className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-base font-bold text-[#FBF9F4] shadow-sm">
     Enquiries: {stats[req.email]?.enquiries || 0}
   </span>
 
-  <span className="bg-green-100 text-green-700 px-5 py-3 rounded-xl text-base font-bold shadow-sm">
+  <span className="rounded-2xl border border-[#C9A24B]/30 bg-[#C9A24B]/10 px-5 py-3 text-base font-bold text-[#C9A24B] shadow-sm">
     Wallet: ₹{req.wallet || "0.00"}
   </span>
 
-  <span className="bg-orange-100 text-orange-700 px-5 py-3 rounded-xl text-base font-bold shadow-sm">
+  <span className="rounded-2xl border border-[#C9A24B]/30 bg-[#C9A24B]/10 px-5 py-3 text-base font-bold text-[#C9A24B] shadow-sm">
     Courier: ₹{stats[req.email]?.courier || 0}
   </span>
 
@@ -909,7 +955,7 @@ const getExpiryDate = () => {
                     {req.logo && (
                       <img
                         src={req.logo}
-                      className="h-12 w-12 md:h-14 md:w-14 rounded-lg object-cover border"
+                      className="h-12 w-12 rounded-2xl border border-white/10 object-cover md:h-14 md:w-14"
                       />
                     )}
 
@@ -933,20 +979,23 @@ const getExpiryDate = () => {
 
               </div>
 
+              </div>
+
             </div>
           ))}
 
         </div>
-      </div>
+        </div>
+      </main>
 
       {/* ✅ EDIT MODAL */}
 
       {editing && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A1229]/80 p-4 backdrop-blur-sm">
 
-          <div className="bg-white p-4 md:p-6 w-full max-w-2xl rounded-xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto">
+          <div className="w-full max-w-2xl space-y-6 overflow-y-auto rounded-4xl border border-white/10 bg-[#0A1229]/95 p-4 text-[#FBF9F4] shadow-[0_30px_120px_rgba(201,162,75,0.18)] backdrop-blur-2xl md:p-6 max-h-[90vh]">
 
-            <h2 className="text-2xl font-bold text-center border-b pb-3">
+            <h2 className="bnmi-font-display border-b border-white/10 pb-3 text-center text-3xl font-black text-[#FBF9F4]">
               Edit Franchise Details
             </h2>
 
@@ -955,57 +1004,57 @@ const getExpiryDate = () => {
    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
               <div>
-                <label className="text-sm font-medium">Name</label>
+                <label className={labelClass}>Name</label>
                 <input
                   type="text"
                   value={editData.name || ""}
                   onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium">Email</label>
+                <label className={labelClass}>Email</label>
                 <input
                   type="text"
                   value={editData.email || ""}
                   onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium">Password</label>
+                <label className={labelClass}>Password</label>
                 <input
                   type="text"
                   value={editData.password || ""}
                   onChange={(e) => setEditData({ ...editData, password: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium">Mobile</label>
+                <label className={labelClass}>Mobile</label>
                 <input
                   type="text"
                   value={editData.mobile || ""}
                   onChange={(e) => setEditData({ ...editData, mobile: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Select Plan</label>
+                <label className={labelClass}>Select Plan</label>
                 <select
                   value={editData.plan || ""}
                   onChange={(e) =>
                     setEditData({ ...editData, plan: e.target.value })
                   }
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 >
-                  <option value="">--Select Plan--</option>
+                  <option value="" className="bg-[#0A1229] text-[#FBF9F4]">--Select Plan--</option>
 
                   {plans.map((plan) => (
-                    <option key={plan.$id} value={plan.name}>
+                    <option key={plan.$id} value={plan.name} className="bg-[#0A1229] text-[#FBF9F4]">
                       {plan.name} (₹{plan.amount})
                     </option>
                   ))}
@@ -1018,7 +1067,7 @@ const getExpiryDate = () => {
   onChange={(e) =>
     setEditData({ ...editData, newPlanName: e.target.value })
   }
-  className="w-full border p-3 rounded-lg"
+  className={fieldClass}
 />
 
 <input
@@ -1028,65 +1077,65 @@ const getExpiryDate = () => {
   onChange={(e) =>
     setEditData({ ...editData, newPlanAmount: e.target.value })
   }
-  className="w-full border p-3 rounded-lg mt-2"
+  className={`${fieldClass} mt-2`}
 />
 
               <div>
-                <label className="text-sm font-medium">State</label>
+                <label className={labelClass}>State</label>
                 <input
                   type="text"
                   value={editData.state || ""}
                   onChange={(e) => setEditData({ ...editData, state: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium">City</label>
+                <label className={labelClass}>City</label>
                 <input
                   type="text"
                   value={editData.city || ""}
                   onChange={(e) => setEditData({ ...editData, city: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium">Pincode</label>
+                <label className={labelClass}>Pincode</label>
                 <input
                   type="text"
                   value={editData.pincode || ""}
                   onChange={(e) => setEditData({ ...editData, pincode: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium">Institute</label>
+                <label className={labelClass}>Institute</label>
                 <input
                   type="text"
                   value={editData.instituteName || ""}
                   onChange={(e) => setEditData({ ...editData, instituteName: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium">ATC Code</label>
+                <label className={labelClass}>ATC Code</label>
                 <input
                   type="text"
                   value={editData.atcCode || ""}
                   onChange={(e) => setEditData({ ...editData, atcCode: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 />
               </div>
 
               <div className="col-span-2">
-                <label className="text-sm font-medium">Address</label>
+                <label className={labelClass}>Address</label>
                 <textarea
                   value={editData.address || ""}
                   onChange={(e) => setEditData({ ...editData, address: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                   rows={3}
                 />
               </div>
@@ -1095,37 +1144,37 @@ const getExpiryDate = () => {
 
             {/* -------- FILE UPLOAD SECTION -------- */}
 
-            <div className="border-t pt-4 space-y-3">
+            <div className="space-y-3 border-t border-white/10 pt-4">
 
-              <h3 className="font-semibold text-gray-700">
+              <h3 className="font-semibold text-[#C9A24B]">
                 Upload Documents
               </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
                 <div>
-                  <label className="text-sm">Owner Photo</label>
+                  <label className={labelClass}>Owner Photo</label>
                   <input
                     type="file"
                     accept="image/*"
                   onChange={(e) => setPhotoFile(e.target.files[0])}
 
-                    className="w-full border p-2 rounded-lg"
+                    className={fieldClass}
                   />
                 </div>
 
                 <div>
-                  <label className="text-sm">Logo</label>
+                  <label className={labelClass}>Logo</label>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => setLogoFile(e.target.files[0])}
-                    className="w-full border p-2 rounded-lg"
+                    className={fieldClass}
                   />
                 </div>             
 
                 <div>
-  <label className="text-sm">Certificate Logo</label>
+  <label className={labelClass}>Certificate Logo</label>
 
   <input
     type="file"
@@ -1133,17 +1182,17 @@ const getExpiryDate = () => {
     onChange={(e) =>
       setCertificateLogoFile(e.target.files[0])
     }
-    className="w-full border p-2 rounded-lg"
+    className={fieldClass}
   />
 </div>                    
               
                 <div>
-                  <label className="text-sm">Signature</label>
+                  <label className={labelClass}>Signature</label>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => setSignatureFile(e.target.files[0])}
-                    className="w-full border p-2 rounded-lg"
+                    className={fieldClass}
                   />
                 </div>
 
@@ -1153,25 +1202,25 @@ const getExpiryDate = () => {
 
             {/* -------- DATE SECTION -------- */}
 
-            <div className="border-t pt-4 grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 border-t border-white/10 pt-4">
 
               <div>
-                <label className="text-sm font-medium">Verification Date</label>
+                <label className={labelClass}>Verification Date</label>
                 <input
                   type="date"
                   value={editData.verificationDate || ""}
                   onChange={(e) => setEditData({ ...editData, verificationDate: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium">Expire Date</label>
+                <label className={labelClass}>Expire Date</label>
                 <input
                   type="date"
                   value={editData.expireDate || ""}
                   onChange={(e) => setEditData({ ...editData, expireDate: e.target.value })}
-                  className="w-full border p-3 rounded-lg"
+                  className={fieldClass}
                 />
               </div>
 
@@ -1179,18 +1228,18 @@ const getExpiryDate = () => {
 
             {/* -------- ACTION BUTTONS -------- */}
 
-            <div className="flex justify-end gap-4 pt-4 border-t">
+            <div className="flex justify-end gap-4 border-t border-white/10 pt-4">
 
               <button
                 onClick={() => setEditing(null)}
-                className="px-5 py-2 bg-gray-300 rounded-lg"
+                className="rounded-2xl border border-white/10 px-5 py-2 text-[#D5D8E3] transition hover:border-[#C9A24B]/35 hover:text-[#C9A24B]"
               >
                 Cancel
               </button>
 
               <button
                 onClick={saveEdit}
-                className="px-5 py-2 bg-green-600 text-white rounded-lg"
+                className="rounded-2xl bg-[#C9A24B] px-5 py-2 font-semibold text-[#0A1229] shadow-[0_14px_40px_rgba(201,162,75,0.25)] transition hover:-translate-y-0.5 hover:bg-[#d4b05a]"
               >
                 Save Changes
               </button>
@@ -1204,13 +1253,13 @@ const getExpiryDate = () => {
 
 
       {showIdCard && selectedFranchise && (
-      <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-start overflow-y-auto z-50 p-6">
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[#0A1229]/85 p-6 backdrop-blur-sm">
 
-          <div className="bg-white p-4 md:p-6 relative max-w-full overflow-auto">
+          <div className="relative max-w-full overflow-auto rounded-[28px] border border-white/10 bg-white p-4 shadow-[0_30px_120px_rgba(201,162,75,0.18)] md:p-6">
 
             <button
               onClick={() => setShowIdCard(false)}
-              className="absolute top-2 right-3 text-xl"
+              className="absolute right-3 top-2 z-10 text-xl text-[#0A1229] transition hover:text-[#C9A24B]"
 
             >
               ✖
@@ -1227,44 +1276,44 @@ const getExpiryDate = () => {
               />
               <img
                 src={selectedFranchise?.qrCode}
-                className="absolute top-[555px] left-[125px] w-[100px]"
+                className="absolute top-138.75 left-31.25 w-25"
               />
               {/* ----------- DYNAMIC TEXT ----------- */}
 
               {/* Institute Name (RED CENTER) */}
              {/* Institute Name (RED CENTER) */}
-<div className="absolute top-[470px] left-0 w-full flex justify-center px-20">
-  <h1 className="text-red-600 text-2xl font-bold text-center break-words leading-tight max-w-[650px]">
+<div className="absolute top-117.5 left-0 flex w-full justify-center px-20">
+  <h1 className="max-w-162.5 wrap-break-word text-center text-2xl font-bold leading-tight text-red-600">
     {selectedFranchise?.instituteName}
   </h1>
 </div>
 
               {/* ATC Code */}
-              <div className="absolute top-[590px] left-[304px] font-bold">
+              <div className="absolute top-147.5 left-76 font-bold">
                 ATC Code: {selectedFranchise?.atcCode}
               </div>
 
               {/* Owner Name */}
-              <div className="absolute top-[564px] w-full text-center font-semibold">
+              <div className="absolute top-141 w-full text-center font-semibold">
                 Applicant Name :  {selectedFranchise?.name}
               </div>
 
               {/* Address */}
-              <div className="absolute top-[520px] w-full text-center text-sm px-10">
+              <div className="absolute top-130 w-full px-10 text-center text-sm">
                 {selectedFranchise?.address}{selectedFranchise?.city}, {selectedFranchise?.state} - {selectedFranchise?.pincode}
               </div>
 
-                <div className="absolute bottom-[90px] left-[220px] font-bold">
+                <div className="absolute bottom-22.5 left-55 font-bold">
                 ATC Code: {selectedFranchise?.atcCode}
               </div>
 
               {/* Issue Date */}
-<div className="absolute bottom-[70px] left-[220px] font-semibold">
+<div className="absolute bottom-17.5 left-55 font-semibold">
   Issue Date: {formatDate(getIssueDate())}
 </div>
 
 {/* Expiry Date */}
-<div className="absolute bottom-[50px] left-[220px] font-semibold">
+<div className="absolute bottom-12.5 left-55 font-semibold">
 Expiry Date: {formatDate(getExpiryDate())}
 </div>
 
@@ -1273,7 +1322,7 @@ Expiry Date: {formatDate(getExpiryDate())}
             {/* PRINT BUTTON */}
            <button
   onClick={handleDownload}
-  className="bg-green-600 text-white px-6 py-2 mb-6 ml-4"
+  className="mb-6 ml-4 rounded-2xl bg-[#C9A24B] px-6 py-3 font-semibold text-[#0A1229] shadow-[0_14px_40px_rgba(201,162,75,0.25)] transition hover:bg-[#d4b05a]"
 >
   Download Certificate
 </button>
@@ -1284,13 +1333,13 @@ Expiry Date: {formatDate(getExpiryDate())}
       )}
 
       {showPrint && selectedFranchise && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A1229]/85 p-4 backdrop-blur-sm">
 
-          <div className="bg-white p-6 w-[600px] relative">
+          <div className="relative w-full max-w-150 rounded-4xl border border-white/10 bg-white/5 p-6 text-[#FBF9F4] shadow-[0_30px_120px_rgba(201,162,75,0.18)] backdrop-blur-2xl">
 
             <button
               onClick={() => setShowPrint(false)}
-              className="absolute top-2 right-3 text-xl"
+              className="absolute right-3 top-2 text-xl text-[#D5D8E3] transition hover:text-[#C9A24B]"
             >
               ✖
             </button>
@@ -1320,7 +1369,7 @@ Expiry Date: {formatDate(getExpiryDate())}
 
             <button
               onClick={() => window.print()}
-              className="mt-4 bg-black text-white px-4 py-2"
+              className="mt-4 rounded-2xl bg-[#C9A24B] px-5 py-2 font-semibold text-[#0A1229] shadow-[0_14px_40px_rgba(201,162,75,0.25)] transition hover:bg-[#d4b05a]"
             >
               Print
             </button>
@@ -1339,20 +1388,16 @@ Expiry Date: {formatDate(getExpiryDate())}
 
 function ActionBtn({ label, color, onClick }) {
 
-  const colors = {
-    blue: "from-blue-500 to-cyan-500",
-    green: "from-green-500 to-emerald-500",
-    red: "from-red-500 to-pink-500",
-    yellow: "from-yellow-400 to-orange-500",
-    purple: "from-purple-500 to-indigo-500",
-    indigo: "from-indigo-500 to-purple-600",
-    dark: "from-gray-700 to-gray-900",
-  }
+  const isDanger = color === "red"
 
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 text-sm font-medium text-white rounded-lg bg-gradient-to-r ${colors[color]} shadow hover:scale-105 hover:shadow-lg transition`}
+      className={`rounded-2xl border px-4 py-2 text-sm font-semibold shadow transition-all duration-300 hover:-translate-y-0.5 ${
+        isDanger
+          ? "border-red-400/30 bg-red-500/10 text-red-200 hover:border-red-300/50"
+          : "border-[#C9A24B]/30 bg-[#C9A24B]/10 text-[#C9A24B] hover:border-[#C9A24B]/60 hover:bg-[#C9A24B] hover:text-[#0A1229]"
+      }`}
     >
       {label}
     </button>
@@ -1362,10 +1407,10 @@ function Tab({ label, active, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`px-5 py-2 rounded-full text-sm font-semibold transition
+      className={`rounded-full border px-5 py-2 text-sm font-semibold transition-all duration-300
         ${active
-          ? 'bg-blue-600 text-white shadow'
-          : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-100'}
+          ? 'border-[#C9A24B] bg-[#C9A24B] text-[#0A1229] shadow-[0_14px_40px_rgba(201,162,75,0.25)]'
+          : 'border-white/10 bg-white/5 text-[#D5D8E3] hover:border-[#C9A24B]/35 hover:text-[#C9A24B]'}
       `}
     >
       {label}

@@ -75,26 +75,59 @@ export default function ManageImagesPage() {
   ]
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="max-w-6xl mx-auto">
+    <div className="p-6 bg-[#0A1229] min-h-screen relative overflow-hidden">
 
-        <h1 className="text-2xl font-bold mb-6">Manage Background Images</h1>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+        
+        .bnmi-font-display {
+          font-family: 'Playfair Display', Georgia, serif;
+        }
+        
+        .bnmi-font-body {
+          font-family: 'Inter', system-ui, sans-serif;
+        }
+      `}</style>
+
+      {/* BG GLOW */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[650px] h-[650px] rounded-full opacity-[0.08] blur-[170px] pointer-events-none"
+        style={{
+          background: "radial-gradient(circle,#C9A24B 0%,transparent 70%)"
+        }}
+      />
+
+      {/* GRID */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(#C9A24B 1px, transparent 1px),linear-gradient(90deg,#C9A24B 1px, transparent 1px)",
+          backgroundSize: "70px 70px"
+        }}
+      />
+
+      <div className="max-w-6xl mx-auto relative z-10">
+
+        <h1 className="bnmi-font-display text-4xl font-bold mb-6 text-[#FBF9F4]">Manage Background Images</h1>
 
         <div className="grid md:grid-cols-2 gap-6">
 
           {sections.map(({ label, key }) => (
-            <div key={key} className="bg-white rounded-2xl shadow-md p-4">
+            <div key={key} className="bg-white/5 backdrop-blur-xl rounded-2xl shadow-lg p-6 border border-white/10 hover:border-[#C9A24B]/30 transition-all duration-300">
 
-              <h2 className="text-lg font-semibold mb-3">{label}</h2>
+              <h2 className="bnmi-font-display text-lg font-semibold mb-4 text-[#FBF9F4]">{label}</h2>
 
               {images[key] ? (
-                <img
-                  src={images[key]}
-                  alt={label}
-                  className="w-full h-40 object-contain border rounded-lg mb-3"
-                />
+                <div className="relative overflow-hidden rounded-lg mb-4 group">
+                  <img
+                    src={images[key]}
+                    alt={label}
+                    className="w-full h-40 object-contain border border-white/10 rounded-lg hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-[#C9A24B]/0 group-hover:bg-[#C9A24B]/10 transition duration-300 rounded-lg" />
+                </div>
               ) : (
-                <div className="w-full h-40 flex items-center justify-center border rounded-lg text-gray-400 mb-3">
+                <div className="w-full h-40 flex items-center justify-center border border-white/10 rounded-lg text-[#D5D8E3] mb-4 bg-white/5">
                   No Image
                 </div>
               )}
@@ -117,7 +150,7 @@ export default function ManageImagesPage() {
                 {images[key] && (
                   <button
                     onClick={() => window.open(images[key], '_blank')}
-                    className="flex-1 bg-gray-200 py-2 rounded-lg hover:bg-gray-300"
+                    className="flex-1 bnmi-font-body bg-[#C9A24B] text-[#0A1229] py-2 rounded-lg hover:bg-[#d4b05a] transition-all duration-300 font-medium shadow-[0_10px_30px_rgba(201,162,75,0.25)] hover:shadow-[0_15px_40px_rgba(201,162,75,0.35)]"
                   >
                     Preview
                   </button>

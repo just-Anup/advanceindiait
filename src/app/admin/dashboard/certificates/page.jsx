@@ -729,18 +729,50 @@ verifyUrl,
     return `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${photoId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`;
   };
 
-  if (loading) return <p className="p-10">Loading...</p>;
+  if (loading) return (
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0A1229] p-10 text-[#FBF9F4]">
+      <div className="absolute inset-0 bg-[radial-gradient(#C9A24B_1px,transparent_1px)] bg-size-[70px_70px] opacity-[0.03]" />
+      <div className="absolute h-96 w-96 rounded-full bg-[#C9A24B]/15 blur-[140px]" />
+      <div className="relative rounded-4xl border border-white/10 bg-white/5 px-10 py-8 font-semibold backdrop-blur-2xl">
+        Loading...
+      </div>
+    </div>
+  );
 
  return (
 
-<div className="min-h-screen bg-gray-100 p-4 md:p-6">
+<main className="relative min-h-screen overflow-hidden bg-[#0A1229] p-4 md:p-6 lg:p-8">
+
+    <style>{`
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+      .bnmi-font-display {
+        font-family: 'Playfair Display', Georgia, serif;
+      }
+
+      .bnmi-font-body {
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+    `}</style>
+
+    <div className="absolute inset-0 bg-[radial-gradient(#C9A24B_1px,transparent_1px)] bg-size-[70px_70px] opacity-[0.03]" />
+    <div className="absolute -top-28 left-1/2 h-162.5 w-162.5 -translate-x-1/2 rounded-full bg-[#C9A24B]/15 blur-[170px]" />
+    <div className="absolute bottom-0 left-0 h-120 w-120 rounded-full bg-linear-to-r from-[#C9A24B]/20 to-transparent blur-[140px]" />
+    <div className="absolute right-0 top-1/3 h-110 w-110 rounded-full bg-linear-to-l from-[#C9A24B]/15 to-transparent blur-[140px]" />
+
+  <div className="relative z-10 mx-auto max-w-7xl">
 
     {/* HEADER */}
     <div className="mb-6">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+      <div className="bnmi-font-body mb-4 inline-flex rounded-full border border-[#C9A24B]/30 bg-[#C9A24B]/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-[#C9A24B]">
+        Admin Console
+      </div>
+
+      <h1 className="bnmi-font-display text-4xl font-black leading-tight text-[#FBF9F4] md:text-5xl">
         Certificate Approval Panel
       </h1>
-      <p className="text-gray-500 text-sm">
+
+      <p className="bnmi-font-body mt-3 max-w-2xl text-base leading-7 text-[#D5D8E3]">
         Manage and approve student certificates
       </p>
     </div>
@@ -749,7 +781,7 @@ verifyUrl,
     <div className="flex flex-col gap-5">
 
       {certificates.length === 0 && (
-        <div className="bg-white rounded-xl shadow p-10 text-center text-gray-500">
+        <div className="rounded-4xl border border-white/10 bg-white/5 p-10 text-center text-[#D5D8E3] shadow-[0_18px_80px_rgba(201,162,75,0.08)] backdrop-blur-2xl">
           No certificates found
         </div>
       )}
@@ -761,48 +793,52 @@ verifyUrl,
         return (
           <div
             key={c.$id}
-            className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 md:p-6 flex flex-col lg:flex-row justify-between gap-5"
+            className="group relative overflow-hidden rounded-4xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_80px_rgba(201,162,75,0.08)] backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:border-[#C9A24B]/35 hover:shadow-[0_24px_100px_rgba(201,162,75,0.14)] md:p-6"
           >
 
+            <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-[#C9A24B]/10 opacity-60" />
+
+            <div className="relative flex w-full flex-col justify-between gap-5 lg:flex-row">
+
             {/* LEFT */}
-            <div className="flex-1 min-w-[250px]">
+            <div className="min-w-62.5 flex-1">
 
               <div className="flex items-center gap-4 mb-3">
                 <img
                   src={photoUrl}
-                  className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border"
+                  className="h-14 w-14 rounded-2xl border border-white/10 object-cover shadow-[0_10px_30px_rgba(201,162,75,0.12)] transition duration-500 group-hover:scale-105 md:h-16 md:w-16"
                 />
 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800">
+                  <h3 className="bnmi-font-display text-2xl font-black text-[#FBF9F4]">
                     {c.studentName}
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="bnmi-font-body text-sm text-[#D5D8E3]">
                     {c.course}
                   </p>
                 </div>
               </div>
 
               {/* INFO */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm text-gray-700">
+              <div className="bnmi-font-body grid grid-cols-2 gap-3 text-sm text-[#D5D8E3] md:grid-cols-3">
 
-                <p><b>Marks:</b> {c.marks}</p>
-                <p><b>Grade:</b> {c.grade}</p>
+                <p><b className="text-[#C9A24B]">Marks:</b> {c.marks}</p>
+                <p><b className="text-[#C9A24B]">Grade:</b> {c.grade}</p>
 
                 <p>
-                  <b>Status:</b>{" "}
+                  <b className="text-[#C9A24B]">Status:</b>{" "}
                   {c.status === "pending" && (
-                    <span className="text-yellow-600 font-semibold">
+                    <span className="font-semibold text-[#C9A24B]">
                       Pending
                     </span>
                   )}
                   {c.status === "approved" && (
-                    <span className="text-green-600 font-semibold">
+                    <span className="font-semibold text-emerald-300">
                       Approved
                     </span>
                   )}
                   {c.status === "rejected" && (
-                    <span className="text-red-600 font-semibold">
+                    <span className="font-semibold text-red-300">
                       Rejected
                     </span>
                   )}
@@ -849,6 +885,8 @@ verifyUrl,
 
             </div>
 
+            </div>
+
           </div>
         )
       })}
@@ -856,22 +894,23 @@ verifyUrl,
     </div>
 
   </div>
+
+  </main>
 )
 }
 
 function ActionBtn({ label, color, onClick }) {
 
-  const colors = {
-    blue: "from-blue-500 to-cyan-500",
-    green: "from-green-500 to-emerald-500",
-    red: "from-red-500 to-pink-500",
-    purple: "from-purple-500 to-indigo-500",
-  }
+  const isDanger = color === "red"
 
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 text-sm font-medium text-white rounded-lg bg-gradient-to-r ${colors[color]} shadow hover:scale-105 hover:shadow-lg transition`}
+      className={`rounded-2xl border px-4 py-2 text-sm font-semibold shadow transition-all duration-300 hover:-translate-y-0.5 ${
+        isDanger
+          ? "border-red-400/30 bg-red-500/10 text-red-200 hover:border-red-300/50"
+          : "border-[#C9A24B]/30 bg-[#C9A24B]/10 text-[#C9A24B] hover:border-[#C9A24B]/60 hover:bg-[#C9A24B] hover:text-[#0A1229]"
+      }`}
     >
       {label}
     </button>

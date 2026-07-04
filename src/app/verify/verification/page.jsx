@@ -5,26 +5,29 @@ export const dynamic = "force-dynamic";
 import { useState } from "react"
 import { databases } from "@/lib/appwrite"
 import { Query } from "appwrite"
+import { motion } from "framer-motion"
+import { FiX, FiCheckCircle, FiArrowUpRight } from "react-icons/fi"
 
 const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID
+const BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID
 
 export default function VerifyHome() {
 
   const [activeTab, setActiveTab] = useState("student")
 
   const [atc, setAtc] = useState("")
-  const [username, setUsername] = useState("")   // kept (not used)
-  const [password, setPassword] = useState("")   // kept (not used)
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
 
-  const [certificateNo, setCertificateNo] = useState("") // ✅ added
+  const [certificateNo, setCertificateNo] = useState("")
 
   const [franchise, setFranchise] = useState(null)
   const [student, setStudent] = useState(null)
 
   const [loading, setLoading] = useState(false)
   const [exam, setExam] = useState(null)
-const [franchiseData, setFranchiseData] = useState(null)
-const [showModal, setShowModal] = useState(false)
+  const [franchiseData, setFranchiseData] = useState(null)
+  const [showModal, setShowModal] = useState(false)
 
   // 🔵 ATC VERIFY (UNCHANGED)
   const handleATCSearch = async () => {
@@ -131,239 +134,362 @@ try {
   }
 
   return (
+    <div className="min-h-screen bg-[#0A1229] flex items-center justify-center p-4 relative overflow-hidden">
 
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 flex items-center justify-center p-6">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+        
+        .bnmi-font-display {
+          font-family: 'Playfair Display', Georgia, serif;
+        }
+        
+        .bnmi-font-body {
+          font-family: 'Inter', system-ui, sans-serif;
+        }
+      `}</style>
 
-      <div className="w-full max-w-4xl">
+      {/* BG ELEMENTS */}
+      <div className="absolute inset-0 bg-[radial-gradient(#C9A24B_1px,transparent_1px)] bg-[size:70px_70px] opacity-[0.03]" />
+
+      <div className="absolute -top-20 left-0 h-[500px] w-[500px] rounded-full bg-gradient-to-r from-[#C9A24B]/30 to-transparent blur-[140px]" />
+
+      <div className="absolute bottom-0 right-0 h-[500px] w-[500px] rounded-full bg-gradient-to-l from-[#C9A24B]/20 to-transparent blur-[140px]" />
+
+      {/* MAIN CONTAINER */}
+      <div className="w-full max-w-5xl relative z-10">
 
         {/* HEADER */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800">
-            BNMI Verification Portal
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h1 className="bnmi-font-display text-5xl md:text-6xl font-black text-[#FBF9F4] mb-4">
+            Verification Portal
           </h1>
-          <p className="text-gray-600 mt-2">
-            Verify Franchise & Student Credentials
+          <p className="bnmi-font-body text-lg text-[#D5D8E3]">
+            Verify Your Franchise & Student Credentials
           </p>
-        </div>
+        </motion.div>
 
         {/* CARD */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="bg-white/5 backdrop-blur-2xl rounded-3xl border border-white/10 p-8 md:p-12 shadow-[0_30px_120px_rgba(201,162,75,0.1)]"
+        >
 
           {/* TABS */}
-          <div className="flex mb-6 border-b">
+          <div className="flex gap-2 md:gap-4 mb-10 border-b border-white/10 pb-6">
 
- <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
               onClick={() => setActiveTab("student")}
-              className={`flex-1 py-2 font-semibold ${
+              className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 bnmi-font-body ${
                 activeTab === "student"
-                  ? "border-b-2 border-blue-600 text-blue-600"
-                  : "text-gray-500"
+                  ? "bg-[#C9A24B] text-[#0A1229] shadow-[0_10px_30px_rgba(201,162,75,0.3)]"
+                  : "text-[#D5D8E3] hover:text-[#FBF9F4] hover:border-[#C9A24B]/30"
               }`}
             >
-              Student Verification
-            </button>
+              👤 Student Verification
+            </motion.button>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
               onClick={() => setActiveTab("atc")}
-              className={`flex-1 py-2 font-semibold ${
+              className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 bnmi-font-body ${
                 activeTab === "atc"
-                  ? "border-b-2 border-black text-black"
-                  : "text-gray-500"
+                  ? "bg-[#C9A24B] text-[#0A1229] shadow-[0_10px_30px_rgba(201,162,75,0.3)]"
+                  : "text-[#D5D8E3] hover:text-[#FBF9F4] hover:border-[#C9A24B]/30"
               }`}
             >
-              Franchise Verification
-            </button>
-
-           
+              🏢 Franchise Verification
+            </motion.button>
 
           </div>
 
+          {/* STUDENT TAB */}
           {activeTab === "student" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-5"
+            >
 
-            <div className="space-y-4">
+              <div>
+                <label className="bnmi-font-body text-sm text-[#D5D8E3] block mb-3">
+                  Certificate Number
+                </label>
+                <input
+                  placeholder="Enter Your Certificate Number"
+                  value={certificateNo}
+                  onChange={(e) => setCertificateNo(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-[#FBF9F4] placeholder-[#D5D8E3]/50 focus:outline-none focus:ring-2 focus:ring-[#C9A24B] focus:border-[#C9A24B] hover:border-white/20 transition-all bnmi-font-body"
+                />
+              </div>
 
-              {/* OLD LOGIN KEPT BUT NOT USED */}
-              {/* 
-              <input placeholder="Username" />
-              <input type="password" placeholder="Password" />
-              */}
-
-              {/* ✅ NEW FIELD */}
-              <input
-                placeholder="Enter Certificate Number"
-                value={certificateNo}
-                onChange={(e)=>setCertificateNo(e.target.value)}
-                className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02, y: -2 }}
                 onClick={handleStudentVerify}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+                className="w-full bg-gradient-to-r from-[#C9A24B] to-[#d4b05a] text-[#0A1229] py-4 rounded-xl hover:shadow-[0_15px_40px_rgba(201,162,75,0.35)] font-semibold transition-all duration-300 bnmi-font-body"
               >
                 {loading ? "Verifying..." : "Verify Student"}
-              </button>
+              </motion.button>
 
-            </div>
+            </motion.div>
           )}
 
-
-          {/* CONTENT */}
-
+          {/* FRANCHISE TAB */}
           {activeTab === "atc" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-5"
+            >
 
-            <div className="space-y-4">
+              <div>
+                <label className="bnmi-font-body text-sm text-[#D5D8E3] block mb-3">
+                  ATC Code
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter Your ATC Code"
+                  value={atc}
+                  onChange={(e) => setAtc(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-[#FBF9F4] placeholder-[#D5D8E3]/50 focus:outline-none focus:ring-2 focus:ring-[#C9A24B] focus:border-[#C9A24B] hover:border-white/20 transition-all bnmi-font-body"
+                />
+              </div>
 
-              <input
-                type="text"
-                placeholder="Enter ATC Code"
-                value={atc}
-                onChange={(e)=>setAtc(e.target.value)}
-                className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-              />
-
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02, y: -2 }}
                 onClick={handleATCSearch}
-                className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition"
+                className="w-full bg-gradient-to-r from-[#C9A24B] to-[#d4b05a] text-[#0A1229] py-4 rounded-xl hover:shadow-[0_15px_40px_rgba(201,162,75,0.35)] font-semibold transition-all duration-300 bnmi-font-body"
               >
-                {loading ? "Verifying..." : "Verify ATC"}
-              </button>
+                {loading ? "Verifying..." : "Verify Franchise"}
+              </motion.button>
 
-            </div>
+            </motion.div>
           )}
 
-        </div>
+        </motion.div>
 
-        {/* RESULT SECTION */}
-
+        {/* FRANCHISE RESULT */}
         {franchise && (
-          <div className="mt-6 bg-white p-6 rounded-2xl shadow-lg">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="mt-8 bg-white/5 backdrop-blur-2xl rounded-3xl border border-white/10 p-8 md:p-10 shadow-[0_30px_120px_rgba(201,162,75,0.1)]"
+          >
 
-            <h2 className="text-xl font-bold text-green-600 mb-4 text-center">
-              ✔ Verified Franchise
-            </h2>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#C9A24B]/20 border border-[#C9A24B]/30">
+                <FiCheckCircle className="text-[#C9A24B]" size={24} />
+              </div>
+              <h2 className="bnmi-font-display text-3xl font-bold text-[#C9A24B]">
+                ✓ Verified Franchise
+              </h2>
+            </div>
 
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-              <p><b>Institute:</b> {franchise.instituteName}</p>
-              <p><b>Owner:</b> {franchise.name}</p>
-              <p><b>ATC Code:</b> {franchise.atcCode}</p>
-              <p><b>Email:</b> {franchise.email}</p>
-              <p><b>Mobile:</b> {franchise.mobile}</p>
-              <p><b>City:</b> {franchise.city}</p>
+              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                <p className="bnmi-font-body text-sm text-[#D5D8E3] mb-1">Institute Name</p>
+                <p className="bnmi-font-display text-lg font-bold text-[#FBF9F4]">{franchise.instituteName}</p>
+              </div>
+
+              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                <p className="bnmi-font-body text-sm text-[#D5D8E3] mb-1">Owner Name</p>
+                <p className="bnmi-font-display text-lg font-bold text-[#FBF9F4]">{franchise.name}</p>
+              </div>
+
+              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                <p className="bnmi-font-body text-sm text-[#D5D8E3] mb-1">ATC Code</p>
+                <p className="bnmi-font-display text-lg font-bold text-[#C9A24B]">{franchise.atcCode}</p>
+              </div>
+
+              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                <p className="bnmi-font-body text-sm text-[#D5D8E3] mb-1">Email</p>
+                <p className="bnmi-font-body text-lg text-[#FBF9F4]">{franchise.email}</p>
+              </div>
+
+              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                <p className="bnmi-font-body text-sm text-[#D5D8E3] mb-1">Mobile</p>
+                <p className="bnmi-font-body text-lg text-[#FBF9F4]">{franchise.mobile}</p>
+              </div>
+
+              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                <p className="bnmi-font-body text-sm text-[#D5D8E3] mb-1">City</p>
+                <p className="bnmi-font-body text-lg text-[#FBF9F4]">{franchise.city}</p>
+              </div>
 
             </div>
 
-          </div>
-        )}
-{showModal && student && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
-
-    {/* CARD */}
-    <div className="relative w-[95%] max-w-3xl rounded-3xl p-8 shadow-2xl
-    bg-gradient-to-br from-indigo-100 via-white to-blue-100 border border-gray-200">
-
-      {/* CLOSE */}
-      <button
-        onClick={() => setShowModal(false)}
-        className="absolute top-4 right-5 text-2xl text-gray-500 hover:text-red-500"
-      >
-        ✕
-      </button>
-
-      {/* HEADER */}
-      <div className="text-center mb-6">
-        <h2 className="text-3xl font-extrabold text-green-600">
-          ✔ Verified Student
-        </h2>
-        <p className="text-gray-500 text-sm">
-          Official BNMI Verification
-        </p>
-      </div>
-
-      {/* PROFILE */}
-      <div className="flex flex-col items-center gap-3 mb-6">
-
-        {student.photoId && (
-          <img
-            src={`${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${student.photoId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`}
-            className="w-32 h-32 rounded-full border-4 border-indigo-500 shadow-lg"
-          />
+          </motion.div>
         )}
 
-        <h3 className="text-2xl font-bold text-gray-800">
-          {student.studentName}
-        </h3>
-
-        {/* COURSE */}
-        <span className="bg-indigo-600 text-white px-5 py-1 rounded-full text-sm font-semibold shadow">
-          {student.courseName}
-        </span>
-
       </div>
 
-      {/* 🔵 STUDENT DETAILS */}
-      <div className="bg-white rounded-2xl p-5 shadow-md border mb-5">
+      {/* STUDENT MODAL */}
+      {showModal && student && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          onClick={() => setShowModal(false)}
+        >
 
-        <h3 className="text-lg font-bold text-indigo-600 mb-3 border-b pb-1">
-          Student Details
-        </h3>
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl bg-white/5 backdrop-blur-2xl rounded-3xl border border-white/10 p-8 md:p-12 shadow-[0_50px_150px_rgba(201,162,75,0.2)] relative"
+          >
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            {/* CLOSE BUTTON */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              onClick={() => setShowModal(false)}
+              className="absolute top-6 right-6 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#C9A24B]/30 text-[#D5D8E3] hover:text-[#C9A24B] transition-all"
+            >
+              <FiX size={24} />
+            </motion.button>
 
-          <p><b>Admission Date:</b> {student.admissionDate}</p>
-          <p><b>Duration:</b> {student.duration || "6 Months"}</p>
+            {/* HEADER */}
+            <div className="text-center mb-8">
+              <div className="flex justify-center mb-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#C9A24B]/20 border border-[#C9A24B]/30">
+                  <FiCheckCircle className="text-[#C9A24B]" size={32} />
+                </div>
+              </div>
+              <h2 className="bnmi-font-display text-3xl font-bold text-[#C9A24B] mb-2">
+                Verified Student
+              </h2>
+              <p className="bnmi-font-body text-[#D5D8E3]">Official BNMI Verification Certificate</p>
+            </div>
 
-          <p><b>Certificate No:</b> {student.certificateNo}</p>
-          <p><b>Grade:</b> {exam?.grade || "—"}</p>
+            {/* STUDENT PROFILE */}
+            <div className="text-center mb-10 pb-8 border-b border-white/10">
 
-          <p className="md:col-span-2">
-            <b>Percentage:</b> {exam?.percentage ? `${exam.percentage}%` : "—"}
-          </p>
+              {student.photoId && (
+                <motion.img
+                  whileHover={{ scale: 1.05 }}
+                  src={`${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${student.photoId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`}
+                  className="w-32 h-32 rounded-full border-4 border-[#C9A24B]/30 shadow-lg mx-auto mb-4 object-cover"
+                />
+              )}
 
-        </div>
+              <h3 className="bnmi-font-display text-2xl font-bold text-[#FBF9F4] mb-3">
+                {student.studentName}
+              </h3>
 
-      </div>
+              <div className="inline-block bg-[#C9A24B]/20 border border-[#C9A24B]/30 text-[#C9A24B] px-6 py-2 rounded-full bnmi-font-body font-semibold">
+                {student.courseName}
+              </div>
 
-      {/* 🟣 FRANCHISE DETAILS */}
-      <div className="bg-white rounded-2xl p-5 shadow-md border">
+            </div>
 
-        <h3 className="text-lg font-bold text-purple-600 mb-3 border-b pb-1">
-          Franchise Details
-        </h3>
+            {/* STUDENT DETAILS */}
+            <div className="mb-6">
 
-        {/* LOGO */}
-        {franchiseData?.logo && (
-          <div className="flex justify-center mb-4">
-            <img
-              src={
-                franchiseData.logo.startsWith("http")
-                  ? franchiseData.logo
-                  : `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${franchiseData.logo}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`
-              }
-              className="w-20 h-20 object-contain drop-shadow-md"
-            />
-          </div>
-        )}
+              <h4 className="bnmi-font-display text-lg font-bold text-[#C9A24B] mb-4 flex items-center gap-2">
+                <FiArrowUpRight size={20} />
+                Student Details
+              </h4>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <p><b>Institute:</b> {student.instituteName}</p>
-          <p><b>Email:</b> {franchiseData?.email || "—"}</p>
+                <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                  <p className="bnmi-font-body text-xs text-[#D5D8E3] mb-1">Admission Date</p>
+                  <p className="bnmi-font-body font-semibold text-[#FBF9F4]">{student.admissionDate}</p>
+                </div>
 
-          <p><b>Phone:</b> {franchiseData?.mobile || "—"}</p>
+                <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                  <p className="bnmi-font-body text-xs text-[#D5D8E3] mb-1">Duration</p>
+                  <p className="bnmi-font-body font-semibold text-[#FBF9F4]">{student.duration || "6 Months"}</p>
+                </div>
 
-          <p className="md:col-span-2">
-            <b>Address:</b>{franchiseData?.city} {franchiseData?.address || "Not Available"}
-          </p>
+                <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                  <p className="bnmi-font-body text-xs text-[#D5D8E3] mb-1">Certificate No</p>
+                  <p className="bnmi-font-body font-semibold text-[#C9A24B]">{student.certificateNo}</p>
+                </div>
 
-        </div>
+                <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                  <p className="bnmi-font-body text-xs text-[#D5D8E3] mb-1">Grade</p>
+                  <p className="bnmi-font-body font-semibold text-[#FBF9F4]">{exam?.grade || "—"}</p>
+                </div>
 
-      </div>
+              </div>
 
-    </div>
-  </div>
-)}
-      </div>
+              {exam?.percentage && (
+                <div className="bg-white/5 rounded-2xl p-4 border border-white/10 mt-4">
+                  <p className="bnmi-font-body text-xs text-[#D5D8E3] mb-1">Percentage</p>
+                  <p className="bnmi-font-display text-2xl font-bold text-[#C9A24B]">{exam.percentage}%</p>
+                </div>
+              )}
+
+            </div>
+
+            {/* FRANCHISE DETAILS */}
+            {franchiseData && (
+              <div>
+
+                <h4 className="bnmi-font-display text-lg font-bold text-[#C9A24B] mb-4 flex items-center gap-2">
+                  <FiArrowUpRight size={20} />
+                  Franchise Details
+                </h4>
+
+                {franchiseData?.logo && (
+                  <div className="flex justify-center mb-6">
+                    <motion.img
+                      whileHover={{ scale: 1.05 }}
+                      src={
+                        franchiseData.logo.startsWith("http")
+                          ? franchiseData.logo
+                          : `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${franchiseData.logo}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`
+                      }
+                      className="h-20 object-contain drop-shadow-md"
+                    />
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                  <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <p className="bnmi-font-body text-xs text-[#D5D8E3] mb-1">Institute</p>
+                    <p className="bnmi-font-body font-semibold text-[#FBF9F4]">{student.instituteName}</p>
+                  </div>
+
+                  <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <p className="bnmi-font-body text-xs text-[#D5D8E3] mb-1">Email</p>
+                    <p className="bnmi-font-body font-semibold text-[#FBF9F4]">{franchiseData?.email || "—"}</p>
+                  </div>
+
+                  <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <p className="bnmi-font-body text-xs text-[#D5D8E3] mb-1">Phone</p>
+                    <p className="bnmi-font-body font-semibold text-[#FBF9F4]">{franchiseData?.mobile || "—"}</p>
+                  </div>
+
+                  <div className="bg-white/5 rounded-2xl p-4 border border-white/10 md:col-span-2">
+                    <p className="bnmi-font-body text-xs text-[#D5D8E3] mb-1">Address</p>
+                    <p className="bnmi-font-body font-semibold text-[#FBF9F4]">{franchiseData?.city} {franchiseData?.address || "Not Available"}</p>
+                  </div>
+
+                </div>
+
+              </div>
+            )}
+
+          </motion.div>
+
+        </motion.div>
+      )}
 
     </div>
   )
