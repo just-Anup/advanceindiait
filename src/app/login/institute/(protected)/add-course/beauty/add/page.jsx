@@ -207,23 +207,29 @@ const fetchCourses = async () => {
 
   return (
 
-    <div className="min-h-screen bg-black text-white p-3 sm:p-5 lg:p-10">
+    <div className="min-h-screen bg-[#0A1229] text-[#FBF9F4] p-3 sm:p-5 lg:p-10 relative overflow-hidden">
+      {/* Ambient glow + subtle grid */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(201,162,75,0.18),transparent_45%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:48px_48px]" />
 
-      <div className="bg-[#121212] rounded-xl p-3 sm:p-5 lg:p-6 shadow-lg border border-gray-800">
+      <div className="relative bg-white/5 backdrop-blur rounded-2xl p-3 sm:p-5 lg:p-6 shadow-[0_0_40px_rgba(201,162,75,0.12)] border border-white/10">
+
 
         {/* HEADER */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
 
-          <h2 className="text-lg sm:text-xl font-bold leading-tight">
+          <h2 className="text-lg sm:text-xl font-[Playfair_Display] tracking-wide leading-tight text-[#FBF9F4]">
             ADD COURSE WITH SINGLE SUBJECT
+            <span className="block mt-2 h-[1px] w-24 bg-[#C9A24B]/60" />
           </h2>
 
           <button
             onClick={addCourse}
-            className="bg-orange-500 hover:bg-orange-600 text-black font-semibold px-5 py-2 rounded w-full sm:w-auto"
+            className="bg-[#C9A24B] hover:shadow-[0_0_28px_rgba(201,162,75,0.45)] transition-all text-black font-semibold px-5 py-2 rounded-xl w-full sm:w-auto"
           >
             Add Course
           </button>
+
 
         </div>
 
@@ -233,49 +239,52 @@ const fetchCourses = async () => {
           placeholder="Search Course..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="mb-4 p-3 w-full bg-black border border-gray-700 rounded-lg outline-none focus:border-orange-500 text-sm sm:text-base"
+          className="mb-4 p-3 w-full bg-white/5 border border-white/10 rounded-xl outline-none focus:border-[#C9A24B] text-sm sm:text-base placeholder:text-white/50"
         />
+
 
         {/* TABLE */}
                   <div className="text-green-500 mb-4">
   Courses Found: {courses.length}
 </div>
 
-        <div className="overflow-x-auto rounded-lg border border-gray-800">
+        <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/5">
 
           <table className="w-full min-w-[900px] border-collapse text-xs sm:text-sm">
 
-            <thead className="bg-orange-500 text-black">
+            <thead className="bg-white/5 text-[#C9A24B]">
+
     
-              <tr>
+                  <tr>
 
-                <th className="border border-gray-800 p-2"></th>
+                <th className="border border-white/10 p-2"></th>
 
-                <th className="border border-gray-800 p-2 whitespace-nowrap">
+                <th className="border border-white/10 p-2 whitespace-nowrap font-semibold">
                   Course Code
                 </th>
 
-                <th className="border border-gray-800 p-2 whitespace-nowrap">
+                <th className="border border-white/10 p-2 whitespace-nowrap font-semibold">
                   Course Name
                 </th>
 
-                <th className="border border-gray-800 p-2 whitespace-nowrap">
+                <th className="border border-white/10 p-2 whitespace-nowrap font-semibold">
                   Course Duration
                 </th>
 
-                <th className="border border-gray-800 p-2 whitespace-nowrap">
+                <th className="border border-white/10 p-2 whitespace-nowrap font-semibold">
                   Exam Fees
                 </th>
 
-                <th className="border border-gray-800 p-2 whitespace-nowrap">
+                <th className="border border-white/10 p-2 whitespace-nowrap font-semibold">
                   Course Fee
                 </th>
 
-                <th className="border border-gray-800 p-2 whitespace-nowrap">
+                <th className="border border-white/10 p-2 whitespace-nowrap font-semibold">
                   Minimum Fee
                 </th>
 
               </tr>
+
 
             </thead>
 
@@ -291,17 +300,20 @@ const fetchCourses = async () => {
 
                   <tr
                     key={course.$id}
-                    className="border border-gray-800 hover:bg-[#1a1a1a]"
+                    className="border border-white/10 hover:bg-white/5 transition-colors"
                   >
 
-                    <td className="border border-gray-800 p-2 text-center">
+
+                    <td className="border border-white/10 p-2 text-center">
+
 
                       <input
                         type="checkbox"
                         checked={!!selectedCourses[course.$id]}
                         onChange={() => handleCheck(course)}
-                        className="accent-orange-500 w-4 h-4"
+                        className="accent-[#C9A24B] w-4 h-4"
                       />
+
 
                     </td>
 

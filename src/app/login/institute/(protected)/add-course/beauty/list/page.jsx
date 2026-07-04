@@ -152,9 +152,21 @@ export default function ListBeautyCourses() {
 
   return (
 
-    <div className="min-h-screen bg-black text-white p-3 sm:p-5 lg:p-10">
+    <div className="min-h-screen bg-[#0A1229] text-[#FBF9F4] px-4 md:px-8 py-16 md:py-28 relative overflow-hidden">
+      {/* Subtle grid texture + ambient glow */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-30"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+        }}
+      />
+      <div className="pointer-events-none absolute -top-24 -left-24 w-80 h-80 bg-[#C9A24B]/25 blur-3xl rounded-full" />
+      <div className="pointer-events-none absolute top-1/3 -right-24 w-96 h-96 bg-[#C9A24B]/15 blur-3xl rounded-full" />
 
-      <div className="bg-[#121212] rounded-xl p-3 sm:p-5 lg:p-6 shadow-lg border border-gray-800">
+      <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl p-4 sm:p-6 lg:p-8 shadow-[0_0_60px_rgba(201,162,75,0.10)] border border-white/10">
+
 
         {/* HEADER */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -166,20 +178,24 @@ export default function ListBeautyCourses() {
         </div>
 
         {/* SEARCH */}
-        <input
-          type="text"
-          placeholder="Search Course..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="mb-4 p-3 w-full bg-black border border-gray-700 rounded-lg outline-none focus:border-orange-500 text-sm sm:text-base"
-        />
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Search Course..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full p-3 bg-white/5 border border-white/10 rounded-xl outline-none focus:border-[#C9A24B]/70 text-sm sm:text-base text-[#FBF9F4] placeholder:text-white/40 backdrop-blur-xl transition-all"
+          />
+        </div>
+
 
         {/* TABLE */}
         <div className="overflow-x-auto rounded-lg border border-gray-800">
 
           <table className="w-full min-w-[1000px] border-collapse text-xs sm:text-sm">
 
-            <thead className="bg-orange-500 text-black">
+            <thead className="bg-white/5 text-[#FBF9F4]">
+
 
               <tr>
 

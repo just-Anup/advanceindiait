@@ -101,44 +101,73 @@ export default function ParticipationList() {
 
   return (
 
-    <div className="min-h-screen bg-black text-white p-5 lg:p-10">
+    <div className="min-h-screen bg-[#0A1229] text-[#FBF9F4] px-4 md:px-8 py-16 md:py-28 relative overflow-hidden">
 
-      <div className="max-w-7xl mx-auto">
+      {/* Subtle grid texture + ambient glow */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-30"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+        }}
+      />
 
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      <div className="pointer-events-none absolute -top-24 -left-24 w-80 h-80 bg-[#C9A24B]/25 blur-3xl rounded-full" />
+      <div className="pointer-events-none absolute top-1/3 -right-24 w-96 h-96 bg-[#C9A24B]/15 blur-3xl rounded-full" />
 
-          <h1 className="text-3xl font-bold">
+      <div className="relative max-w-7xl mx-auto">
 
-            Participation Certificates
+        <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
-          </h1>
+          <div>
+
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-wide">
+              Participation Certificates
+            </h1>
+
+            <p className="mt-2 text-sm text-[#FBF9F4]/70">
+              Premium certificate management with gold-accent glass UI.
+            </p>
+
+          </div>
 
           <Link
             href="/login/institute/add-course/beauty_certificate/add"
-            className="bg-orange-500 hover:bg-orange-600 text-black px-5 py-3 rounded-lg font-semibold"
+            className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl font-semibold border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_0_30px_rgba(201,162,75,0.12)] transition-all duration-300 hover:border-[#C9A24B]/80 hover:shadow-[0_0_40px_rgba(201,162,75,0.25)]"
           >
-            + Add Certificate
+            <span className="text-[#C9A24B]">+</span>
+            Add Certificate
           </Link>
 
         </div>
 
-        <input
-          type="text"
-          placeholder="Search Student / Course / Certificate No"
-          value={search}
-          onChange={(e) =>
-            setSearch(
-              e.target.value
-            )
-          }
-          className="w-full mb-6 p-3 rounded-lg bg-[#121212] border border-gray-700"
-        />
+        <div className="mb-8">
+
+          <input
+            type="text"
+            placeholder="Search Student / Course / Certificate No"
+            value={search}
+            onChange={(e) =>
+              setSearch(
+                e.target.value
+              )
+            }
+            className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl outline-none transition-all duration-300 focus:border-[#C9A24B]/70"
+          />
+
+        </div>
 
         {loading ? (
 
           <div className="text-center py-20">
 
-            Loading...
+            <div className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+
+              <span className="h-2.5 w-2.5 rounded-full bg-[#C9A24B] animate-pulse" />
+              <span>Loading...</span>
+
+            </div>
 
           </div>
 
@@ -146,146 +175,151 @@ export default function ParticipationList() {
 
           <div className="overflow-x-auto">
 
-            <table className="w-full border border-gray-800">
+            <div className="min-w-[900px] rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_0_60px_rgba(201,162,75,0.08)]">
 
-              <thead>
+              <table className="w-full">
 
-                <tr className="bg-[#121212]">
+                <thead>
 
-                  <th className="p-3 border border-gray-800">
-                    Sl No
-                  </th>
+                  <tr className="bg-white/5">
 
-                  <th className="p-3 border border-gray-800">
-                    Certificate No
-                  </th>
+                    <th className="p-4 text-left text-sm font-medium text-[#FBF9F4]/80 border-b border-white/10">
+                      Sl No
+                    </th>
 
-                  <th className="p-3 border border-gray-800">
-                    Student Name
-                  </th>
+                    <th className="p-4 text-left text-sm font-medium text-[#FBF9F4]/80 border-b border-white/10">
+                      Certificate No
+                    </th>
 
-                  <th className="p-3 border border-gray-800">
-                    Course Name
-                  </th>
+                    <th className="p-4 text-left text-sm font-medium text-[#FBF9F4]/80 border-b border-white/10">
+                      Student Name
+                    </th>
 
-                  <th className="p-3 border border-gray-800">
-                    Duration
-                  </th>
+                    <th className="p-4 text-left text-sm font-medium text-[#FBF9F4]/80 border-b border-white/10">
+                      Course Name
+                    </th>
 
-                  <th className="p-3 border border-gray-800">
-                    Completion Date
-                  </th>
+                    <th className="p-4 text-left text-sm font-medium text-[#FBF9F4]/80 border-b border-white/10">
+                      Duration
+                    </th>
 
-                  <th className="p-3 border border-gray-800">
-                    Action
-                  </th>
+                    <th className="p-4 text-left text-sm font-medium text-[#FBF9F4]/80 border-b border-white/10">
+                      Completion Date
+                    </th>
 
-                </tr>
-
-              </thead>
-
-              <tbody>
-
-                {filteredCertificates.length === 0 ? (
-
-                  <tr>
-
-                    <td
-                      colSpan="7"
-                      className="text-center p-8"
-                    >
-                      No Certificates Found
-                    </td>
+                    <th className="p-4 text-left text-sm font-medium text-[#FBF9F4]/80 border-b border-white/10">
+                      Action
+                    </th>
 
                   </tr>
 
-                ) : (
+                </thead>
 
-                  filteredCertificates.map(
-                    (item, index) => (
+                <tbody>
 
-                      <tr
-                        key={item.$id}
-                        className="hover:bg-[#1a1a1a]"
+                  {filteredCertificates.length === 0 ? (
+
+                    <tr>
+
+                      <td
+                        colSpan="7"
+                        className="text-center p-10 text-[#FBF9F4]/70"
                       >
+                        No Certificates Found
+                      </td>
 
-                        <td className="p-3 border border-gray-800">
+                    </tr>
 
-                          {index + 1}
+                  ) : (
 
-                        </td>
+                    filteredCertificates.map(
+                      (item, index) => (
 
-                        <td className="p-3 border border-gray-800">
+                        <tr
+                          key={item.$id}
+                          className="transition-all duration-300 hover:bg-white/5 group"
+                        >
 
-                          {item.certificateNo}
+                          <td className="p-4 border-b border-white/10 text-sm text-[#FBF9F4]/90">
 
-                        </td>
+                            {index + 1}
 
-                        <td className="p-3 border border-gray-800">
+                          </td>
 
-                          {item.studentName}
+                          <td className="p-4 border-b border-white/10 text-sm">
 
-                        </td>
+                            {item.certificateNo}
 
-                        <td className="p-3 border border-gray-800">
+                          </td>
 
-                          {item.courseName}
+                          <td className="p-4 border-b border-white/10 text-sm">
 
-                        </td>
+                            {item.studentName}
 
-                        <td className="p-3 border border-gray-800">
+                          </td>
 
-                          {item.courseDuration}
+                          <td className="p-4 border-b border-white/10 text-sm">
 
-                        </td>
+                            {item.courseName}
 
-                        <td className="p-3 border border-gray-800">
+                          </td>
 
-                          {item.dateOfCompletion}
+                          <td className="p-4 border-b border-white/10 text-sm text-[#FBF9F4]/80">
 
-                        </td>
+                            {item.courseDuration}
 
-                        <td className="p-3 border border-gray-800">
+                          </td>
 
-                          <div className="flex gap-2">
-                            <Link
-                              href={`/login/institute/add-course/beauty_certificate/view/${item.certificateNo}`}
-                              className="bg-green-600 px-3 py-2 rounded"
-                              target="_blank"
-                            >
-                              View Certificate
-                            </Link>
+                          <td className="p-4 border-b border-white/10 text-sm text-[#FBF9F4]/80">
 
-                            <Link
-                              href={`/login/institute/add-course/beauty_certificate/marksheet/${item.certificateNo}`}
-                              className="bg-yellow-600 px-3 py-2 rounded"
-                              target="_blank"
-                            >
-                              View Marksheet
-                            </Link>
+                            {item.dateOfCompletion}
 
-                            <a
-                              href={item.verifyUrl}
-                              target="_blank"
-                              className="bg-blue-600 px-3 py-2 rounded"
-                            >
-                              Verify
-                            </a>
+                          </td>
 
-                          </div>
+                          <td className="p-4 border-b border-white/10">
 
-                        </td>
+                            <div className="flex flex-wrap gap-2">
 
-                      </tr>
+                              <Link
+                                href={`/login/institute/add-course/beauty_certificate/view/${item.certificateNo}`}
+                                target="_blank"
+                                className="inline-flex items-center justify-center px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-[#FBF9F4] backdrop-blur-xl transition-all duration-300 hover:border-[#C9A24B]/80 hover:shadow-[0_0_18px_rgba(201,162,75,0.25)]"
+                              >
+                                View Certificate
+                              </Link>
 
+                              <Link
+                                href={`/login/institute/add-course/beauty_certificate/marksheet/${item.certificateNo}`}
+                                target="_blank"
+                                className="inline-flex items-center justify-center px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-[#FBF9F4] backdrop-blur-xl transition-all duration-300 hover:border-[#C9A24B]/80 hover:shadow-[0_0_18px_rgba(201,162,75,0.25)]"
+                              >
+                                View Marksheet
+                              </Link>
+
+                              <a
+                                href={item.verifyUrl}
+                                target="_blank"
+                                className="inline-flex items-center justify-center px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-[#FBF9F4] backdrop-blur-xl transition-all duration-300 hover:border-[#C9A24B]/80 hover:shadow-[0_0_18px_rgba(201,162,75,0.25)]"
+                              >
+                                Verify
+                              </a>
+
+                            </div>
+
+                          </td>
+
+                        </tr>
+
+                      )
                     )
-                  )
 
-                )}
+                  )}
 
-              </tbody>
+                </tbody>
 
-            </table>
+              </table>
+
+            </div>
 
           </div>
 

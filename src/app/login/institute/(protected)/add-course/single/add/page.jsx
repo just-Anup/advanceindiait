@@ -234,22 +234,31 @@ export default function AddCourseSingle() {
 
   return (
 
-    <div className="min-h-screen bg-black text-white p-3 sm:p-5 lg:p-10">
+    <div className="min-h-screen bg-[#0A1229] text-[#FBF9F4] p-3 sm:p-5 lg:p-10 relative overflow-hidden">
 
-      <div className="bg-[#121212] rounded-xl p-3 sm:p-5 lg:p-6 shadow-lg border border-gray-800">
+      {/* Ambient glow + subtle grid texture */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(201,162,75,0.18),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(201,162,75,0.10),transparent_45%),radial-gradient(circle_at_50%_90%,rgba(201,162,75,0.08),transparent_35%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.06] bg-[linear-gradient(to_right,rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.6)_1px,transparent_1px)] bg-[size:60px_60px]" />
+
+      <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl p-3 sm:p-5 lg:p-6 border border-white/10 shadow-[0_0_50px_rgba(201,162,75,0.10)]">
+
 
         {/* HEADER */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
 
-          <h2 className="text-lg sm:text-xl font-bold leading-tight">
-            ADD COURSE WITH SINGLE SUBJECT
+          <h2 className="text-lg sm:text-xl font-bold leading-tight tracking-wide">
+            <span className="font-serif">ADD COURSE</span>{' '}
+            <span className="text-[#C9A24B]">WITH SINGLE SUBJECT</span>
           </h2>
 
           <button
             onClick={addCourse}
-            className="bg-orange-500 hover:bg-orange-600 text-black font-semibold px-5 py-2 rounded w-full sm:w-auto"
+            className="group relative px-6 py-2 rounded-xl font-semibold text-black bg-[#C9A24B] transition-all duration-300 w-full sm:w-auto"
           >
-            Add Course
+            <span className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,0.35),transparent_55%)]" />
+            <span className="relative flex items-center justify-center gap-2">
+              Add Course
+            </span>
           </button>
 
         </div>
@@ -272,25 +281,26 @@ export default function AddCourseSingle() {
 
           <table className="w-full min-w-[900px] border-collapse text-xs sm:text-sm">
 
-            <thead className="bg-orange-500 text-black">
+            <thead className="bg-white/5 text-[#FBF9F4]">
 
-              <tr>
+              <tr className="bg-[linear-gradient(90deg,rgba(201,162,75,0.18),rgba(255,255,255,0.02),rgba(201,162,75,0.10))]">
 
-                <th className="border border-gray-800 p-2"></th>
-                <th className="border border-gray-800 p-2 whitespace-nowrap">Course Code</th>
-                <th className="border border-gray-800 p-2 whitespace-nowrap">Course Name</th>
-                <th className="border border-gray-800 p-2 whitespace-nowrap">Course Duration</th>
-                <th className="border border-gray-800 p-2 whitespace-nowrap">Exam Fees</th>
-                <th className="border border-gray-800 p-2 whitespace-nowrap">Course Fee</th>
-                <th className="border border-gray-800 p-2 whitespace-nowrap">Minimum Fee</th>
+                <th className="border border-white/10 p-2"></th>
+                <th className="border border-white/10 p-2 whitespace-nowrap">Course Code</th>
+                <th className="border border-white/10 p-2 whitespace-nowrap">Course Name</th>
+                <th className="border border-white/10 p-2 whitespace-nowrap">Course Duration</th>
+                <th className="border border-white/10 p-2 whitespace-nowrap">Exam Fees</th>
+                <th className="border border-white/10 p-2 whitespace-nowrap">Course Fee</th>
+                <th className="border border-white/10 p-2 whitespace-nowrap">Minimum Fee</th>
 
               </tr>
 
             </thead>
 
-            <tbody>
+            <tbody className="divide-y divide-white/5">
 
               {courses
+
                 .filter(course =>
                   course.courseName
                     ?.toLowerCase()

@@ -25,7 +25,8 @@ export default function AddParticipation() {
   const [studentName, setStudentName] =
     useState('')
 
-    const [courseName, setCourseName] = useState('')
+  const [courseName, setCourseName] = useState('')
+
 const [courseDuration, setCourseDuration] = useState('')
 const [dateOfCompletion, setDateOfCompletion] = useState('')
 
@@ -36,6 +37,7 @@ const [subjects, setSubjects] = useState("")
 const [objectiveMarks, setObjectiveMarks] = useState("")
 
 const [practicalMarks, setPracticalMarks] = useState("")
+
 
   
 const generateCertificate = async () => {
@@ -350,9 +352,21 @@ await databases.updateDocument(
 
   return (
 
-    <div className="min-h-screen bg-black text-white p-5 lg:p-10">
+    <div className="min-h-screen bg-[#0A1229] text-[#FBF9F4] px-4 md:px-8 py-16 md:py-28 relative overflow-hidden">
+      {/* Subtle grid texture + ambient glow */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-30"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+        }}
+      />
+      <div className="pointer-events-none absolute -top-24 -left-24 w-80 h-80 bg-[#C9A24B]/25 blur-3xl rounded-full" />
+      <div className="pointer-events-none absolute top-1/3 -right-24 w-96 h-96 bg-[#C9A24B]/15 blur-3xl rounded-full" />
 
-      <div className="max-w-4xl mx-auto bg-[#121212] border border-gray-800 rounded-xl p-6">
+      <div className="relative max-w-4xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 sm:p-8 shadow-[0_0_60px_rgba(201,162,75,0.10)]">
+
 
         <div className="flex justify-between items-center mb-6">
 
@@ -366,9 +380,10 @@ await databases.updateDocument(
 
           {/* STUDENT NAME */}
 <div>
-  <label className="block mb-2">
+  <label className="block mb-2 text-sm text-[#FBF9F4]/90">
     Student Name
   </label>
+
 
   <input
     type="text"
@@ -585,17 +600,15 @@ await databases.updateDocument(
 <button
   onClick={generateCertificate}
   disabled={loading}
-  className={`mt-8 px-8 py-3 rounded-lg font-bold ${
+  className={`mt-8 px-8 py-3 rounded-xl font-bold border border-white/10 backdrop-blur-xl transition-all duration-300 shadow-[0_0_30px_rgba(201,162,75,0.15)] ${
     loading
-      ? "bg-gray-700 cursor-not-allowed"
-      : "bg-orange-500 hover:bg-orange-600 text-black"
+      ? "bg-white/5 text-[#FBF9F4] cursor-not-allowed border-white/10"
+      : "bg-white/5 text-[#FBF9F4] hover:border-[#C9A24B]/80 hover:shadow-[0_0_24px_rgba(201,162,75,0.25)]"
   }`}
 >
   {loading
     ? "Generating..."
     : "Generate Certificate"}
-
-   
 </button>
 
       </div>

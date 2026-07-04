@@ -6,6 +6,23 @@ import { databases } from '@/lib/appwrite'
 import { Query } from 'appwrite'
 import * as htmlToImage from "html-to-image"
 
+// Convert an image URL to base64 (used before rendering to canvas)
+const toBase64 = (url) => new Promise((resolve, reject) => {
+  const img = new Image()
+  img.crossOrigin = 'anonymous'
+  img.onload = () => {
+    const canvas = document.createElement('canvas')
+    canvas.width = img.width
+    canvas.height = img.height
+    const ctx = canvas.getContext('2d')
+    ctx.drawImage(img, 0, 0)
+    resolve(canvas.toDataURL('image/png'))
+  }
+  img.onerror = reject
+  img.src = url
+})
+
+
 const DATABASE_ID =
   process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID
 
@@ -22,7 +39,7 @@ export default function ViewMarksheet() {
   const [loading, setLoading] =
     useState(true)
 
-    const downloadMarksheet = async () => {
+  const downloadMarksheet = async () => {
 
   try {
 
@@ -102,12 +119,6 @@ export default function ViewMarksheet() {
 
 }
 
-useEffect(() => {
-
-  fetchCertificate()
-
-}, [])
-
 const fetchCertificate = async () => {
 
   try {
@@ -160,6 +171,17 @@ const fetchCertificate = async () => {
   }
 
 }
+
+
+useEffect(() => {
+
+  fetchCertificate()
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+}, [params.certificateNo])
+
+
 
 if (loading) {
 

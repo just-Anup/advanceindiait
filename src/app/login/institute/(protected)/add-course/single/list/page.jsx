@@ -149,9 +149,13 @@ export default function ListSingleCourses() {
 
   return (
 
-    <div className="min-h-screen bg-black text-white p-3 sm:p-5 lg:p-10">
+    <div className="min-h-screen text-[#FBF9F4] p-3 sm:p-5 lg:p-10 bg-[#0A1229] relative overflow-hidden">
 
-      <div className="bg-[#121212] rounded-xl p-3 sm:p-5 lg:p-6 shadow-lg border border-gray-800">
+      {/* Subtle grid texture + ambient glow */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(201,162,75,0.18),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(201,162,75,0.10),transparent_45%),radial-gradient(circle_at_50%_90%,rgba(201,162,75,0.08),transparent_35%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.06] bg-[linear-gradient(to_right,rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.6)_1px,transparent_1px)] bg-[size:60px_60px]" />
+
+      <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl p-3 sm:p-5 lg:p-6 border border-white/10 shadow-[0_0_40px_rgba(201,162,75,0.06)]">
 
         {/* HEADER */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -172,11 +176,12 @@ export default function ListSingleCourses() {
         />
 
         {/* TABLE */}
-        <div className="overflow-x-auto rounded-lg border border-gray-800">
+        <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/[0.03]">
 
           <table className="w-full min-w-[1000px] border-collapse text-xs sm:text-sm">
 
-            <thead className="bg-orange-500 text-black">
+            <thead className="bg-white/5 text-[#FBF9F4]">
+
 
               <tr>
                 <th className="border border-gray-800 p-2 whitespace-nowrap">Sr</th>
@@ -238,23 +243,26 @@ export default function ListSingleCourses() {
 
                         <button
                           onClick={() => openEdit(course)}
-                          className="bg-orange-500 hover:bg-orange-600 text-black px-3 py-1 rounded text-xs sm:text-sm font-medium"
+                          className="group relative px-3 py-1 rounded text-xs sm:text-sm font-medium border border-white/10 bg-white/5 text-[#FBF9F4] transition-all duration-300 hover:border-[#C9A24B] hover:shadow-[0_0_24px_rgba(201,162,75,0.35)] hover:-translate-y-[1px]"
                         >
-                          Edit
+                          <span className="absolute inset-0 rounded opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_20%_0%,rgba(201,162,75,0.35),transparent_55%)]" />
+                          <span className="relative">Edit</span>
                         </button>
 
                         <button
                           onClick={() => setSelectedCourse(course)}
-                          className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs sm:text-sm font-medium"
+                          className="group relative px-3 py-1 rounded text-xs sm:text-sm font-medium border border-white/10 bg-white/5 text-[#FBF9F4] transition-all duration-300 hover:border-[#C9A24B] hover:shadow-[0_0_24px_rgba(201,162,75,0.25)] hover:-translate-y-[1px]"
                         >
-                          Add Subject
+                          <span className="absolute inset-0 rounded opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_20%_0%,rgba(201,162,75,0.25),transparent_55%)]" />
+                          <span className="relative">Add Subject</span>
                         </button>
 
                         <button
                           onClick={() => deleteCourse(course.$id)}
-                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs sm:text-sm font-medium"
+                          className="group relative px-3 py-1 rounded text-xs sm:text-sm font-medium border border-white/10 bg-white/5 text-[#FBF9F4] transition-all duration-300 hover:border-[#C9A24B] hover:shadow-[0_0_24px_rgba(201,162,75,0.20)] hover:-translate-y-[1px]"
                         >
-                          Delete
+                          <span className="absolute inset-0 rounded opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_20%_0%,rgba(201,162,75,0.25),transparent_55%)]" />
+                          <span className="relative">Delete</span>
                         </button>
 
                       </div>
