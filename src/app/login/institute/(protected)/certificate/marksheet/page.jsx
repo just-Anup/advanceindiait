@@ -285,7 +285,7 @@ export default function PrintMarksheet() {
 
         {/* BG */}
         <img
-          src="/beautymark.jpeg"
+          src="/singlemark.png"
           className="absolute w-full h-full"
         />
 
@@ -309,7 +309,7 @@ export default function PrintMarksheet() {
           <img
             src={qrCode}
             alt="QR Code"
-            className="absolute bottom-[123px] right-[200px] w-[80px] bg-white p-1"
+            className="absolute  top-[240px] right-[50px] w-[90px] bg-white p-1"
           />
         ) : (
           <div className="absolute top-[240px] right-[50px] text-xs">
@@ -338,7 +338,7 @@ export default function PrintMarksheet() {
           {student.course}
         </div>
 
-        <div className="absolute top-[449px] left-[330px] font-bold text-lg">
+        <div className="absolute top-[432px] left-[330px] font-bold text-lg">
           {student.instituteName}
         </div>
 
@@ -528,7 +528,7 @@ export default function PrintMarksheet() {
         </div>
 
         {/* GRADE */}
-        <div
+        {/* <div
           className="absolute font-bold"
           style={{
             top: 572,
@@ -536,8 +536,21 @@ export default function PrintMarksheet() {
           }}
         >
           {getGrade()}
-        </div>
+        </div> */}
 
+
+    <div
+          className="absolute font-bold"
+          style={{
+            top:
+              student?.courseType?.toLowerCase() === "multiple"
+                ? 570 + marksArray.length * 45
+                :  572,
+            left: 780
+          }}
+        >
+          {total}
+        </div>
         {/* SIGNATURE */}
         {franchiseSign && (
           <img

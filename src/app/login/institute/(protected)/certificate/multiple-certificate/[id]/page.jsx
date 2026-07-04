@@ -10,7 +10,7 @@ import { useRef } from "react";
 import { Query } from "appwrite";
 import { useParams } from "next/navigation";
 
-const BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
+const BUCKET_ID = "6986e8a4001925504f6b";
 
 
 
@@ -161,6 +161,9 @@ motherName:
           studentData.courseDuration ||
           "",
 
+          coursePeriod:
+  cert.coursePeriod || "",
+
         grade:
           cert.grade || "",
 
@@ -201,11 +204,12 @@ motherName:
           franchiseData?.name ||
           "Controller",
 
-        franchiseSignature:
-          cert.franchiseSignature ||
-          franchiseData?.signature ||
-          franchiseData?.franchiseSignature ||
-          "",
+         franchiseSignature:
+  franchiseData?.signature ||
+  franchiseData?.franchiseSignature ||
+  cert.franchiseSignature ||
+  "",
+
 
         photoId:
           studentData.photoId || "",
@@ -310,6 +314,198 @@ useEffect(() => {
   checkAdmin();
 
 }, []);
+
+const saveCertificate = async () => {
+  try {
+
+    // -------------------------
+    // 1. UPDATE CERTIFICATE
+    // -------------------------
+
+    await databases.updateDocument(
+      DATABASE_ID,
+      "certificates",
+      id,
+      {
+        studentName: student.studentName,
+        relationType: student.relationType,
+
+        fatherName: student.fatherName,
+        motherName: student.motherName,
+
+        showFatherInCertificate:
+          student.showFatherInCertificate,
+
+        showMotherInCertificate:
+          student.showMotherInCertificate,
+
+        course: student.course,
+
+        duration: student.duration,
+
+        coursePeriod: student.coursePeriod,
+
+        instituteName: student.instituteName,
+
+        city: student.city,
+
+        issueDate: student.issueDate,
+
+        grade: student.grade,
+
+        marks: student.marks,
+      }
+    );
+
+
+
+    // -------------------------
+    // 2. UPDATE STUDENT
+    // -------------------------
+
+    await databases.updateDocument(
+      DATABASE_ID,
+      "student_admissions",
+      student.studentId,
+      {
+
+        studentName: student.studentName,
+
+        relationType: student.relationType,
+
+        fatherName: student.fatherName,
+
+        motherName: student.motherName,
+
+        showFatherInCertificate:
+          student.showFatherInCertificate,
+
+        showMotherInCertificate:
+          student.showMotherInCertificate,
+
+        courseName: student.course,
+
+        duration: student.duration,
+
+        coursePeriod: student.coursePeriod,
+
+        instituteName: student.instituteName,
+
+      }
+    );
+
+
+
+    // -------------------------
+    // 3. UPDATE EXAM RESULT
+    // -------------------------
+
+    const exam = await databases.listDocuments(
+      DATABASE_ID,
+      "exam_results",
+      [
+        Query.equal("studentId", student.studentId)
+      ]
+    );
+
+    await Promise.all(
+
+      exam.documents.map((doc)=>
+
+        databases.updateDocument(
+
+          DATABASE_ID,
+
+          "exam_results",
+
+          doc.$id,
+
+          {
+
+            studentName: student.studentName,
+
+            relationType: student.relationType,
+
+            fatherName: student.fatherName,
+
+            motherName: student.motherName,
+
+            courseName: student.course,
+
+            duration: student.duration,
+
+            coursePeriod: student.coursePeriod,
+
+            instituteName: student.instituteName,
+
+          }
+
+        )
+
+      )
+
+    );
+
+
+
+    // -------------------------
+    // 4. UPDATE SUBJECT RESULT
+    // -------------------------
+
+    const subject = await databases.listDocuments(
+      DATABASE_ID,
+      "student_subject_results",
+      [
+        Query.equal("studentId", student.studentId)
+      ]
+    );
+
+    await Promise.all(
+
+      subject.documents.map((doc)=>
+
+        databases.updateDocument(
+
+          DATABASE_ID,
+          "student_subject_results",
+
+          doc.$id,
+
+          {
+
+            studentName: student.studentName,
+
+            fatherName: student.fatherName,
+
+            motherName: student.motherName,
+
+            course: student.course,
+
+            instituteName: student.instituteName,
+
+          }
+
+        )
+
+      )
+
+    );
+
+
+
+    alert("Updated Successfully");
+
+  }
+
+  catch(err){
+
+    console.log(err);
+
+    alert(err.message);
+
+  }
+
+};
   if (!student) return <p className="p-10">Loading certificate...</p>;
     const handleChange = (field, value) => {
   setStudent((prev) => ({
@@ -394,19 +590,21 @@ useEffect(() => {
 
   const printPage = () => window.print();
 
-  const formatCourseName = (text) => {
-    if (!text) return "";
 
-    const words = text.split(" ");
-    const lines = [];
 
-    for (let i = 0; i < words.length; i += 7) {
-      lines.push(words.slice(i, i + 7).join(" "));
-    }
 
-    return lines;
-  };
-  const courseLines = formatCourseName(student.course);
+  const getGrade = (percent) => {
+  const p = Number(percent);
+
+  if (p >= 85) return "A+";
+  if (p >= 70) return "A";
+  if (p >= 55) return "B";
+  if (p >= 40) return "C";
+
+  return "F";
+};
+
+const grade = getGrade(percentage);
 
   return (
 
@@ -431,6 +629,13 @@ useEffect(() => {
     {editMode ? "Close Edit" : "Edit Certificate"}
   </button>
 
+  <button
+  onClick={saveCertificate}
+  className="bg-green-600 text-white px-5 py-2 rounded"
+>
+  Save Changes
+</button>
+
 </div>
 
 )}
@@ -449,6 +654,17 @@ useEffect(() => {
       placeholder="Student Name"
       className="border p-3 rounded"
     />
+    <select
+  value={student.relationType || "S/O"}
+  onChange={(e) =>
+    handleChange("relationType", e.target.value)
+  }
+  className="border p-3 rounded"
+>
+  <option value="S/O">S/O</option>
+  <option value="D/O">D/O</option>
+  <option value="W/O">W/O</option>
+</select>
 
     <input
       type="text"
@@ -490,6 +706,15 @@ useEffect(() => {
       className="border p-3 rounded"
     />
 
+<input
+  type="text"
+  value={student.coursePeriod || ""}
+  onChange={(e) =>
+    handleChange("coursePeriod", e.target.value)
+  }
+  placeholder="Course Period"
+  className="border p-3 rounded"
+/>
     <input
       type="text"
       value={student.grade || ""}
@@ -555,7 +780,7 @@ useEffect(() => {
       >
 
         {/* TEMPLATE */}
-        <img src="/beautycerti.png" className="absolute w-full h-full" />
+        <img src="/certificate.png" className="absolute w-full h-full" />
 
         {/* LOGO */}
       {student.logo && (
@@ -587,18 +812,18 @@ useEffect(() => {
     </span>
 
     {/* FATHER NAME */}
-    {student.showFatherInCertificate && (
-      <span className="text-3xl font-semibold">
-        {student.relationType || "S/O"} {student.fatherName || ""}
-      </span>
-    )}
+  {String(student.showFatherInCertificate).toLowerCase() === "true" && (
+  <span className="text-3xl font-semibold">
+    {student.relationType} {student.fatherName}
+  </span>
+)}
 
     {/* MOTHER NAME */}
-  {student.showMotherInCertificate && (
-      <span className="text-3xl font-semibold">
-         {student.motherName || ""}
-      </span>
-    )}
+ {String(student.showMotherInCertificate).toLowerCase() === "true" && (
+  <span className="text-3xl font-semibold">
+    {student.relationType} {student.motherName}
+  </span>
+)}
 
   </div>
 
@@ -607,36 +832,39 @@ useEffect(() => {
 
 
        {/* COURSE */}
-        <div
-          className="absolute top-[827px] left-[270px] font-semibold w-[500px] leading-tight"
-        >
-          <div className="flex gap-2">
-            <span className="whitespace-nowrap">Course Name:</span>
-            <span>{courseLines[0]}</span>
-          </div>
-
-          {courseLines.slice(1).map((line, index) => (
-            <div key={index} className="ml-[120px]">
-              {line}
-            </div>
-          ))}
-        </div>
-
-        {/* COURSE DURATION */}
-       
+    {/* COURSE */}
 <div
-  className="absolute left-[270px] font-semibold"
-  style={{
-    top: 827 + (courseLines.length * 20) + 20
-  }}
+  className="absolute top-[827px] left-0 w-full px-16"
 >
-  Course Duration: {student.duration || "N/A"}
+  <div
+    className="text-center font-bold text-[18px] leading-tight"
+    style={{
+      wordBreak: "break-word",
+      overflowWrap: "break-word",
+      whiteSpace: "normal",
+    }}
+  >
+    {student.course || "N/A"}
+  </div>
 </div>
 
+{/* COURSE PERIOD */}
+<div
+  className="absolute top-[848px] left-0 w-full text-center font-semibold"
+>
+  Course Period: {student.duration || "N/A"}
+</div>
+
+{/* COURSE DURATION */}
+<div
+  className="absolute top-[870px] left-0 w-full text-center font-semibold"
+>
+  Course Duration: {student.coursePeriod || "N/A"}
+</div>
         {/* GRADE */}
         <div className="absolute top-[770px] left-[535px] font-bold text-2xl">
-          {student.grade}
-        </div>
+  {grade}
+</div>
 
         {/* MARKS */}
         <div className="absolute top-[770px] left-[660px] font-bold text-2xl">

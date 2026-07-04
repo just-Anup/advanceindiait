@@ -10,7 +10,7 @@ import { useRef } from "react";
 import { useParams } from "next/navigation";
 import { Query } from "appwrite";
 
-const BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
+const BUCKET_ID = "6986e8a4001925504f6b";
 const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
 
 
@@ -147,6 +147,9 @@ useEffect(() => {
           studentData.courseDuration ||
           "",
 
+          coursePeriod:
+  cert.coursePeriod || "",
+
         marks:
           cert.marks || "",
 
@@ -187,10 +190,10 @@ useEffect(() => {
           franchiseData?.name ||
           "Controller",
 
-       franchiseSignature:
-  cert.franchiseSignature ||
+ franchiseSignature:
   franchiseData?.signature ||
   franchiseData?.franchiseSignature ||
+  cert.franchiseSignature ||
   "",
 
         photoId:
@@ -246,15 +249,90 @@ useEffect(() => {
 
 }, []);
 
+const getGrade = (marks) => {
+  const m = Number(marks);
+
+  if (m >= 85) {
+    return {
+      performance: "Excellent",
+      grade: "A+"
+    };
+  }
+
+  if (m >= 70) {
+    return {
+      performance: "Very Good",
+      grade: "A"
+    };
+  }
+
+  if (m >= 55) {
+    return {
+      performance: "Good",
+      grade: "B"
+    };
+  }
+
+  if (m >= 40) {
+    return {
+      performance: "Average",
+      grade: "C"
+    };
+  }
+
+  return {
+    performance: "Fail",
+    grade: "F"
+  };
+};
 
   if (!student) return <p className="p-10">Loading certificate...</p>;
-    const handleChange = (field, value) => {
+  const gradeData = getGrade(student.marks);
+
+const handleChange = (field, value) => {
   setStudent((prev) => ({
     ...prev,
     [field]: value,
   }));
 };
 
+
+const saveCertificate = async () => {
+  try {
+
+    await databases.updateDocument(
+      DATABASE_ID,
+      "certificates",
+      id,
+      {
+        studentName: student.studentName,
+        fatherName: student.fatherName,
+        motherName: student.motherName,
+        course: student.course,
+        duration: student.duration,
+        coursePeriod: student.coursePeriod,
+        grade: student.grade,
+        marks: student.marks,
+        instituteName: student.instituteName,
+        city: student.city,
+        issueDate: student.issueDate,
+        relationType: student.relationType,
+showFatherInCertificate: student.showFatherInCertificate,
+showMotherInCertificate: student.showMotherInCertificate,
+      }
+    );
+
+    alert("Certificate Updated Successfully");
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert(
+      "Update Failed : " + err.message
+    );
+  }
+};
   // ✅ PHOTO
   const photoUrl = student.photoId
     ? `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${student.photoId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`
@@ -386,6 +464,7 @@ const franchiseSign =
 
   const printPage = () => window.print();
 
+
   return (
 
     <div className="p-10">
@@ -402,12 +481,21 @@ const franchiseSign =
 
 <div className="mb-6 flex gap-4">
 
+
+
   <button
     onClick={() => setEditMode(!editMode)}
     className="bg-blue-600 text-white px-5 py-2 rounded"
   >
     {editMode ? "Close Edit" : "Edit Certificate"}
   </button>
+
+  <button
+  onClick={saveCertificate}
+  className="bg-green-600 text-white px-5 py-2 rounded"
+>
+  Save Changes
+</button>
 
 </div>
 
@@ -427,6 +515,18 @@ const franchiseSign =
       placeholder="Student Name"
       className="border p-3 rounded"
     />
+
+    <select
+  value={student.relationType || "S/O"}
+  onChange={(e) =>
+    handleChange("relationType", e.target.value)
+  }
+  className="border p-3 rounded"
+>
+  <option value="S/O">S/O</option>
+  <option value="D/O">D/O</option>
+  <option value="W/O">W/O</option>
+</select>
 
     <input
       type="text"
@@ -467,6 +567,16 @@ const franchiseSign =
       placeholder="Course Duration"
       className="border p-3 rounded"
     />
+
+    <input
+  type="text"
+  value={student.coursePeriod || ""}
+  onChange={(e) =>
+    handleChange("coursePeriod", e.target.value)
+  }
+  placeholder="Course Period"
+  className="border p-3 rounded"
+/>
 
     <input
       type="text"
@@ -533,7 +643,7 @@ const franchiseSign =
       >
 
         {/* TEMPLATE */}
-        <img src="/beautycerti.png" className="absolute w-full h-full" />
+        <img src="/certificate.png" className="absolute w-full h-full" />
 
        
         {/* LOGO */}
@@ -568,19 +678,18 @@ const franchiseSign =
     </span>
 
     {/* FATHER NAME */}
-    {String(student.showFatherInCertificate).toLowerCase() === "true" && (
-      <span className="text-3xl font-semibold">
-        {student.relationType || "S/O"} {student.fatherName || ""}
-      </span>
-    )}
+   {String(student.showFatherInCertificate).toLowerCase() === "true" && (
+  <span className="text-3xl font-semibold">
+    {student.relationType} {student.fatherName}
+  </span>
+)}
 
     {/* MOTHER NAME */}
-    {String(student.showMotherInCertificate).toLowerCase() === "true" && (
-      <span className="text-3xl font-semibold">
-        M/O {student.motherName || ""}
-      </span>
-    )}
-
+ {String(student.showMotherInCertificate).toLowerCase() === "true" && (
+  <span className="text-3xl font-semibold">
+    {student.relationType} {student.motherName}
+  </span>
+)}
   </div>
 
 </div>
@@ -588,21 +697,27 @@ const franchiseSign =
 
         
         {/* COURSE */}
-        <div className="absolute top-[837px] left-[0px] font-bold w-full text-center text-xl">
+        <div className="absolute top-[826px] left-[0px] font-bold w-full text-center text-xl">
   {student.course}
 </div>
 
        {/* COURSE DURATION */}
 <div
-  className="absolute top-[864px] left-[0px] font-semibold w-full text-center text-xl"
+  className="absolute top-[854px] left-[0px] font-semibold w-full text-center text-[15px]"
 >
-  Course Duration: {student.duration || "N/A"}
+  Course Period: {student.duration || "N/A"}
+</div>
+
+<div
+  className="absolute top-[874px] left-[0px] font-semibold w-full text-center text-[15px]"
+>
+   Course Duration: {student.coursePeriod || "N/A"}
 </div>
 
         {/* GRADE */}
-        <div className="absolute top-[770px] left-[535px] font-bold text-2xl">
-          {student.grade}
-        </div>
+       <div className="absolute top-[770px] left-[535px] font-bold text-2xl">
+  {gradeData.grade}
+</div>
 
         {/* MARKS */}
         <div className="absolute top-[770px] left-[660px] font-bold text-2xl">

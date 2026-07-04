@@ -10,8 +10,7 @@ import { useRef } from "react";
 import { useParams } from "next/navigation";
 import { Query } from "appwrite";
 
-const BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
-const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
+const BUCKET_ID = "6986e8a4001925504f6b";
 
 
 
@@ -175,6 +174,11 @@ export default function PrintCertificate() {
           duration:
             cert.duration || "",
 
+            
+          coursePeriod:
+  cert.coursePeriod || "",
+
+
           marks:
             cert.marks || "",
 
@@ -214,10 +218,12 @@ export default function PrintCertificate() {
             franchiseData?.name ||
             "Controller",
 
-          franchiseSignature:
-            cert.franchiseSignature ||
-            franchiseData?.signature ||
-            "",
+         franchiseSignature:
+  franchiseData?.signature ||
+  franchiseData?.franchiseSignature ||
+  cert.franchiseSignature ||
+  "",
+
 
           photoId:
             studentData.photoId || "",
@@ -279,44 +285,42 @@ export default function PrintCertificate() {
 
   if (!student) return <p className="p-10">Loading certificate...</p>;
 
-  const handleChange = async (field, value) => {
+  const handleChange = (field, value) => {
+  setStudent((prev) => ({
+    ...prev,
+    [field]: value,
+  }));
+};
 
-    // ✅ UPDATE UI FIRST
-    setStudent((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    
 
-    try {
+  const saveCertificate = async () => {
+  try {
+    await databases.updateDocument(
+      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
+      "certificates",
+      id,
+      {
+        studentName: student.studentName,
+        fatherName: student.fatherName,
+        motherName: student.motherName,
+        course: student.course,
+        duration: student.duration,
+        coursePeriod: student.coursePeriod,
+        grade: student.grade,
+        marks: student.marks,
+        instituteName: student.instituteName,
+        city: student.city,
+        issueDate: student.issueDate,
+      }
+    );
 
-      // ✅ UPDATE CERTIFICATE DB
-      await databases.updateDocument(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
-        "certificates",
-        id,
-        {
-          [field]: value,
-        }
-      );
-
-      console.log(
-        `UPDATED: ${field}`,
-        value
-      );
-
-    } catch (err) {
-
-      console.log(
-        "DB UPDATE ERROR:",
-        err
-      );
-
-      alert(
-        `Failed to update ${field}`
-      );
-    }
-  };
-
+    alert("Certificate updated successfully");
+  } catch (err) {
+    console.log(err);
+    alert("Update failed");
+  }
+};
 
   // ✅ PHOTO
   const photoUrl = student.photoId
@@ -436,7 +440,18 @@ export default function PrintCertificate() {
 
   const printPage = () => window.print();
 
+const getGrade = (marks) => {
+  const m = Number(marks);
 
+  if (m >= 85) return "A+";
+  if (m >= 70) return "A";
+  if (m >= 55) return "B";
+  if (m >= 40) return "C";
+
+  return "F";
+};
+
+const grade = getGrade(student.marks);
 
   return (
 
@@ -460,6 +475,13 @@ export default function PrintCertificate() {
           >
             {editMode ? "Close Edit" : "Edit Certificate"}
           </button>
+
+          <button
+  onClick={saveCertificate}
+  className="bg-green-600 text-white px-5 py-2 rounded"
+>
+  Save Changes
+</button>
 
         </div>
 
@@ -519,6 +541,16 @@ export default function PrintCertificate() {
             placeholder="Course Duration"
             className="border p-3 rounded"
           />
+
+          <input
+  type="text"
+  value={student.coursePeriod || ""}
+  onChange={(e) =>
+    handleChange("coursePeriod", e.target.value)
+  }
+  placeholder="Course Period"
+  className="border p-3 rounded"
+/>
 
           <input
             type="text"
@@ -586,7 +618,7 @@ export default function PrintCertificate() {
       >
 
         {/* TEMPLATE */}
-        <img src="/certi.jpg.jpeg" className="absolute w-full h-full" />
+        <img src="/certificate.png" className="absolute w-full h-full" />
 
         {/* LOGO */}
         {student.logo && (
@@ -646,22 +678,27 @@ export default function PrintCertificate() {
 
 
         {/* COURSE */}
-        <div className="absolute top-[837px] left-[0px] font-bold w-full text-center text-xl">
+        <div className="absolute top-[827px] left-[0px] font-bold w-full text-center text-xl">
           {student.course}
         </div>
 
         {/* COURSE DURATION */}
-        <div
-          className="absolute top-[864px] left-[0px] w-full text-center font-semibold text-xl whitespace-nowrap"
-        >
-          Course Duration: {student.duration || "N/A"}
-        </div>
+     <div
+  className="absolute top-[854px] left-[0px] font-semibold w-full text-center text-[15px]"
+>
+  Course Period: {student.duration || "N/A"}
+</div>
+
+<div
+  className="absolute top-[874px] left-[0px] font-semibold w-full text-center text-[15px]"
+>
+   Course Duration: {student.coursePeriod || "N/A"}
+</div>
 
         {/* GRADE */}
-        <div className="absolute top-[770px] left-[535px] font-bold text-2xl">
-          {student.grade}
-        </div>
-
+     <div className="absolute top-[770px] left-[535px] font-bold text-2xl">
+  {grade}
+</div>
         {/* MARKS */}
         <div className="absolute top-[770px] left-[660px] font-bold text-2xl">
           {student.marks}.00%

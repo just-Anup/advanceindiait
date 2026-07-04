@@ -6,27 +6,93 @@ import { Query } from "appwrite";
 import QRCode from "qrcode";
 import * as htmlToImage from "html-to-image";
 import { useRef } from "react";
+import { useParams } from "next/navigation";
+
 
 const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
 
 export default function PrintMarksheet() {
+
+    const { id } = useParams();
 
   const [student, setStudent] = useState(null);
   const [marksArray, setMarksArray] = useState([]);
   const [qrCode, setQrCode] = useState("");
 
   const printRef = useRef();
-  // ✅ LOAD STUDENT
-  useEffect(() => {
-    
-    const data = localStorage.getItem("marksheetStudent");
+  
+useEffect(() => {
 
-    if (data) {
-      const parsed = JSON.parse(data);
-      setStudent(parsed);
-      fetchMarks(parsed.studentId);
+  if (!id) return;
+
+  const loadData = async () => {
+
+    try {
+
+      // Certificate
+      const cert = await databases.getDocument(
+        DATABASE_ID,
+        "certificates",
+        id
+      );
+
+      // Student
+      const studentData = await databases.getDocument(
+        DATABASE_ID,
+        "student_admissions",
+        cert.studentId
+      );
+
+      const finalData = {
+        ...studentData,
+        ...cert,
+
+        studentName:
+          cert.studentName ||
+          studentData.studentName ||
+          "",
+
+        fatherName:
+          cert.fatherName ||
+          studentData.fatherName ||
+          "",
+
+        motherName:
+          cert.motherName ||
+          studentData.motherName ||
+          "",
+
+        course:
+          cert.course ||
+          studentData.courseName ||
+          "",
+
+        instituteName:
+          cert.instituteName ||
+          studentData.instituteName ||
+          "",
+
+        marksheetNo:
+          cert.certificateNo || "",
+
+        issueDate:
+          cert.issueDate || ""
+      };
+
+      setStudent(finalData);
+
+      fetchMarks(cert.studentId);
+
+    } catch (err) {
+      console.log(err);
     }
-  }, []);
+
+  };
+
+  loadData();
+
+}, [id]);
+
 
   useEffect(() => {
   const loadImages = async () => {
@@ -79,13 +145,7 @@ export default function PrintMarksheet() {
     if (student) generateQR();
 
   }, [student]);
-  // ✅ AUTO PRINT
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      window.print();
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
+
 
   // ✅ FETCH MARKS
   const fetchMarks = async (studentId) => {
@@ -187,7 +247,7 @@ const rect = node.getBoundingClientRect();
     overflow: "visible"
   }}
 >
-        <img src="/beautymark.png" className="absolute w-full h-full" />
+        <img src="/singlemark.png" className="absolute w-full h-full" />
 
         {/* LOGO */}
       {student.logo && (
@@ -205,14 +265,16 @@ const rect = node.getBoundingClientRect();
         <div className="absolute top-[346px] left-[330px]">{student.fatherName}</div>
         <div className="absolute top-[367px] left-[330px]">{student.surname}</div>
         <div className="absolute top-[388px] left-[330px]">{student.motherName}</div>
-        <div className="absolute top-[410px] left-[330px]">{student.course}</div>
-        <div className="absolute top-[450px] left-[330px]">{student.instituteName}</div>
+        <div className="absolute top-[410px] left-[330px] font-semibold">{student.course}</div>
+        <div className="absolute top-[435px] left-[330px] font-semibold">
+          {student.instituteName}
+        </div>
 
         {/* RIGHT */}
        {/* RIGHT */}
-<div className="absolute top-[330px] left-[680px] text-[13px]">
+{/* <div className="absolute top-[330px] left-[680px] text-[13px]">
   {student.coursePeriod || student.duration || "1 Year"}
-</div>
+</div> */}
 
 <div className="absolute top-[348px] left-[680px]">
   {student.marksheetNo}
@@ -236,7 +298,7 @@ const rect = node.getBoundingClientRect();
     width: "465px",
     position: "absolute",
     fontSize: "15px",
-    lineHeight: "1.7",
+    lineHeight: "1.5",
     wordBreak: "break-word",
     overflowWrap: "break-word",
     whiteSpace: "normal",
@@ -269,11 +331,14 @@ const rect = node.getBoundingClientRect();
         <div className="absolute bottom-[290px] left-[755px] font-bold">
           {total}.00%
         </div>
+         <div className="absolute top-[572px] left-[780px] font-bold">
+          {total}
+        </div>
 
         {/* GRADE */}
-        <div className="absolute top-[572px] left-[780px] font-bold">
+        {/* <div className="absolute top-[572px] left-[780px] font-bold">
           {student.grade}
-        </div>
+        </div> */}
 
         {/* ✅ QR */}
         {qrCode && (

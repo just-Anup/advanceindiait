@@ -8,7 +8,7 @@ import { databases, account } from "@/lib/appwrite";
 import { Query } from "appwrite";
 import { useParams } from "next/navigation";
 
-const BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
+const BUCKET_ID = "6986e8a4001925504f6b";
 
 export default function PrintCertificate() {
 
@@ -198,10 +198,11 @@ useEffect(() => {
           "Controller",
 
         franchiseSignature:
-          cert.franchiseSignature ||
-          franchiseData?.signature ||
-          franchiseData?.franchiseSignature ||
-          "",
+  franchiseData?.signature ||
+  franchiseData?.franchiseSignature ||
+  cert.franchiseSignature ||
+  "",
+
 
         photoId:
           studentData.photoId || "",
