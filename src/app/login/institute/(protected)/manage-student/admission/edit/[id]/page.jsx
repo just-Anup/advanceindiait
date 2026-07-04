@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { databases } from "@/lib/appwrite";
-import { Storage, Client, ID } from "appwrite";
+import { Storage, Client, ID, Query } from "appwrite";
 import { useParams, useRouter } from "next/navigation";
 
 const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
 const COLLECTION_ID = "student_admissions";
-const BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
+const BUCKET_ID = "6986e8a4001925504f6b";
 
 const client = new Client()
   .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT)
@@ -203,6 +203,34 @@ export default function EditStudent() {
         }
       );
 
+      // Update certificate also
+try {
+  const cert = await databases.listDocuments(
+    DATABASE_ID,
+    "certificates",
+    [
+      Query.equal("studentId", id)
+    ]
+  );
+
+  if (cert.documents.length > 0) {
+    await databases.updateDocument(
+      DATABASE_ID,
+      "certificates",
+      cert.documents[0].$id,
+      {
+        relationType: form.relationType,
+        fatherName: form.fatherName,
+        motherName: form.motherName,
+        showFatherInCertificate: form.showFatherInCertificate,
+        showMotherInCertificate: form.showMotherInCertificate
+      }
+    );
+  }
+} catch (err) {
+  console.log("Certificate update failed", err);
+}
+
       alert("Student Updated Successfully");
 
       router.push("/login/institute/manage-student/admission");
@@ -373,7 +401,7 @@ export default function EditStudent() {
             className="border p-3 w-full bg-white"
           />
 
-          <div className="flex items-center gap-2 mt-2">
+          {/* <div className="flex items-center gap-2 mt-2">
 
             <input
               type="checkbox"
@@ -390,7 +418,7 @@ export default function EditStudent() {
               Show in Certificate
             </label>
 
-          </div>
+          </div> */}
 
         </div>
 
@@ -461,29 +489,7 @@ export default function EditStudent() {
           className="border p-3 bg-white"
         />
 
-        <input
-          name="state"
-          value={form.state || ""}
-          placeholder="State"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        <input
-          name="city"
-          value={form.city || ""}
-          placeholder="City"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        <input
-          name="postcode"
-          value={form.postcode || ""}
-          placeholder="Postcode"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
+      
 
         <textarea
           name="address"

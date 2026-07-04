@@ -9,7 +9,7 @@ import * as htmlToImage from "html-to-image";
 
 const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
 const COLLECTION_ID = "student_admissions";
-const BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
+const BUCKET_ID = "6986e8a4001925504f6b";
 
 export default function IDCard() {
 
@@ -178,21 +178,21 @@ export default function IDCard() {
         {/* PHOTO */}
         <img
           src={`${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${student.photoId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`}
-          className="absolute top-[190px] left-[120px] w-[100px] h-[100px] object-cover"
+          className="absolute top-[190px] left-[100px] w-[130px] h-[150px] object-cover rounded-2xl"
         />
 
         {/* STUDENT NAME */}
-        <div className="absolute top-[334px] left-[145px] text-lg">
+        <div className="absolute top-[341px] left-[145px] text-sm font-semibold">
           {student.studentName}
         </div>
 
         {/* COURSE */}
-        <div className="absolute top-[370px] left-[140px] text-xs">
+        <div className="absolute top-[370px] left-[140px] text-xs font-bold">
           {student.courseName}
         </div>
 
         {/* MOBILE */}
-        <div className="absolute top-[400px] left-[150px] text-sm">
+        <div className="absolute top-[400px] left-[150px] text-sm font-bold">
           {student.mobile || ""}
         </div>
 

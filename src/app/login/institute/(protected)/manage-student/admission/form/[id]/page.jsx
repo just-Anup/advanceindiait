@@ -8,7 +8,7 @@ import * as htmlToImage from "html-to-image";
 
 const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
 const COLLECTION_ID = "student_admissions";
-const BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
+const BUCKET_ID = "6986e8a4001925504f6b";
 
 export default function AdmissionForm() {
 
@@ -285,7 +285,7 @@ export default function AdmissionForm() {
 
                 {/* REGISTERED PERSON */}
 
-                <div className="absolute top-[955px] left-[520px] text-lg">
+                <div className="absolute top-[955px] left-[500px] text-lg">
                     {student.createdByName || ""}
                 </div>
 
@@ -300,13 +300,13 @@ export default function AdmissionForm() {
 
                 {/* FRANCHISE EMAIL */}
 
-                <div className="absolute bottom-[80px] text-center w-full text-lg">
+                <div className="absolute bottom-[70px] text-center w-full text-lg">
                     Email: {franchise?.email || ""}
                 </div>
 
                 {/* FRANCHISE ADDRESS */}
 
-                <div className="absolute bottom-[105px]  text-lg text-center w-full">
+                <div className="absolute bottom-[95px]  text-sm text-center w-full px-55">
                     Address: {franchise?.address || ""}, {franchise?.city || ""}, {franchise?.state || ""}
                 </div>
 
