@@ -245,359 +245,319 @@ try {
   };
 
   return (
-
     <form
       onSubmit={handleSubmit}
-      className="p-10 bg-gray-100 min-h-screen"
+      className="min-h-screen bg-[#0A1229] py-28 px-8 relative overflow-hidden"
     >
-
-      <h1 className="text-3xl font-bold mb-8">
-        Edit Student Admission
-      </h1>
-
-      {/* PHOTO + SIGNATURE */}
-
-      <div className="grid grid-cols-2 gap-6 mb-8">
-
-        <div>
-
-          <label className="block font-semibold mb-2">
-            Student Photo
-          </label>
-
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-
-              const file = e.target.files[0];
-
-              setPhoto(file);
-
-              if (file) {
-                setPhotoPreview(URL.createObjectURL(file));
-              }
-
-            }}
-            className="border p-2 w-full bg-white"
-          />
-
-          {photoPreview && (
-            <img
-              src={photoPreview}
-              className="w-28 h-28 object-cover rounded mt-3 border"
-            />
-          )}
-
-        </div>
-
-        <div>
-
-          <label className="block font-semibold mb-2">
-            Signature
-          </label>
-
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-
-              const file = e.target.files[0];
-
-              setSignature(file);
-
-              if (file) {
-                setSignaturePreview(URL.createObjectURL(file));
-              }
-
-            }}
-            className="border p-2 w-full bg-white"
-          />
-
-          {signaturePreview && (
-            <img
-              src={signaturePreview}
-              className="w-28 h-20 object-contain rounded mt-3 border bg-white"
-            />
-          )}
-
-        </div>
-
+      {/* Subtle grid + ambient glow background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 h-[420px] w-[820px] rounded-full bg-[#C9A24B]/10 blur-3xl" />
+        <div className="absolute inset-0 opacity-[0.18] [background-image:linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:56px_56px]" />
       </div>
 
-      {/* FORM */}
+      <div className="relative mx-auto w-full max-w-6xl">
+        <h1 className="font-[Playfair_Display] text-[#FBF9F4] text-4xl md:text-5xl font-semibold mb-8 tracking-wide">
+          Edit Student Admission
+        </h1>
 
-      <div className="grid grid-cols-3 gap-6">
+        {/* Main glass card */}
+        <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 shadow-[0_0_80px_rgba(201,162,75,0.10)] hover:shadow-[0_0_110px_rgba(201,162,75,0.16)] transition-shadow duration-300">
+          {/* PHOTO + SIGNATURE */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <label className="block font-[Inter] text-white/90 font-medium mb-3">
+                Student Photo
+              </label>
 
-        <input
-          name="studentName"
-          value={form.studentName || ""}
-          placeholder="Student Name"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  setPhoto(file);
+                  if (file) setPhotoPreview(URL.createObjectURL(file));
+                }}
+                className="w-full file:rounded-xl file:border file:border-white/10 file:bg-[#0A1229] file:text-[#FBF9F4] file:px-4 file:py-2 file:hover:border-[#C9A24B] file:hover:text-[#FBF9F4] bg-transparent text-[#FBF9F4] px-1"
+              />
 
-        <input
-          name="surname"
-          value={form.surname || ""}
-          placeholder="Surname"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
+              {photoPreview && (
+                <div className="mt-4 relative group overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#C9A24B]/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <img
+                    src={photoPreview}
+                    alt="Student Photo Preview"
+                    className="w-32 h-32 object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+              )}
+            </div>
 
-        <select
-          name="relationType"
-          value={form.relationType || "S/O"}
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        >
-          <option>S/O</option>
-          <option>D/O</option>
-          <option>W/O</option>
-        </select>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <label className="block font-[Inter] text-white/90 font-medium mb-3">
+                Signature
+              </label>
 
-        {/* FATHER */}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  setSignature(file);
+                  if (file) setSignaturePreview(URL.createObjectURL(file));
+                }}
+                className="w-full file:rounded-xl file:border file:border-white/10 file:bg-[#0A1229] file:text-[#FBF9F4] file:px-4 file:py-2 file:hover:border-[#C9A24B] file:hover:text-[#FBF9F4] bg-transparent text-[#FBF9F4] px-1"
+              />
 
-        <div>
-
-          <input
-            name="fatherName"
-            value={form.fatherName || ""}
-            placeholder="Father Name"
-            onChange={handleChange}
-            className="border p-3 w-full bg-white"
-          />
-
-          <div className="flex items-center gap-2 mt-2">
-
-            <input
-              type="checkbox"
-              checked={form.showFatherInCertificate || false}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  showFatherInCertificate: e.target.checked
-                })
-              }
-            />
-
-            <label className="text-sm">
-              Show in Certificate
-            </label>
-
+              {signaturePreview && (
+                <div className="mt-4 relative group overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#C9A24B]/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <img
+                    src={signaturePreview}
+                    alt="Signature Preview"
+                    className="w-32 h-24 object-contain rounded-2xl transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
-        </div>
-
-        {/* MOTHER */}
-
-        <div>
-
-          <input
-            name="motherName"
-            value={form.motherName || ""}
-            placeholder="Mother Name"
-            onChange={handleChange}
-            className="border p-3 w-full bg-white"
-          />
-
-          {/* <div className="flex items-center gap-2 mt-2">
-
+          {/* FORM */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
             <input
-              type="checkbox"
-              checked={form.showMotherInCertificate || false}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  showMotherInCertificate: e.target.checked
-                })
-              }
+              name="studentName"
+              value={form.studentName || ""}
+              placeholder="Student Name"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
             />
 
-            <label className="text-sm">
-              Show in Certificate
-            </label>
+            <input
+              name="surname"
+              value={form.surname || ""}
+              placeholder="Surname"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
 
-          </div> */}
+            <select
+              name="relationType"
+              value={form.relationType || "S/O"}
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            >
+              <option className="bg-[#0A1229]">S/O</option>
+              <option className="bg-[#0A1229]">D/O</option>
+              <option className="bg-[#0A1229]">W/O</option>
+            </select>
 
+            {/* FATHER */}
+            <div className="md:col-span-1">
+              <input
+                name="fatherName"
+                value={form.fatherName || ""}
+                placeholder="Father Name"
+                onChange={handleChange}
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 w-full text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+              />
+
+              <div className="flex items-center gap-2 mt-3">
+                <input
+                  type="checkbox"
+                  className="accent-[#C9A24B]"
+                  checked={form.showFatherInCertificate || false}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      showFatherInCertificate: e.target.checked,
+                    })
+                  }
+                />
+
+                <label className="text-sm text-white/80 font-[Inter]">
+                  Show in Certificate
+                </label>
+              </div>
+            </div>
+
+            {/* MOTHER */}
+            <div className="md:col-span-1">
+              <input
+                name="motherName"
+                value={form.motherName || ""}
+                placeholder="Mother Name"
+                onChange={handleChange}
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 w-full text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+              />
+            </div>
+
+            <input
+              name="mobile"
+              value={form.mobile || ""}
+              placeholder="Mobile"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <input
+              name="altMobile"
+              value={form.altMobile || ""}
+              placeholder="Alternate Mobile"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <input
+              name="email"
+              value={form.email || ""}
+              placeholder="Email"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <input
+              type="date"
+              name="dob"
+              value={form.dob || ""}
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <select
+              name="gender"
+              value={form.gender || ""}
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            >
+              <option value="" className="bg-[#0A1229]">
+                Select Gender
+              </option>
+              <option className="bg-[#0A1229]">Male</option>
+              <option className="bg-[#0A1229]">Female</option>
+            </select>
+
+            <input
+              name="aadhar"
+              value={form.aadhar || ""}
+              placeholder="Aadhar"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <input
+              name="qualification"
+              value={form.qualification || ""}
+              placeholder="Qualification"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <input
+              name="occupation"
+              value={form.occupation || ""}
+              placeholder="Occupation"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <textarea
+              name="address"
+              value={form.address || ""}
+              placeholder="Address"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 col-span-1 md:col-span-3 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <input
+              name="courseName"
+              value={form.courseName || ""}
+              placeholder="Course Name"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <input
+              name="subjects"
+              value={form.subjects || ""}
+              placeholder="Subjects"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <input
+              name="batch"
+              value={form.batch || ""}
+              placeholder="Batch"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            {/* FEES */}
+            <input
+              type="number"
+              value={form.courseFees || 0}
+              placeholder="Course Fees"
+              onChange={(e) => calculateFees(e.target.value, form.discount)}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <input
+              type="number"
+              value={form.discount || 0}
+              placeholder="Discount"
+              onChange={(e) => calculateFees(form.courseFees, e.target.value)}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <input
+              value={form.totalFees || 0}
+              readOnly
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] opacity-90 cursor-not-allowed"
+            />
+
+            <input
+              type="number"
+              value={form.feesReceived || 0}
+              placeholder="Fees Received"
+              onChange={(e) => handleFeesReceived(e.target.value)}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <input
+              value={form.balance || 0}
+              readOnly
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] opacity-90 cursor-not-allowed"
+            />
+
+            <input
+              type="date"
+              name="admissionDate"
+              value={form.admissionDate || ""}
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+
+            <textarea
+              name="remark"
+              value={form.remark || ""}
+              placeholder="Remark"
+              onChange={handleChange}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[#FBF9F4] placeholder:text-white/35 col-span-1 md:col-span-3 outline-none focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20 transition-colors"
+            />
+          </div>
+
+          <div className="mt-10 flex justify-center">
+            <button
+              type="submit"
+              className="relative overflow-hidden rounded-xl border border-white/10 px-10 py-3 font-[Inter] text-[#FBF9F4] transition-all duration-300 hover:border-[#C9A24B] hover:shadow-[0_0_40px_rgba(201,162,75,0.25)] bg-white/5 hover:bg-white/7"
+            >
+              <span className="relative z-10 font-semibold">
+                Update Student
+              </span>
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#C9A24B]/25 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+            </button>
+          </div>
         </div>
-
-        <input
-          name="mobile"
-          value={form.mobile || ""}
-          placeholder="Mobile"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        <input
-          name="altMobile"
-          value={form.altMobile || ""}
-          placeholder="Alternate Mobile"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        <input
-          name="email"
-          value={form.email || ""}
-          placeholder="Email"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        <input
-          type="date"
-          name="dob"
-          value={form.dob || ""}
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        <select
-          name="gender"
-          value={form.gender || ""}
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        >
-          <option value="">Select Gender</option>
-          <option>Male</option>
-          <option>Female</option>
-        </select>
-
-        <input
-          name="aadhar"
-          value={form.aadhar || ""}
-          placeholder="Aadhar"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        <input
-          name="qualification"
-          value={form.qualification || ""}
-          placeholder="Qualification"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        <input
-          name="occupation"
-          value={form.occupation || ""}
-          placeholder="Occupation"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-      
-
-        <textarea
-          name="address"
-          value={form.address || ""}
-          placeholder="Address"
-          onChange={handleChange}
-          className="border p-3 bg-white col-span-3"
-        />
-
-        <input
-          name="courseName"
-          value={form.courseName || ""}
-          placeholder="Course Name"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        <input
-          name="subjects"
-          value={form.subjects || ""}
-          placeholder="Subjects"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        <input
-          name="batch"
-          value={form.batch || ""}
-          placeholder="Batch"
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        {/* FEES */}
-
-        <input
-          type="number"
-          value={form.courseFees || 0}
-          placeholder="Course Fees"
-          onChange={(e) =>
-            calculateFees(e.target.value, form.discount)
-          }
-          className="border p-3 bg-white"
-        />
-
-        <input
-          type="number"
-          value={form.discount || 0}
-          placeholder="Discount"
-          onChange={(e) =>
-            calculateFees(form.courseFees, e.target.value)
-          }
-          className="border p-3 bg-white"
-        />
-
-        <input
-          value={form.totalFees || 0}
-          readOnly
-          className="border p-3 bg-gray-200"
-        />
-
-        <input
-          type="number"
-          value={form.feesReceived || 0}
-          placeholder="Fees Received"
-          onChange={(e) =>
-            handleFeesReceived(e.target.value)
-          }
-          className="border p-3 bg-white"
-        />
-
-        <input
-          value={form.balance || 0}
-          readOnly
-          className="border p-3 bg-gray-200"
-        />
-
-        <input
-          type="date"
-          name="admissionDate"
-          value={form.admissionDate || ""}
-          onChange={handleChange}
-          className="border p-3 bg-white"
-        />
-
-        <textarea
-          name="remark"
-          value={form.remark || ""}
-          placeholder="Remark"
-          onChange={handleChange}
-          className="border p-3 bg-white col-span-3"
-        />
-
       </div>
-
-      <div className="mt-8 flex justify-center">
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-8 py-3 rounded-lg"
-        >
-          Update Student
-        </button>
-
-      </div>
-
     </form>
-
   );
-
 }

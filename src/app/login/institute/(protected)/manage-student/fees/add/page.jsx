@@ -107,126 +107,158 @@ export default function AddPayment() {
 
   return (
 
-    <div className="p-10 bg-gray-100 min-h-screen">
+    <div className="min-h-screen bg-[#0A1229] text-[#FBF9F4] relative overflow-hidden">
+      {/* Subtle grid texture + ambient glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+          opacity: 0.22,
+        }}
+      />
 
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-96 w-[900px] rounded-full blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle at center, rgba(201,162,75,0.25), rgba(201,162,75,0.06) 45%, rgba(201,162,75,0) 70%)",
+        }}
+      />
 
-        <h2 className="text-2xl font-bold mb-8 border-b pb-4">
-          Student Payment Details
-        </h2>
+      <div className="relative max-w-4xl mx-auto py-28 px-8">
+        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_0_0_1px_rgba(255,255,255,0.03)] overflow-hidden">
+          {/* Gold highlight edge */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A24B] to-transparent opacity-60"
+          />
+          <div className="p-8 sm:p-10 relative">
+            <h2 className="font-[Playfair_Display] text-3xl font-medium tracking-wide mb-8 pb-4 border-b border-white/10">
+              Student Payment Details
+            </h2>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+              {/* Student */}
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold mb-2 text-white/90">
+                  Select Student &amp; Course
+                </label>
 
-          {/* Student */}
-          <div className="flex flex-col">
-            <label className="font-semibold mb-1">
-              Select Student & Course
-            </label>
+                <select
+                  onChange={(e) => handleAdmissionSelect(e.target.value)}
+                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[#FBF9F4] placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-[#C9A24B]/70 transition-all duration-200"
+                  required
+                >
+                  <option value="">Select Student</option>
 
-            <select
-              onChange={(e) => handleAdmissionSelect(e.target.value)}
-              className="border rounded-md p-2"
-              required
-            >
-              <option value="">Select Student</option>
+                  {admissions.map((item) => (
+                    <option key={item.$id} value={item.$id}>
+                      {item.studentName} - {item.course}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-              {admissions.map((item) => (
-                <option key={item.$id} value={item.$id}>
-                  {item.studentName} - {item.course}
-                </option>
-              ))}
-            </select>
+              {/* Amount */}
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold mb-2 text-white/90">
+                  Payment Amount
+                </label>
+
+                <input
+                  type="number"
+                  onChange={(e) =>
+                    setForm({ ...form, paymentAmount: e.target.value })
+                  }
+                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[#FBF9F4] placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-[#C9A24B]/70 transition-all duration-200"
+                  required
+                />
+              </div>
+
+              {/* Mode */}
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold mb-2 text-white/90">
+                  Payment Mode
+                </label>
+
+                <select
+                  onChange={(e) =>
+                    setForm({ ...form, paymentMode: e.target.value })
+                  }
+                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[#FBF9F4] placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-[#C9A24B]/70 transition-all duration-200"
+                  required
+                >
+                  <option value="">Select Mode</option>
+                  <option>Cash</option>
+                  <option>UPI</option>
+                  <option>Bank Transfer</option>
+                </select>
+              </div>
+
+              {/* Notes */}
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold mb-2 text-white/90">
+                  Notes
+                </label>
+
+                <input
+                  type="text"
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[#FBF9F4] placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-[#C9A24B]/70 transition-all duration-200"
+                />
+              </div>
+            </form>
+
+            {/* Summary */}
+            {selectedAdmission && (
+              <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-5">
+                <div className="flex flex-col gap-2">
+                  <p className="text-white/90">
+                    <span className="font-semibold text-[#FBF9F4]">Total Course Fees :</span>{" "}
+                    ₹ {selectedAdmission.totalFees}
+                  </p>
+
+                  <p className="text-white/90">
+                    <span className="font-semibold text-[#FBF9F4]">Already Paid :</span>{" "}
+                    ₹ {totalPaid}
+                  </p>
+
+                  <p className="pt-1 text-[#C9A24B] font-semibold">
+                    Remaining Balance : ₹ {balance}
+                  </p>
+                </div>
+
+                {/* subtle divider glow */}
+                <div
+                  aria-hidden="true"
+                  className="mt-4 h-[1px] bg-gradient-to-r from-transparent via-[#C9A24B]/40 to-transparent"
+                />
+              </div>
+            )}
+
+            <div className="flex gap-4 mt-8 flex-wrap">
+              <button
+                onClick={handleSubmit}
+                className="group inline-flex items-center justify-center gap-2 rounded-2xl px-7 py-3 border border-[#C9A24B] bg-[#C9A24B]/10 text-[#FBF9F4] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#C9A24B] hover:text-[#0A1229] hover:shadow-[0_0_26px_rgba(201,162,75,0.35)] focus:outline-none focus:ring-2 focus:ring-[#C9A24B]/60"
+              >
+                <span className="font-semibold">Add Payment</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => router.back()}
+                className="inline-flex items-center justify-center rounded-2xl px-7 py-3 border border-white/10 bg-white/5 text-[#FBF9F4] transition-all duration-200 hover:-translate-y-[1px] hover:border-[#C9A24B] hover:shadow-[0_0_20px_rgba(201,162,75,0.18)] focus:outline-none focus:ring-2 focus:ring-[#C9A24B]/40"
+              >
+                <span className="font-semibold">Cancel</span>
+              </button>
+            </div>
           </div>
-
-          {/* Amount */}
-          <div className="flex flex-col">
-            <label className="font-semibold mb-1">
-              Payment Amount
-            </label>
-
-            <input
-              type="number"
-              onChange={(e) => setForm({ ...form, paymentAmount: e.target.value })}
-              className="border rounded-md p-2"
-              required
-            />
-          </div>
-
-          {/* Mode */}
-          <div className="flex flex-col">
-            <label className="font-semibold mb-1">
-              Payment Mode
-            </label>
-
-            <select
-              onChange={(e) => setForm({ ...form, paymentMode: e.target.value })}
-              className="border rounded-md p-2"
-              required
-            >
-              <option value="">Select Mode</option>
-              <option>Cash</option>
-              <option>UPI</option>
-              <option>Bank Transfer</option>
-            </select>
-          </div>
-
-          {/* Notes */}
-          <div className="flex flex-col">
-            <label className="font-semibold mb-1">
-              Notes
-            </label>
-
-            <input
-              type="text"
-              onChange={(e) => setForm({ ...form, notes: e.target.value })}
-              className="border rounded-md p-2"
-            />
-          </div>
-
-        </form>
-
-        {/* Summary */}
-        {selectedAdmission && (
-
-          <div className="mt-6 bg-gray-50 p-4 rounded-lg border">
-
-            <p>
-              <strong>Total Course Fees :</strong> ₹ {selectedAdmission.totalFees}
-            </p>
-
-            <p>
-              <strong>Already Paid :</strong> ₹ {totalPaid}
-            </p>
-
-            <p className="text-red-600 font-bold">
-              Remaining Balance : ₹ {balance}
-            </p>
-
-          </div>
-
-        )}
-
-        <div className="flex gap-4 mt-8">
-
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
-          >
-            Add Payment
-          </button>
-
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="bg-red-500 text-white px-6 py-2 rounded-md"
-          >
-            Cancel
-          </button>
-
         </div>
-
       </div>
-
     </div>
 
   );

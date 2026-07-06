@@ -36,10 +36,10 @@ export default function ReAdmission() {
     admissionDate: ""
   });
 
- useEffect(() => {
-  fetchStudents();
-  fetchAllCourses();
-}, []);
+  useEffect(() => {
+    fetchStudents();
+    fetchAllCourses();
+  }, []);
 
 
   const fetchStudents = async () => {
@@ -58,13 +58,11 @@ export default function ReAdmission() {
 
 
   const fetchAllCourses = async () => {
+    try {
+      const user = await account.get();
 
-  try {
-
-    const user = await account.get();
-
-    const [singleRes, multipleRes, beautyRes, semesterRes] =
-      await Promise.all([
+      const [singleRes, multipleRes, beautyRes, semesterRes] =
+        await Promise.all([
 
         databases.listDocuments(
           DATABASE_ID,
@@ -92,25 +90,22 @@ export default function ReAdmission() {
 
       ]);
 
-    const courses = [
-  ...singleRes.documents,
-  ...multipleRes.documents,
-  ...beautyRes.documents,
-  ...semesterRes.documents
-];
+      const courses = [
+        ...singleRes.documents,
+        ...multipleRes.documents,
+        ...beautyRes.documents,
+        ...semesterRes.documents
+      ];
 
-// remove duplicate course names
-const uniqueCourses = courses.filter(
-  (course, index, self) =>
-    index ===
-    self.findIndex(
-      c => c.courseName === course.courseName
-    )
-);
+      // remove duplicate course names
+      const uniqueCourses = courses.filter(
+        (course, index, self) =>
+          index ===
+          self.findIndex(c => c.courseName === course.courseName)
+      );
 
-setAllCourses(uniqueCourses);
-
-    setAllCourses(courses);
+      setAllCourses(uniqueCourses);
+      setAllCourses(courses);
 
   } catch (error) {
 
@@ -192,36 +187,34 @@ const handleStudentSelect = async (id) => {
 
   };
   
-const handleCourseSelect = (e) => {
+  const handleCourseSelect = (e) => {
+    const selected = allCourses.find(
+      c => c.$id === e.target.value
+    );
 
-  const selected = allCourses.find(
-    c => c.$id === e.target.value
-  );
+    if (!selected) return;
 
-  if (!selected) return;
+    const total =
+      Number(selected.courseFees || 0) +
+      Number(selected.examFees || 0);
 
-  const total =
-    Number(selected.courseFees || 0) +
-    Number(selected.examFees || 0);
+    setForm(prev => ({
+      ...prev,
 
-  setForm(prev => ({
-    ...prev,
+      course: selected.courseName,
 
-    course: selected.courseName,
+      courseFees: selected.courseFees || 0,
 
-    courseFees: selected.courseFees || 0,
+      examFees: selected.examFees || 0,
 
-    examFees: selected.examFees || 0,
+      totalFees: total,
 
-    totalFees: total,
-
-    balance: total
-  }));
-};
+      balance: total
+    }));
+  };
 
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     const user = await account.get();
@@ -239,16 +232,16 @@ const handleCourseSelect = (e) => {
         photoId: selectedStudent.photoId,
         signatureId: selectedStudent.signatureId,
         motherName: selectedStudent.motherName || "",
-gender: selectedStudent.gender || "",
-dob: selectedStudent.dob || "",
-address: selectedStudent.address || "",
-city: selectedStudent.city || "",
-state: selectedStudent.state || "",
-qualification: selectedStudent.qualification || "",
-aadhaarNo: selectedStudent.aadhaarNo || "",
+        gender: selectedStudent.gender || "",
+        dob: selectedStudent.dob || "",
+        address: selectedStudent.address || "",
+        city: selectedStudent.city || "",
+        state: selectedStudent.state || "",
+        qualification: selectedStudent.qualification || "",
+        aadhaarNo: selectedStudent.aadhaarNo || "",
 
-readmission: true,
-oldAdmissionId: selectedStudent.$id,
+        readmission: true,
+        oldAdmissionId: selectedStudent.$id,
 
         course: form.course,
         examType: form.examType,
@@ -256,7 +249,7 @@ oldAdmissionId: selectedStudent.$id,
 
         
         courseFees: Number(form.courseFees) || 0,
-     discountRate: Number(form.discountRate) || 0,
+        discountRate: Number(form.discountRate) || 0,
         discountAmount: Number(form.discountAmount) || 0,
         totalFees: Number(form.totalFees) || 0,
         feesReceived: Number(form.feesReceived) || 0,
@@ -285,247 +278,250 @@ oldAdmissionId: selectedStudent.$id,
 
 
   return (
+    <div className="min-h-screen bg-[#0A1229] text-[#FBF9F4] relative overflow-hidden">
+      {/* subtle grid texture */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.06] bg-[linear-gradient(to_right,rgba(201,162,75,0.6)_1px,transparent_1px),linear-gradient(to_bottom,rgba(201,162,75,0.6)_1px,transparent_1px)] bg-[size:48px_48px]"
+      />
+      {/* ambient glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[760px] -translate-x-1/2 rounded-full bg-[#C9A24B]/20 blur-3xl"
+      />
 
-    <form onSubmit={handleSubmit} className="p-10 bg-gray-100 rounded-lg">
+      <form
+        onSubmit={handleSubmit}
+        className="relative mx-auto max-w-6xl px-8 py-28"
+      >
+        {/* Glass container */}
+        <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_0_60px_rgba(201,162,75,0.10)] p-8 sm:p-10">
+          <h2 className="font-[Playfair_Display] text-3xl sm:text-4xl tracking-wide font-bold mb-10 text-[#FBF9F4]">
+            RE-ADMISSION STUDENT
+          </h2>
 
-      <h2 className="text-2xl font-bold mb-6">RE-ADMISSION STUDENT</h2>
+          {/* STUDENT SELECT */}
+          <div className="grid grid-cols-3 gap-6 mb-10">
+            <div>
+              <label className="block text-sm font-medium text-white/70 mb-2">Select Student</label>
+              <select
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+                onChange={(e) => handleStudentSelect(e.target.value)}
+                required
+              >
+                <option value="" className="bg-[#0A1229]">--select--</option>
+                {students.map((s) => (
+                  <option key={s.$id} value={s.$id} className="bg-[#0A1229]">
+                    {s.studentName} ({s.mobile})
+                  </option>
+                ))}
+              </select>
+            </div>
 
-      {/* STUDENT SELECT */}
+            <div>
+              <label className="block text-sm font-medium text-white/70 mb-2">Course of Interest *</label>
+              <select
+                onChange={handleCourseSelect}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+                required
+              >
+                <option value="" className="bg-[#0A1229]">Select Course</option>
+                {allCourses.map((course) => (
+                  <option key={course.$id} value={course.$id} className="bg-[#0A1229]">
+                    {course.courseName}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-      <div className="grid grid-cols-3 gap-6 mb-8">
-
-        <div>
-          <label>Select Student</label>
-          <select
-            className="border p-2 w-full"
-            onChange={(e) => handleStudentSelect(e.target.value)}
-            required
-          >
-            <option value="">--select--</option>
-
-            {students.map((s) => (
-              <option key={s.$id} value={s.$id}>
-                {s.studentName} ({s.mobile})
-              </option>
-            ))}
-
-          </select>
-        </div>
-
-
-        <div>
-          <label>Course of Interest *</label>
-    <select
-  onChange={handleCourseSelect}
-  className="border p-2 w-full"
-  required
->
-  <option value="">Select Course</option>
-
-  {allCourses.map((course) => (
-
-    <option
-      key={course.$id}
-      value={course.$id}
-    >
-      {course.courseName}
-    </option>
-
-  ))}
-</select>
-        </div>
-
-
-        <div>
-          <label>Select Exam Type *</label>
-          <select
-            name="examType"
-            onChange={handleChange}
-            className="border p-2 w-full"
-            required
-          >
-            <option value="">--select--</option>
-            <option value="Online">Online</option>
-            <option value="Offline">Offline</option>
-          </select>
-        </div>
-
-      </div>
-
-
-      {/* FEES SECTION */}
-
-      <div className="grid grid-cols-7 gap-4 mb-8">
-
-        <div>
-          <label>Course Fees</label>
-          <input
-  name="courseFees"
-  value={form.courseFees}
-  onChange={handleChange}
-  className="border p-2 w-full"
-/>
-        </div>
-
-        <div>
-          <label>Discount Rate</label>
-          <input name="discountRate" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-
-        <div>
-          <label>Discount Amount</label>
-          <input name="discountAmount" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-
-        <div>
-          <label>Total Fees</label>
-          <input
-  name="totalFees"
-  value={form.totalFees}
-  onChange={handleChange}
-  className="border p-2 w-full"
-/>
-        </div>
-
-        <div>
-          <label>Fees Received</label>
-          <input name="feesReceived" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-
-        <div>
-          <label>Balance</label>
-         <input
-  name="balance"
-  value={form.balance}
-  onChange={handleChange}
-  className="border p-2 w-full"
-/>
-        </div>
-
-        <div>
-          <label>Remarks</label>
-          <input name="remarks" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-
-      </div>
-
-
-      {/* INSTALLMENTS */}
-
-      <h3 className="font-semibold mb-2">Installment Details</h3>
-
-      {installments.map((item, index) => (
-
-        <div key={index} className="grid grid-cols-4 gap-4 mb-4">
-
-          <div>
-            <label>Installment Name</label>
-            <input
-              className="border p-2 w-full"
-              onChange={(e) => handleInstallmentChange(index, "name", e.target.value)}
-            />
+            <div>
+              <label className="block text-sm font-medium text-white/70 mb-2">Select Exam Type *</label>
+              <select
+                name="examType"
+                onChange={handleChange}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+                required
+              >
+                <option value="" className="bg-[#0A1229]">--select--</option>
+                <option value="Online" className="bg-[#0A1229]">Online</option>
+                <option value="Offline" className="bg-[#0A1229]">Offline</option>
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label>Amount</label>
-            <input
-              className="border p-2 w-full"
-              onChange={(e) => handleInstallmentChange(index, "amount", e.target.value)}
-            />
+          {/* FEES SECTION */}
+          <div className="grid grid-cols-7 gap-4 mb-10">
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-white/70 mb-2">Course Fees</label>
+              <input
+                name="courseFees"
+                value={form.courseFees}
+                onChange={handleChange}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-white/70 mb-2">Discount Rate</label>
+              <input
+                name="discountRate"
+                onChange={handleChange}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-white/70 mb-2">Discount Amount</label>
+              <input
+                name="discountAmount"
+                onChange={handleChange}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-white/70 mb-2">Total Fees</label>
+              <input
+                name="totalFees"
+                value={form.totalFees}
+                onChange={handleChange}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-white/70 mb-2">Fees Received</label>
+              <input
+                name="feesReceived"
+                onChange={handleChange}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-white/70 mb-2">Balance</label>
+              <input
+                name="balance"
+                value={form.balance}
+                onChange={handleChange}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-white/70 mb-2">Remarks</label>
+              <input
+                name="remarks"
+                onChange={handleChange}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+              />
+            </div>
           </div>
 
-          <div>
-            <label>Date</label>
+          {/* INSTALLMENTS */}
+          <h3 className="font-[Playfair_Display] text-xl sm:text-2xl font-semibold mb-4 text-[#FBF9F4]">
+            Installment Details
+          </h3>
+
+          {installments.map((item, index) => (
+            <div key={index} className="grid grid-cols-4 gap-4 mb-4 p-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-white/70 mb-2">Installment Name</label>
+                <input
+                  className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+                  onChange={(e) => handleInstallmentChange(index, "name", e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-white/70 mb-2">Amount</label>
+                <input
+                  className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+                  onChange={(e) => handleInstallmentChange(index, "amount", e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-white/70 mb-2">Date</label>
+                <input
+                  type="date"
+                  className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+                  onChange={(e) => handleInstallmentChange(index, "date", e.target.value)}
+                />
+              </div>
+
+              <div className="flex items-end">
+                <button
+                  type="button"
+                  onClick={addInstallment}
+                  className="w-full rounded-xl border border-[#C9A24B]/50 bg-[#C9A24B]/10 px-4 py-2.5 text-[#FBF9F4] font-medium transition-all duration-300 hover:bg-[#C9A24B]/20 hover:border-[#C9A24B] hover:shadow-[0_0_22px_rgba(201,162,75,0.25)]"
+                >
+                  + Add More
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {/* BATCH SECTION */}
+          <div className="grid grid-cols-3 gap-6 mb-10">
+            <div>
+              <label className="block text-sm font-medium text-white/70 mb-2">Exam Fees</label>
+              <input
+                name="examFees"
+                value={form.examFees}
+                onChange={handleChange}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-white/70 mb-2">Select Batch For Student *</label>
+              <input
+                name="batch"
+                value={form.batch}
+                onChange={handleChange}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-white/70 mb-2">Remaining Seats For This Batch *</label>
+              <input
+                name="remainingSeats"
+                onChange={handleChange}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
+              />
+            </div>
+          </div>
+
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-white/70 mb-2">Admission Date</label>
             <input
               type="date"
-              className="border p-2 w-full"
-              onChange={(e) => handleInstallmentChange(index, "date", e.target.value)}
+              name="admissionDate"
+              onChange={handleChange}
+              className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-[#FBF9F4] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A24B] focus:border-[#C9A24B]/60 hover:border-[#C9A24B]/40"
             />
           </div>
 
-          <div className="flex items-end">
+          <div className="flex gap-4 flex-col sm:flex-row">
+            <button
+              className="flex-1 rounded-xl border border-[#C9A24B]/60 bg-[#C9A24B]/15 px-6 py-2.5 text-[#FBF9F4] font-semibold transition-all duration-300 hover:bg-[#C9A24B]/25 hover:border-[#C9A24B] hover:shadow-[0_0_30px_rgba(201,162,75,0.22)]"
+            >
+              Submit
+            </button>
+
             <button
               type="button"
-              onClick={addInstallment}
-              className="bg-yellow-400 px-4 py-2 rounded"
+              onClick={() => router.back()}
+              className="flex-1 rounded-xl border border-white/10 bg-white/5 px-6 py-2.5 text-[#FBF9F4] font-semibold transition-all duration-300 hover:border-red-400/40 hover:bg-red-400/10 hover:shadow-[0_0_30px_rgba(239,68,68,0.10)]"
             >
-              + Add More
+              Cancel
             </button>
           </div>
-
         </div>
-
-      ))}
-
-
-      {/* BATCH SECTION */}
-
-      <div className="grid grid-cols-3 gap-6 mb-8">
-
-        <div>
-          <label>Exam Fees</label>
-          <input
-  name="examFees"
-  value={form.examFees}
-  onChange={handleChange}
-  className="border p-2 w-full"
-/>
-        </div>
-
-        <div>
-          <label>Select Batch For Student *</label>
-          <input
-            name="batch"
-            value={form.batch}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
-
-        <div>
-          <label>Remaining Seats For This Batch *</label>
-          <input
-            name="remainingSeats"
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
-
-      </div>
-
-
-      <div className="mb-6">
-
-        <label>Admission Date</label>
-
-        <input
-          type="date"
-          name="admissionDate"
-          onChange={handleChange}
-          className="border p-2 w-full"
-        />
-
-      </div>
-
-
-      <div className="flex gap-4">
-
-        <button className="bg-blue-600 text-white px-6 py-2 rounded">
-          Submit
-        </button>
-
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="bg-red-500 text-white px-6 py-2 rounded"
-        >
-          Cancel
-        </button>
-
-      </div>
-
-    </form>
-
+      </form>
+    </div>
   );
 
 }

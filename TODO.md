@@ -1,8 +1,9 @@
-# TODO - Fix syntax in admission page
+# TODO
 
-- [ ] Create edit plan: identify syntax errors in `page.jsx` and confirm minimal safe changes.
-- [ ] Remove duplicated/incorrect `useEffect` block and fix stray statements.
-- [ ] Fix malformed `setForm` for semester case (missing commas / invalid properties).
-- [ ] Fix incorrect input size message (300 MB vs 300 kb) only if needed for syntax.
-- [ ] Run `npm`/Next build or eslint to confirm no syntax errors.
+## Hero typing animation + spacing fix
+- [x] Update `bnmi-india/component/hero.jsx`:
+  - [x] Replace the single typing animation with a typing effect that types words/phrases one-by-one.
+  - [x] Ensure the whole line sits slightly lower (not completely at the top) by adjusting margin/translation on the heading line container.
+- [ ] Quick sanity check by running the dev server / building (if available).
+
 

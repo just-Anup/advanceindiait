@@ -6,10 +6,106 @@ import { Query } from "appwrite";
 import { Search, MoveRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+function TypingText({ text, speed = 60 }) {
+  // types character-by-character (already works), but we also support
+  // “words one by one” by optionally inserting a space-delay.
+  const [display, setDisplay] = useState("");
+
+  useEffect(() => {
+    if (!text) {
+      setDisplay("");
+      return;
+    }
+
+    let i = 0;
+    setDisplay("");
+
+    const id = setInterval(() => {
+      i += 1;
+      setDisplay(text.slice(0, i));
+
+      if (i >= text.length) clearInterval(id);
+    }, speed);
+
+    return () => clearInterval(id);
+  }, [text, speed]);
+
+  return <>{display}</>;
+}
+
+function WordTypingText({
+  text = "",
+  wordDelay = 450,
+  charSpeed = 45,
+  className = "",
+  loop = true,
+  endPause = 800,
+}) {
+  const words = (text || "").split(" ").filter(Boolean);
+  const [display, setDisplay] = useState("");
+
+  useEffect(() => {
+    if (!words.length) {
+      setDisplay("");
+      return;
+    }
+
+    let cancelled = false;
+
+    const run = async () => {
+      while (!cancelled) {
+        setDisplay("");
+
+        for (let w = 0; w < words.length; w++) {
+          if (cancelled) return;
+
+          const currentWord = words[w];
+
+          for (let c = 0; c < currentWord.length; c++) {
+            if (cancelled) return;
+
+            setDisplay(
+              `${words.slice(0, w).join(" ")}${w > 0 ? " " : ""}${currentWord.slice(
+                0,
+                c + 1
+              )}`
+            );
+
+            // eslint-disable-next-line no-await-in-loop
+            await new Promise((r) => setTimeout(r, charSpeed));
+          }
+
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise((r) => setTimeout(r, wordDelay));
+
+          setDisplay(`${words.slice(0, w + 1).join(" ")}`);
+        }
+
+        if (!loop) break;
+
+        // pause after completing the full sentence
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((r) => setTimeout(r, endPause));
+      }
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [text, wordDelay, charSpeed, loop, endPause]);
+
+  return <span className={className}>{display}</span>;
+}
+
+
+
 const DB = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
 const COLLECTION = "website";
 
 export default function HeroSection() {
+
 
   const [slides, setSlides] = useState([]);
   const [settings, setSettings] = useState(null);
@@ -75,8 +171,8 @@ export default function HeroSection() {
 
   const activeSlide = slides[current];
 
-return (
-  <section className="bnmi-font-body relative min-h-screen bg-[#0A1229] overflow-hidden flex items-center">
+  return (
+<section className="bnmi-font-body relative min-h-screen bg-[#0A1229] overflow-hidden flex items-center">
 
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
@@ -237,7 +333,7 @@ return (
 
   {/* HEADING */}
 
-  <h1 className="bnmi-font-display text-[#FBF9F4] text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.1] max-w-3xl">
+  <h1 className="bnmi-font-display text-[#FBF9F4] text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.1] max-w-3xl pt-3">
 
     <span className="text-[#C9A24B]">
       {activeSlide?.blueText || "Empower"}
@@ -245,7 +341,14 @@ return (
 
     <br />
 
-    {activeSlide?.title || "Your Future With Quality Education"}
+    <span style={{ display: "inline-block", transform: "translateY(14px)" }}>
+      <WordTypingText
+        text={activeSlide?.title || "Your Future With Quality Education"}
+        wordDelay={420}
+        charSpeed={40}
+      />
+    </span>
+
 
   </h1>
 
