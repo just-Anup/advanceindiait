@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { ID } from "appwrite";
 import { databases, storage } from "@/lib/appwrite";
 import { Query } from "appwrite";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const DATABASE_ID =
   process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
@@ -16,8 +16,86 @@ const BUCKET_ID =
 
 export default function TeamSlider() {
   const [team, setTeam] = useState([]);
-  const [isPaused, setIsPaused] =
-    useState(false);
+
+  const CARD_WIDTH = 352; // 320px card + 32px gap
+  const AUTO_SLIDE_INTERVAL = 3500;
+
+  /* ===========================
+     INFINITE LOOP STATE
+  =========================== */
+  const [index, setIndex] = useState(0);
+  const [instant, setInstant] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const hasDraggedRef = useRef(false);
+
+  // Triple the array so we always have a buffer on both sides for a seamless loop
+  const loopTeam = team.length ? [...team, ...team, ...team] : [];
+
+  // Once team data loads, start in the middle copy
+  useEffect(() => {
+    if (team.length) {
+      setInstant(true);
+      setIndex(team.length);
+    }
+  }, [team.length]);
+
+  /* ===========================
+     NEXT / PREV (moves exactly one card)
+  =========================== */
+
+  const nextSlide = () => {
+    if (!team.length) return;
+    setInstant(false);
+    setIndex((prev) => prev + 1);
+  };
+
+  const prevSlide = () => {
+    if (!team.length) return;
+    setInstant(false);
+    setIndex((prev) => prev - 1);
+  };
+
+  /* ===========================
+     SEAMLESS LOOP RESET
+     (jumps back into the middle copy with no visible flicker)
+  =========================== */
+
+  const handleAnimationComplete = () => {
+    if (!team.length) return;
+
+    if (index >= team.length * 2) {
+      setInstant(true);
+      setIndex(index - team.length);
+    } else if (index < team.length) {
+      setInstant(true);
+      setIndex(index + team.length);
+    }
+  };
+
+  // Turn the "instant" (no-transition) flag off right after it's applied
+  useEffect(() => {
+    if (instant) {
+      const raf = requestAnimationFrame(() => setInstant(false));
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [instant]);
+
+  /* ===========================
+     AUTO SLIDE (pauses on drag / hover)
+  =========================== */
+
+  useEffect(() => {
+    if (!team.length || isDragging || isHovered) return;
+
+    const id = setInterval(() => {
+      setInstant(false);
+      setIndex((prev) => prev + 1);
+    }, AUTO_SLIDE_INTERVAL);
+
+    return () => clearInterval(id);
+  }, [team.length, isDragging, isHovered]);
 
   /* ================= FETCH TEAM ================= */
 
@@ -104,23 +182,25 @@ export default function TeamSlider() {
           font-family: 'Inter', system-ui, sans-serif;
         }
 
-        @keyframes slideTeam {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-1000px);
-          }
+        .team-slider-rail{
+          touch-action: pan-y;
         }
 
-        .team-slider-motion {
-          animation: slideTeam 28s linear infinite;
+        .team-slider-cursor{
+          cursor: grab;
+        }
+        .team-slider-cursor:active{
+          cursor: grabbing;
         }
 
-        .team-slider-motion.paused {
-          animation-play-state: paused;
+        .team-arrow{
+          background: rgba(10,18,41,0.75);
+          border: 1px solid rgba(201,162,75,0.25);
+          backdrop-filter: blur(8px);
         }
       `}</style>
+
+
 
       {/* BACKGROUND */}
 
@@ -179,111 +259,208 @@ export default function TeamSlider() {
         <div className="absolute right-0 top-0 z-20 h-full w-32 bg-gradient-to-l from-[#0A1229] to-transparent pointer-events-none" />
 
         {/* ================= SLIDER ================= */}
-
         <div
-          className="overflow-hidden relative z-10"
-          onMouseEnter={() =>
-            setIsPaused(true)
-          }
-          onMouseLeave={() =>
-            setIsPaused(false)
-          }
+          className="
+            relative z-10 overflow-hidden group mx-auto
+            max-w-[320px]
+            sm:max-w-[672px]
+            lg:max-w-[1024px]
+            xl:max-w-[1376px]
+          "
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
 
-          <motion.div
-            className={`
+          <button
+            onClick={nextSlide === prevSlide ? undefined : prevSlide}
+            aria-label="Previous team member"
+            className="
+              team-arrow
+              absolute
+              left-4
+              top-1/2
+              -translate-y-1/2
+              z-30
+              w-12
+              h-12
+              rounded-full
               flex
               items-center
-              gap-8
-              pr-8
-              team-slider-motion
-              ${isPaused ? 'paused' : ''}
-            `}
+              justify-center
+              text-[#FBF9F4]
+              shadow-xl
+              transition-all
+              duration-300
+              hover:bg-[#C9A24B]
+              hover:text-[#0A1229]
+              hover:scale-110
+              opacity-0
+              group-hover:opacity-100
+            "
+          >
+            <ChevronLeft size={24} />
+          </button>
+
+          <motion.div
+            className="flex gap-8 team-slider-rail team-slider-cursor"
+            animate={{
+              x: -(index * CARD_WIDTH),
+            }}
+            transition={{
+              duration: instant ? 0 : 0.45,
+              ease: "easeInOut",
+            }}
+            onAnimationComplete={handleAnimationComplete}
+            drag="x"
+            dragMomentum={false}
+            dragElastic={0.08}
+            onDragStart={() => {
+              setIsDragging(true);
+              hasDraggedRef.current = false;
+            }}
+            onDrag={(event, info) => {
+              if (Math.abs(info.offset.x) > 5) {
+                hasDraggedRef.current = true;
+              }
+            }}
+            onDragEnd={(event, info) => {
+              setIsDragging(false);
+
+              const offset = info.offset.x;
+              const threshold = CARD_WIDTH / 3;
+
+              setInstant(false);
+
+              if (offset < -threshold) {
+                setIndex((prev) => prev + 1);
+              } else if (offset > threshold) {
+                setIndex((prev) => prev - 1);
+              }
+
+              setTimeout(() => {
+                hasDraggedRef.current = false;
+              }, 50);
+            }}
+            onClickCapture={(e) => {
+              if (hasDraggedRef.current) {
+                e.stopPropagation();
+                e.preventDefault();
+              }
+            }}
           >
 
-            {[...team, ...team].map(
-              (member, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{
-                    y: -10,
-                    scale: 1.03,
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 220,
-                    damping: 16,
-                  }}
-                  className="
-                    relative
-                    overflow-hidden
-                    rounded-[32px]
-                    border
-                    border-white/10
-                    bg-white/5
-                    shadow-[0_10px_60px_rgba(201,162,75,0.08)]
-                    w-[320px]
-                    flex-shrink-0
-                    hover:border-[#C9A24B]/30
-                    transition-all
-                    duration-300
-                  "
-                >
+            {loopTeam.map((member, i) => (
 
-                  {/* GLOW */}
+              <motion.div
+                key={`${member.$id || i}-${i}`}
+                whileHover={{
+                  y: -10,
+                  scale: 1.03,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 220,
+                  damping: 16,
+                }}
+                className="
+                  relative
+                  overflow-hidden
+                  rounded-[32px]
+                  border
+                  border-white/10
+                  bg-white/5
+                  shadow-[0_10px_60px_rgba(201,162,75,0.08)]
+                  w-[320px]
+                  flex-shrink-0
+                  hover:border-[#C9A24B]/30
+                  transition-all
+                  duration-300
+                "
+              >
 
-                  <div className="absolute inset-0 opacity-0 transition duration-700 hover:opacity-100">
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#C9A24B]/20 via-[#C9A24B]/10 to-[#C9A24B]/20 blur-3xl" />
-                  </div>
+                {/* GLOW */}
 
-                  {/* IMAGE */}
+                <div className="absolute inset-0 opacity-0 transition duration-700 hover:opacity-100">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#C9A24B]/20 via-[#C9A24B]/10 to-[#C9A24B]/20 blur-3xl" />
+                </div>
 
-                  <div className="relative overflow-hidden p-3">
+                {/* IMAGE */}
 
-                    <img
-                      src={getImageUrl(
-                        member.imageUrl
-                      )}
-                      alt={member.name}
-                      draggable={false}
-                      className="
-  w-full
-  h-[260px]
-  md:h-[320px]
-  object-cover
-  object-top
-  rounded-[26px]
-  transition-transform
-  duration-500
-  hover:scale-105
-"
-                    />
+                <div className="relative overflow-hidden p-3">
 
-                    <div className="absolute inset-0 rounded-[26px] bg-[#C9A24B]/0 hover:bg-[#C9A24B]/10 transition duration-500" />
-                  </div>
+                  <img
+                    src={getImageUrl(
+                      member.imageUrl
+                    )}
+                    alt={member.name}
+                    draggable={false}
+                    className="
+                      w-full
+                      h-[260px]
+                      md:h-[320px]
+                      object-cover
+                      object-top
+                      rounded-[26px]
+                      transition-transform
+                      duration-500
+                      hover:scale-105
+                    "
+                  />
 
-                  {/* CONTENT */}
+                  <div className="absolute inset-0 rounded-[26px] bg-[#C9A24B]/0 hover:bg-[#C9A24B]/10 transition duration-500" />
+                </div>
 
-                  <div className="p-5 text-center relative z-10">
+                {/* CONTENT */}
 
-                    <h4 className="bnmi-font-display font-bold text-xl text-[#FBF9F4]">
-                      {member.name}
-                    </h4>
+                <div className="p-5 text-center relative z-10">
 
-                    <p className="bnmi-font-body text-[#C9A24B] text-sm mt-2">
-                      {member.role}
-                    </p>
+                  <h4 className="bnmi-font-display font-bold text-xl text-[#FBF9F4]">
+                    {member.name}
+                  </h4>
 
-                    <p className="bnmi-font-body text-[#D5D8E3] text-xs mt-3 leading-relaxed">
-                      {member.experience}
-                    </p>
+                  <p className="bnmi-font-body text-[#C9A24B] text-sm mt-2">
+                    {member.role}
+                  </p>
 
-                  </div>
-                </motion.div>
-              )
-            )}
+                  <p className="bnmi-font-body text-[#D5D8E3] text-xs mt-3 leading-relaxed">
+                    {member.experience}
+                  </p>
+
+                </div>
+              </motion.div>
+            ))}
 
           </motion.div>
+
+          <button
+            onClick={nextSlide}
+            aria-label="Next team member"
+            className="
+              team-arrow
+              absolute
+              right-4
+              top-1/2
+              -translate-y-1/2
+              z-30
+              w-12
+              h-12
+              rounded-full
+              flex
+              items-center
+              justify-center
+              text-[#FBF9F4]
+              shadow-xl
+              transition-all
+              duration-300
+              hover:bg-[#C9A24B]
+              hover:text-[#0A1229]
+              hover:scale-110
+              opacity-0
+              group-hover:opacity-100
+            "
+          >
+            <ChevronRight size={24} />
+          </button>
         </div>
       </div>
     </section>

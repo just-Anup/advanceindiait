@@ -24,15 +24,13 @@ export default function AddStudent() {
   const [photo, setPhoto] = useState(null);
   const [signature, setSignature] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
-const [signaturePreview, setSignaturePreview] = useState(null);
-const [loading, setLoading] = useState(false);
+  const [signaturePreview, setSignaturePreview] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [courses, setCourses] = useState([]);
   const [selectedSemester, setSelectedSemester] = useState("");
-const [semesterSubjects, setSemesterSubjects] = useState([]);
- 
+  const [semesterSubjects, setSemesterSubjects] = useState([]);
 
   const [form, setForm] = useState({
-    
     rollNumber: "",
     abbreviation: "Mr.",
     relationType: "S/O",
@@ -41,7 +39,7 @@ const [semesterSubjects, setSemesterSubjects] = useState([]);
     fatherName: "",
     motherName: "",
     showFatherInCertificate: false,
-showMotherInCertificate: false,
+    showMotherInCertificate: false,
 
     courseType: "single",
     courseName: "",
@@ -74,85 +72,55 @@ showMotherInCertificate: false,
     remark: "",
 
     status: "Active"
-
   });
 
-useEffect(() => {
+  useEffect(() => {
+    const fees = Number(form.courseFees) || 0;
+    const disc = Number(form.discount) || 0;
+    const received = Number(form.feesReceived) || 0;
 
-  const fees = Number(form.courseFees) || 0;
-  const disc = Number(form.discount) || 0;
-  const received = Number(form.feesReceived) || 0;
+    const total = fees - disc;
+    const balance = total - received;
 
-  const total = fees - disc;
-  const balance = total - received;
-
-  setForm(prev => ({
-    ...prev,
-    totalFees: total,
-    balance
-  }));
-
-}, [
-  form.courseFees,
-  form.discount,
-  form.feesReceived
-]);
-
-
-  const username = form.mobile || form.email
-const password = form.aadhar?.slice(-4) || "1234"
-  
- 
-useEffect(() => {
-
-  const fees = Number(form.courseFees) || 0;
-  const disc = Number(form.discount) || 0;
-  const received = Number(form.feesReceived) || 0;
-
-  const total = fees - disc;
-  const balance = total - received;
-
-  setForm(prev => ({
-    ...prev,
-    totalFees: total,
-    balance
-  }));
-
-}, [
-  form.courseFees,
-  form.discount,
-  form.feesReceived
-]);
-
-
+    setForm((prev) => ({
+      ...prev,
+      totalFees: total,
+      balance
+    }));
+  }, [
+    form.courseFees,
+    form.discount,
+    form.feesReceived
+  ]);
 
   useEffect(() => {
     loadCourses("single");
   }, []);
 
   useEffect(() => {
-  checkUser();
-}, []);
+    checkUser();
+  }, []);
 
-const checkUser = async () => {
-  try {
-    const user = await account.get();
-    console.log("Logged in:", user);
-  } catch {
-    alert("Session expired, login again");
-  }
-};
+  const checkUser = async () => {
+    try {
+      const user = await account.get();
+      console.log("Logged in:", user);
+    } catch {
+      alert("Session expired, login again");
+    }
+  };
+
   const loadCourses = async (type) => {
-
     const user = await account.get();
 
     let collection = "";
     let queries = [];
 
-  if (type === "single") {
-  collection = "courses_single";
-  queries = [Query.equal("franchiseEmail", user.email)];
-}
+    if (type === "single") {
+      collection = "courses_single";
+      queries = [Query.equal("franchiseEmail", user.email)];
+    }
+
     if (type === "multiple") {
       collection = "franchise_multiple_courses";
       queries = [Query.equal("franchiseEmail", user.email)];
@@ -162,25 +130,12 @@ const checkUser = async () => {
       collection = "beauty_courses_single";
       queries = [Query.equal("franchiseEmail", user.email)];
     }
- if (type === "semester") {
 
-  collection = "franchise_semester_courses";
+    if (type === "semester") {
+      collection = "franchise_semester_courses";
+      queries = [Query.equal("franchiseEmail", user.email)];
+    }
 
-  queries = [
-    Query.equal(
-      "franchiseEmail",
-      user.email
-    )
-  ];
-
-}
-
-try {
-  const user = await account.get();
-  console.log("USER OK:", user);
-} catch (err) {
-  console.log("NO SESSION:", err);
-}
     const res = await databases.listDocuments(
       DATABASE_ID,
       collection,
@@ -188,687 +143,476 @@ try {
     );
 
     setCourses(res.documents);
-
   };
 
-const loadSemesterSubjects = async (
-  courseCode,
-  semester
-) => {
-
-  try {
-
-    const user = await account.get();
-
-    const res =
-      await databases.listDocuments(
-        DATABASE_ID,
-        "franchise_semester_course_subjects",
-        [
-        Query.equal(
-  "courseCode",
-  form.courseCode
-),
-
-          Query.equal(
-            "semesterNumber",
-            Number(semester)
-          ),
-
-          Query.equal(
-            "franchiseEmail",
-            user.email
-          )
-        ]
-      );
-
-setSemesterSubjects(res.documents);
-
-const subjectNames = res.documents
-  .map((s) => s.subjectName)
-  .join(", ");
-
-setForm((prev) => ({
-  ...prev,
-  subjects: subjectNames,
-
-  selectedSubjectIds: res.documents
-    .map((s) => s.subjectId)
-    .join("||")
-}));
-
-  } catch (err) {
-
-    console.log(
-      "SEM SUBJECT ERROR:",
-      err
-    );
-
-  }
-
-};
-
-
-
-
-const getFranchiseInfo = async () => {
-
-  const user = await account.get()
-
-  const res = await databases.listDocuments(
-    DATABASE_ID,
-    "franchise_approved",
-    [Query.equal("email", user.email)]
-  )
-
-  if (res.documents.length === 0) {
-    throw new Error("Franchise not found")
-  }
-
-  return {
-    franchiseId: res.documents[0].$id,
-    instituteName: res.documents[0].instituteName,
-    userId: user.$id
-  }
-}
-  const calculateFees = (courseFees, discount) => {
-
-  const fees = Number(courseFees) || 0;
-  const disc = Number(discount) || 0;
-
-  const total = fees - disc;
-
-  setForm(prev => ({
-    ...prev,
-    courseFees: fees,
-    discount: disc,
-    totalFees: total
-  }));
-
-};
-
-const handleFeesReceived = (value) => {
-
-  const received = Number(value) || 0;
-
-  const balance = (Number(form.totalFees) || 0) - received;
-
-  setForm(prev => ({
-    ...prev,
-    feesReceived: received,
-    balance
-  }));
-
-};
-
-
-const handleCourseChange = async (e) => {
-  try {
-    const courseId = e.target.value;
-    const course = courses.find(c => c.$id === courseId);
-
-    if (!course) return;
-
-    let subjectsText = "";
-
-    // =========================
-    // ✅ SEMESTER (SPECIAL CASE)
-    // =========================
-if (form.courseType === "semester") {
-
-  const user = await account.get();
-
-  const resPlan = await databases.listDocuments(
-    DATABASE_ID,
-    "franchise_approved",
-    [
-      Query.equal("email", user.email)
-    ]
-  );
-
-  const plan =
-    resPlan.documents[0]?.plan;
-
-  const planRes =
-    await databases.listDocuments(
-      DATABASE_ID,
-      "franchise_plans",
-      [
-        Query.equal("name", plan)
-      ]
-    );
-
-  const dynamicFee =
-    Number(
-      planRes.documents[0]?.amount || 0
-    );
-
-  setSelectedSemester("");
-
-  setForm(prev => ({
-    ...prev,
-
-    courseName: course.$id,
-
-    courseDisplayName:
-      course.courseName,
-
-    courseCode:
-      course.courseCode,
-
-    subjects: "",
-
-    selectedSubjectIds: "",
-
-    courseFees:
-      Number(
-        course.courseFees || 0
-      ),
-
-    examFees:
-      dynamicFee,
-        duration: course.duration,
-  courseDuration: course.duration
-  }));
-
-  return;
-}
-
-    // =========================
-    // ✅ MULTIPLE COURSE (IMPORTANT FIX)
-    // =========================
-  if (form.courseType === "multiple") {
-
-  // ✅ KEEP ORIGINAL FORMAT
-  subjectsText = course.subjects || "";
-
-
-}
-
-    // =========================
-    // ✅ SINGLE / BEAUTY COURSE
-    // =========================
-    else if (
-      form.courseType === "single" ||
-      form.courseType === "beauty"
-    ) {
-      const subjectCollection =
-        form.courseType === "beauty"
-          ? "beauty_courses_subjects"
-          : "course_subjects";
+  const loadSemesterSubjects = async (courseCode, semester) => {
+    try {
+      const user = await account.get();
 
       const res = await databases.listDocuments(
         DATABASE_ID,
-        subjectCollection,
-        [Query.equal("courseId", courseId)]
+        "franchise_semester_course_subjects",
+        [
+          Query.equal("courseCode", form.courseCode),
+          Query.equal("semesterNumber", Number(semester)),
+          Query.equal("franchiseEmail", user.email)
+        ]
       );
 
-      subjectsText = res.documents
-        .map(s => s.subjectName)
-        .join(", ");
-    }
+      setSemesterSubjects(res.documents);
 
-    // =========================
-    // ✅ FETCH PLAN (EXAM FEE)
-    // =========================
+      const subjectNames = res.documents
+        .map((s) => s.subjectName)
+        .join(", ");
+
+      setForm((prev) => ({
+        ...prev,
+        subjects: subjectNames,
+        selectedSubjectIds: res.documents
+          .map((s) => s.subjectId)
+          .join("||")
+      }));
+    } catch (err) {
+      console.log("SEM SUBJECT ERROR:", err);
+    }
+  };
+
+  const getFranchiseInfo = async () => {
     const user = await account.get();
 
-    const resPlan = await databases.listDocuments(
+    const res = await databases.listDocuments(
       DATABASE_ID,
       "franchise_approved",
       [Query.equal("email", user.email)]
     );
 
-    const plan = resPlan.documents[0]?.plan;
-
-    const planRes = await databases.listDocuments(
-      DATABASE_ID,
-      "franchise_plans",
-      [Query.equal("name", plan)]
-    );
-
-    const dynamicFee = planRes.documents[0]?.amount || 0;
-
-    // =========================
-    // ✅ FINAL SET FORM
-
-    // =========================
-   setForm(prev => ({
-  ...prev,
-  courseName: courseId, // ✅ keep ID for dropdown
-  courseDisplayName: course.courseName || course.courseCode, // ✅ for display
-  subjects: subjectsText,
-  courseFees: Number(course.courseFees || 0),
-  examFees: dynamicFee
-}));
-
-  } catch (err) {
-    console.error("COURSE CHANGE ERROR:", err);
-    alert(err?.message);
-console.log(err);
-  }
-};
-const handleChange = (e) => {
-
-  const { name, value } = e.target;
-
-  const upperCaseFields = [
-    "studentName",
-    "surname",
-    "fatherName",
-    "motherName",
-    "address",
-    "qualification",
-    "occupation",
-    "batch",
-    "remark"
-  ];
-
-  setForm(prev => ({
-    ...prev,
-    [name]: upperCaseFields.includes(name)
-      ? value.toUpperCase()
-      : value
-  }));
-};
-
-const handleSubmit = async (e) => {
-
-  e.preventDefault();
-
-  // ✅ prevent multiple clicks
-  if (loading) return;
-
-  setLoading(true);
-
-  try {
-
-    const user = await account.get()
-
-    const franchise = await getFranchiseInfo()
-
-    // ✅ VALIDATIONS
-    if (!form.courseName) {
-      alert("Please select course")
-      return
+    if (res.documents.length === 0) {
+      throw new Error("Franchise not found");
     }
 
-    if (!form.subjects) {
-      alert("Subjects missing")
-      return
-    }
+    return {
+      franchiseId: res.documents[0].$id,
+      instituteName: res.documents[0].instituteName,
+      userId: user.$id
+    };
+  };
 
-    let ADMISSION_FEE = Number(form.examFees || 0)
-    // ✅ SEMESTER ONE-TIME FEE LOGIC (ADD ONLY)
-if (form.courseType === "semester") {
-const existing =
-  await databases.listDocuments(
-    DATABASE_ID,
-    "student_admissions",
-    [
-      Query.equal(
-        "mobile",
-        form.mobile
-      ),
+  const handleCourseChange = async (e) => {
+    try {
+      const courseId = e.target.value;
+      const course = courses.find((c) => c.$id === courseId);
+      if (!course) return;
 
-      Query.equal(
-        "courseCode",
-        form.courseCode
-      ),
+      let subjectsText = "";
 
-      Query.equal(
-        "courseType",
-        "semester"
-      )
-    ]
-  );
+      // ✅ SEMESTER special case
+      if (form.courseType === "semester") {
+        const user = await account.get();
 
-  if (existing.documents.length > 0) {
-    ADMISSION_FEE = 0; // ✅ already paid
-  }
-}
+        const resPlan = await databases.listDocuments(
+          DATABASE_ID,
+          "franchise_approved",
+          [Query.equal("email", user.email)]
+        );
 
-   if (ADMISSION_FEE < 0) {
-  alert("Invalid exam fee")
-  return
-}
+        const plan = resPlan.documents[0]?.plan;
 
-    // 🔥 REQUIRE FILES
-    if (!photo) {
-      alert("Please upload photo")
-      return
-    }
+        const planRes = await databases.listDocuments(
+          DATABASE_ID,
+          "franchise_plans",
+          [Query.equal("name", plan)]
+        );
 
-    if (!signature) {
-      alert("Please upload signature")
-      return
-    }
+        const dynamicFee = Number(planRes.documents[0]?.amount || 0);
 
+        setSelectedSemester("");
 
-    // ✅ FILE UPLOAD
-    let photoId = ""
-    let signatureId = ""
+        setForm((prev) => ({
+          ...prev,
+          courseName: course.$id,
+          courseDisplayName: course.courseName,
+          courseCode: course.courseCode,
+          subjects: "",
+          selectedSubjectIds: "",
+          courseFees: Number(course.courseFees || 0),
+          examFees: dynamicFee,
+          duration: course.duration,
+          courseDuration: course.duration
+        }));
 
-    const uploadPhoto = await storage.createFile(
-      BUCKET_ID,
-      ID.unique(),
-      photo
-    )
-    photoId = uploadPhoto.$id
-
-    const uploadSign = await storage.createFile(
-      BUCKET_ID,
-      ID.unique(),
-      signature
-    )
-    signatureId = uploadSign.$id
-
-    console.log("Signature uploaded:", signatureId)
-
-    // ✅ USERNAME & PASSWORD (FIXED)
-  // ✅ USERNAME = student name
-const username = form.studentName;
-
-// ✅ PASSWORD = 8 digit numeric random
-const generatePassword = () => {
-  let pass = "";
-  const digits = "0123456789";
-
-  for (let i = 0; i < 8; i++) {
-    pass += digits[Math.floor(Math.random() * digits.length)];
-  }
-
-  return pass;
-};
-
-const password = generatePassword();
-
-    // ✅ FINAL DATA
-  const finalData = {
-  ...form,
-
-  courseFees: Number(form.courseFees || 0),
-  discount: Number(form.discount || 0),
-  totalFees: Number(form.totalFees || 0),
-  feesReceived: Number(form.feesReceived || 0),
-  balance: Number(form.balance || 0),
-  examFees: Number(form.examFees || 0),
-
-  courseCode: form.courseCode,
-  courseName: form.courseDisplayName,
-  courseId: form.courseName,
-  selectedSubjectIds: form.selectedSubjectIds,
-  admissionDate: form.admissionDate
-    ? form.admissionDate
-    : new Date().toISOString().split("T")[0]
-};
-
-    // ✅ GET WALLET
-    const franchiseDoc = await databases.getDocument(
-      DATABASE_ID,
-      "franchise_approved",
-      franchise.franchiseId
-    )
-
-    const currentWallet = Number(franchiseDoc.wallet || 0)
-
-    if (ADMISSION_FEE > 0 && currentWallet < ADMISSION_FEE) {
-      alert("Insufficient Wallet Balance")
-      return
-    }
-
-    const newWallet = currentWallet - ADMISSION_FEE
-
-    // ✅ UPDATE WALLET
-  if (ADMISSION_FEE > 0) {
-  await databases.updateDocument(
-    DATABASE_ID,
-    "franchise_approved",
-    franchise.franchiseId,
-    {
-      wallet: newWallet.toFixed(2)
-    }
-  )
-}
-    if (!form.dob) {
-  alert("Please select Date of Birth");
-  return;
-}
-
-  if (ADMISSION_FEE > 0) {
-  await databases.createDocument(
-    DATABASE_ID,
-    "wallet_transactions",
-    ID.unique(),
-    {
-      franchiseId: franchise.franchiseId,
-      amount: ADMISSION_FEE,
-      type: "deduct",
-      reason: "Student Admission",
-      studentName: form.studentName,
-      courseName: form.courseName,
-      remainingBalance: newWallet.toFixed(2),
-      date: new Date().toISOString()
-    }
-  )
-}
-    // ✅ CREATE STUDENT (FINAL)
-    await databases.createDocument(
-      DATABASE_ID,
-      COLLECTION_ID,
-      ID.unique(),
-      {
-        ...finalData,
-
-        username,
-        password,
-
-        photoId,
-        signatureId,
-
-        franchiseEmail: user.email,
-        franchiseId: franchise.franchiseId,
-        instituteName: franchise.instituteName,
-semesterNumber: selectedSemester ? Number(selectedSemester) : null,
-        createdById: franchise.userId,
-        createdByName: franchise.instituteName,
-
-        createdAt: new Date().toISOString()
+        return;
       }
-    )
 
-    alert("Student Registered Successfully")
+      // ✅ MULTIPLE
+      if (form.courseType === "multiple") {
+        subjectsText = course.subjects || "";
+      }
 
-    router.push("/login/institute/manage-student/admission")
+      // ✅ SINGLE / BEAUTY
+      else if (form.courseType === "single" || form.courseType === "beauty") {
+        const subjectCollection =
+          form.courseType === "beauty"
+            ? "beauty_courses_subjects"
+            : "course_subjects";
 
-} catch (err) {
+        const res = await databases.listDocuments(
+          DATABASE_ID,
+          subjectCollection,
+          [Query.equal("courseId", courseId)]
+        );
 
-  console.error("ADMISSION ERROR:", err);
-  alert(err?.message || "Admission failed");
+        subjectsText = res.documents.map((s) => s.subjectName).join(", ");
+      }
 
-} finally {
+      // ✅ FETCH PLAN EXAM FEE
+      const user = await account.get();
+      const resPlan = await databases.listDocuments(
+        DATABASE_ID,
+        "franchise_approved",
+        [Query.equal("email", user.email)]
+      );
 
-  // ✅ enable button again after success/fail
-  setLoading(false);
+      const plan = resPlan.documents[0]?.plan;
 
-}
-}
- 
+      const planRes = await databases.listDocuments(
+        DATABASE_ID,
+        "franchise_plans",
+        [Query.equal("name", plan)]
+      );
+
+      const dynamicFee = planRes.documents[0]?.amount || 0;
+
+      setForm((prev) => ({
+        ...prev,
+        courseName: courseId,
+        courseDisplayName: course.courseName || course.courseCode,
+        subjects: subjectsText,
+        courseFees: Number(course.courseFees || 0),
+        examFees: dynamicFee
+      }));
+    } catch (err) {
+      console.error("COURSE CHANGE ERROR:", err);
+      alert(err?.message);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    const upperCaseFields = [
+      "studentName",
+      "surname",
+      "fatherName",
+      "motherName",
+      "address",
+      "qualification",
+      "occupation",
+      "batch",
+      "remark"
+    ];
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: upperCaseFields.includes(name) ? value.toUpperCase() : value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (loading) return;
+
+    setLoading(true);
+
+    try {
+      const user = await account.get();
+      const franchise = await getFranchiseInfo();
+
+      if (!form.courseName) {
+        alert("Please select course");
+        return;
+      }
+
+      if (!form.subjects) {
+        alert("Subjects missing");
+        return;
+      }
+
+      let ADMISSION_FEE = Number(form.examFees || 0);
+
+      if (form.courseType === "semester") {
+        const existing = await databases.listDocuments(
+          DATABASE_ID,
+          "student_admissions",
+          [
+            Query.equal("mobile", form.mobile),
+            Query.equal("courseCode", form.courseCode),
+            Query.equal("courseType", "semester")
+          ]
+        );
+
+        if (existing.documents.length > 0) {
+          ADMISSION_FEE = 0;
+        }
+      }
+
+      if (ADMISSION_FEE < 0) {
+        alert("Invalid exam fee");
+        return;
+      }
+
+      if (!photo) {
+        alert("Please upload photo");
+        return;
+      }
+
+      if (!signature) {
+        alert("Please upload signature");
+        return;
+      }
+
+      let photoId = "";
+      let signatureId = "";
+
+      const uploadPhoto = await storage.createFile(
+        BUCKET_ID,
+        ID.unique(),
+        photo
+      );
+      photoId = uploadPhoto.$id;
+
+      const uploadSign = await storage.createFile(
+        BUCKET_ID,
+        ID.unique(),
+        signature
+      );
+      signatureId = uploadSign.$id;
+
+      const username = form.studentName;
+
+      const generatePassword = () => {
+        let pass = "";
+        const digits = "0123456789";
+
+        for (let i = 0; i < 8; i++) {
+          pass += digits[Math.floor(Math.random() * digits.length)];
+        }
+
+        return pass;
+      };
+
+      const password = generatePassword();
+
+      const finalData = {
+        ...form,
+        courseFees: Number(form.courseFees || 0),
+        discount: Number(form.discount || 0),
+        totalFees: Number(form.totalFees || 0),
+        feesReceived: Number(form.feesReceived || 0),
+        balance: Number(form.balance || 0),
+        examFees: Number(form.examFees || 0),
+        courseCode: form.courseCode,
+        courseName: form.courseDisplayName,
+        courseId: form.courseName,
+        selectedSubjectIds: form.selectedSubjectIds,
+        admissionDate: form.admissionDate
+          ? form.admissionDate
+          : new Date().toISOString().split("T")[0]
+      };
+
+      const franchiseDoc = await databases.getDocument(
+        DATABASE_ID,
+        "franchise_approved",
+        franchise.franchiseId
+      );
+
+      const currentWallet = Number(franchiseDoc.wallet || 0);
+
+      if (ADMISSION_FEE > 0 && currentWallet < ADMISSION_FEE) {
+        alert("Insufficient Wallet Balance");
+        return;
+      }
+
+      const newWallet = currentWallet - ADMISSION_FEE;
+
+      if (ADMISSION_FEE > 0) {
+        await databases.updateDocument(
+          DATABASE_ID,
+          "franchise_approved",
+          franchise.franchiseId,
+          {
+            wallet: newWallet.toFixed(2)
+          }
+        );
+      }
+
+      if (!form.dob) {
+        alert("Please select Date of Birth");
+        return;
+      }
+
+      if (ADMISSION_FEE > 0) {
+        await databases.createDocument(
+          DATABASE_ID,
+          "wallet_transactions",
+          ID.unique(),
+          {
+            franchiseId: franchise.franchiseId,
+            amount: ADMISSION_FEE,
+            type: "deduct",
+            reason: "Student Admission",
+            studentName: form.studentName,
+            courseName: form.courseName,
+            remainingBalance: newWallet.toFixed(2),
+            date: new Date().toISOString()
+          }
+        );
+      }
+
+      await databases.createDocument(
+        DATABASE_ID,
+        COLLECTION_ID,
+        ID.unique(),
+        {
+          ...finalData,
+          username,
+          password,
+          photoId,
+          signatureId,
+          franchiseEmail: user.email,
+          franchiseId: franchise.franchiseId,
+          instituteName: franchise.instituteName,
+          semesterNumber: selectedSemester ? Number(selectedSemester) : null,
+          createdById: franchise.userId,
+          createdByName: franchise.instituteName,
+          createdAt: new Date().toISOString()
+        }
+      );
+
+      alert("Student Registered Successfully");
+
+      router.push("/login/institute/manage-student/admission");
+    } catch (err) {
+      console.error("ADMISSION ERROR:", err);
+      alert(err?.message || "Admission failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-
     <form onSubmit={handleSubmit} className="p-10 bg-gray-100 rounded">
-
-      <h1 className="text-2xl font-bold mb-6">
-        ADD NEW STUDENT
-      </h1>
-
-      {/* Photo Section */}
+      <h1 className="text-2xl font-bold mb-6">ADD NEW STUDENT</h1>
 
       <div className="grid grid-cols-3 gap-6 mb-6">
-
         <div>
-          <label className="block mb-1 font-semibold">
-            Student Photo *
-          </label>
-
-     <input
-  type="file"
-  accept="image/*"
-  onChange={(e) => {
-    const file = e.target.files[0];
-
-    if (file && file.size > MAX_FILE_SIZE) {
-      alert("Photo must be less than 300 kb");
-      e.target.value = "";
-      return;
-    }
-
-    setPhoto(file);
-    setPhotoPreview(URL.createObjectURL(file)); // ✅ preview
-  }}
-  className="border p-2 w-full"
-  required
-/>
-
-<p className="text-xs text-gray-500 mt-1">
-  Max size: 300 kb
-</p>
-
-{/* ✅ PREVIEW */}
-{photoPreview && (
-  <img
-    src={photoPreview}
-    alt="Preview"
-    className="mt-2 w-24 h-24 object-cover rounded"
-  />
-)}
+          <label className="block mb-1 font-semibold">Student Photo *</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file && file.size > MAX_FILE_SIZE) {
+                alert("Photo must be less than 300 kb");
+                e.target.value = "";
+                return;
+              }
+              setPhoto(file);
+              setPhotoPreview(URL.createObjectURL(file));
+            }}
+            className="border p-2 w-full"
+            required
+          />
+          <p className="text-xs text-gray-500 mt-1">Max size: 300 kb</p>
+          {photoPreview && (
+            <img
+              src={photoPreview}
+              alt="Preview"
+              className="mt-2 w-24 h-24 object-cover rounded"
+            />
+          )}
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Student Signature *
-          </label>
-<input
-  type="file"
-  accept="image/*"
-  onChange={(e) => {
-    const file = e.target.files[0];
-
-    if (file && file.size > MAX_FILE_SIZE) {
-      alert("Signature must be less than 300 MB");
-      e.target.value = "";
-      return;
-    }
-
-    setSignature(file);
-    setSignaturePreview(URL.createObjectURL(file)); // ✅ preview
-  }}
-  className="border p-2 w-full"
-  required
-/>
-
-<p className="text-xs text-gray-500 mt-1">
-  Max size: 300 kb
-</p>
-
-{/* ✅ PREVIEW */}
-{signaturePreview && (
-  <img
-    src={signaturePreview}
-    alt="Preview"
-    className="mt-2 w-24 h-24 object-cover rounded"
-  />
-)}
+          <label className="block mb-1 font-semibold">Student Signature *</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file && file.size > MAX_FILE_SIZE) {
+                alert("Signature must be less than 300 MB");
+                e.target.value = "";
+                return;
+              }
+              setSignature(file);
+              setSignaturePreview(URL.createObjectURL(file));
+            }}
+            className="border p-2 w-full"
+            required
+          />
+          <p className="text-xs text-gray-500 mt-1">Max size: 300 kb</p>
+          {signaturePreview && (
+            <img
+              src={signaturePreview}
+              alt="Preview"
+              className="mt-2 w-24 h-24 object-cover rounded"
+            />
+          )}
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Roll Number
-          </label>
-
+          <label className="block mb-1 font-semibold">Roll Number</label>
           <input
             name="rollNumber"
-            value={form.rollNumber} 
+            value={form.rollNumber}
             onChange={handleChange}
             className="border p-2 w-full"
           />
-
         </div>
-
       </div>
 
-      {/* Student Info */}
-
       <div className="grid grid-cols-3 gap-6 mb-6">
-
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Abbreviation
-          </label>
-
+          <label className="block mb-1 font-semibold">Abbreviation</label>
           <select
             name="abbreviation"
             value={form.abbreviation}
             onChange={handleChange}
             className="border p-2 w-full"
           >
-
             <option>Mr.</option>
             <option>Mrs.</option>
             <option>Miss</option>
-
           </select>
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Student Name *
-          </label>
-
+          <label className="block mb-1 font-semibold">Student Name *</label>
           <input
             name="studentName"
             value={form.studentName}
             onChange={handleChange}
             className="border p-2 w-full"
-            
-        
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Relation Type
-          </label>
-
+          <label className="block mb-1 font-semibold">Relation Type</label>
           <select
             name="relationType"
             value={form.relationType}
             onChange={handleChange}
             className="border p-2 w-full"
-         
           >
-
             <option>S/O</option>
             <option>D/O</option>
             <option>W/O</option>
-
           </select>
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Father / Husband Name
-          </label>
-
+          <label className="block mb-1 font-semibold">Father / Husband Name</label>
           <input
             name="fatherName"
             value={form.fatherName}
@@ -876,84 +620,51 @@ semesterNumber: selectedSemester ? Number(selectedSemester) : null,
             className="border p-2 w-full"
           />
           <div className="flex items-center gap-2 mt-2">
-  <input
-    type="checkbox"
-    checked={form.showFatherInCertificate}
-    onChange={(e) =>
-      setForm({
-        ...form,
-        showFatherInCertificate: e.target.checked
-      })
-    }
-  />
-
-  <label className="text-sm">
-    Show in Certificate
-  </label>
-</div>
-
+            <input
+              type="checkbox"
+              checked={form.showFatherInCertificate}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  showFatherInCertificate: e.target.checked
+                })
+              }
+            />
+            <label className="text-sm">Show in Certificate</label>
+          </div>
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Surname
-          </label>
-
+          <label className="block mb-1 font-semibold">Surname</label>
           <input
             name="surname"
             value={form.surname}
             onChange={handleChange}
             className="border p-2 w-full"
           />
-
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Mother Name
-          </label>
-
+          <label className="block mb-1 font-semibold">Mother Name</label>
           <input
             name="motherName"
             value={form.motherName}
             onChange={handleChange}
             className="border p-2 w-full"
           />
- {/* <div className="flex items-center gap-2 mt-2">
-  <input
-    type="checkbox"
-    checked={form.showMotherInCertificate}
-    onChange={(e) =>
-      setForm({
-        ...form,
-        showMotherInCertificate: e.target.checked
-      })
-    }
-  />
-
-  <label className="text-sm">
-    Show in Certificate
-  </label>
-</div> */}
-
         </div>
-
       </div>
 
-      {/* Course Type */}
-
       <div className="flex gap-3 mb-6">
-
         <button
           type="button"
           onClick={() => {
             setForm({ ...form, courseType: "single" });
             loadCourses("single");
           }}
-          className={`px-4 py-2 rounded ${form.courseType === "single" ? "bg-blue-600 text-white" : "bg-gray-300"}`}
+          className={`px-4 py-2 rounded ${
+            form.courseType === "single" ? "bg-blue-600 text-white" : "bg-gray-300"
+          }`}
         >
           Single
         </button>
@@ -964,7 +675,9 @@ semesterNumber: selectedSemester ? Number(selectedSemester) : null,
             setForm({ ...form, courseType: "multiple" });
             loadCourses("multiple");
           }}
-          className={`px-4 py-2 rounded ${form.courseType === "multiple" ? "bg-blue-600 text-white" : "bg-gray-300"}`}
+          className={`px-4 py-2 rounded ${
+            form.courseType === "multiple" ? "bg-blue-600 text-white" : "bg-gray-300"
+          }`}
         >
           Multiple
         </button>
@@ -975,71 +688,59 @@ semesterNumber: selectedSemester ? Number(selectedSemester) : null,
             setForm({ ...form, courseType: "beauty" });
             loadCourses("beauty");
           }}
-          className={`px-4 py-2 rounded ${form.courseType === "beauty" ? "bg-blue-600 text-white" : "bg-gray-300"}`}
+          className={`px-4 py-2 rounded ${
+            form.courseType === "beauty" ? "bg-blue-600 text-white" : "bg-gray-300"
+          }`}
         >
           Beauty
         </button>
+
         <button
-  type="button"
-  onClick={() => {
-    setForm({ ...form, courseType: "semester" });
-    loadCourses("semester");
-  }}
-  className={`px-4 py-2 rounded ${form.courseType === "semester" ? "bg-blue-600 text-white" : "bg-gray-300"}`}
->
-  Semester
-</button>
+          type="button"
+          onClick={() => {
+            setForm({ ...form, courseType: "semester" });
+            loadCourses("semester");
+          }}
+          className={`px-4 py-2 rounded ${
+            form.courseType === "semester" ? "bg-blue-600 text-white" : "bg-gray-300"
+          }`}
+        >
+          Semester
+        </button>
 
         {form.courseType === "semester" && form.courseName && (
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Select Semester</label>
+            <select
+              value={selectedSemester}
+              onChange={(e) => {
+                const sem = e.target.value;
+                setSelectedSemester(sem);
 
-  <div className="mb-4">
-
-    <label className="block mb-1 font-semibold">
-      Select Semester
-    </label>
-
-    <select
-      value={selectedSemester}
-      onChange={(e) => {
-        const sem = e.target.value;
-        setSelectedSemester(sem);
-
-        const selectedCourse = courses.find(c => c.$id === form.courseName);
-
-        if (selectedCourse) {
-          loadSemesterSubjects(selectedCourse.courseCode, sem);
-        }
-      }}
-      className="border p-2 w-full"
-    >
-      <option value="">Select Semester</option>
-
-      {courses.find(c => c.$id === form.courseName)?.totalSemesters &&
-        [...Array(courses.find(c => c.$id === form.courseName).totalSemesters)].map((_, i) => (
-          <option key={i + 1} value={i + 1}>
-            Semester {i + 1}
-          </option>
-        ))
-      }
-
-    </select>
-
-  </div>
-
-)}
-
+                const selectedCourse = courses.find((c) => c.$id === form.courseName);
+                if (selectedCourse) {
+                  loadSemesterSubjects(selectedCourse.courseCode, sem);
+                }
+              }}
+              className="border p-2 w-full"
+            >
+              <option value="">Select Semester</option>
+              {courses.find((c) => c.$id === form.courseName)?.totalSemesters &&
+                [...Array(courses.find((c) => c.$id === form.courseName).totalSemesters)].map(
+                  (_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      Semester {i + 1}
+                    </option>
+                  )
+                )}
+            </select>
+          </div>
+        )}
       </div>
 
-      {/* Course */}
-
       <div className="grid grid-cols-3 gap-6 mb-6">
-
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Course
-          </label>
-
+          <label className="block mb-1 font-semibold">Course</label>
           <select
             name="courseName"
             value={form.courseName}
@@ -1047,284 +748,191 @@ semesterNumber: selectedSemester ? Number(selectedSemester) : null,
             className="border p-2 w-full"
           >
             <option value="">Select Course</option>
-
             {courses.map((course) => (
-
-              <option
-                key={course.$id}
-                value={course.$id}
-              >
+              <option key={course.$id} value={course.$id}>
                 {course.courseName || course.courseCode}
-
               </option>
-
             ))}
-
           </select>
-
         </div>
 
         <div>
-
           <label className="block mb-1 font-semibold">
             Subjects (comma separated)
           </label>
-
           <input
             name="subjects"
             value={form.subjects}
             readOnly
             className="border p-2 w-full bg-gray-100"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Student Mobile
-          </label>
-
+          <label className="block mb-1 font-semibold">Student Mobile</label>
           <input
             name="mobile"
             value={form.mobile}
             onChange={handleChange}
             className="border p-2 w-full"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Alternate Mobile
-          </label>
-
+          <label className="block mb-1 font-semibold">Alternate Mobile</label>
           <input
             name="altMobile"
             value={form.altMobile}
             onChange={handleChange}
             className="border p-2 w-full"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Email
-          </label>
-
+          <label className="block mb-1 font-semibold">Email</label>
           <input
             name="email"
             value={form.email}
             onChange={handleChange}
             className="border p-2 w-full"
           />
-
-        </div>
-        <div>
-         <label className="block mb-1 font-semibold">
-            Address
-          </label>
-        <textarea
-  name="address"
-  value={form.address}
-  onChange={handleChange}
-  className="border p-2 w-full"
-/>
-</div>
-        <div>
-
-          <label className="block mb-1 font-semibold">
-  Date Of Birth *
-</label>
-
-<input
-  type="date"
-  name="dob"
-  value={form.dob}
-  onChange={handleChange}
-  className="border p-2 w-full"
-  required
-/>
         </div>
 
-        <div><label className="block mb-1 font-semibold">
-            Gender
-          </label>
-<select
-  name="gender"
-  value={form.gender}
-  onChange={handleChange}
-  className="border p-2 w-full"
->
-  <option value="">Select Gender</option>
-  <option value="Male">Male</option>
-  <option value="Female">Female</option>
-</select>
-  </div>
         <div>
+          <label className="block mb-1 font-semibold">Address</label>
+          <textarea
+            name="address"
+            value={form.address}
+            onChange={handleChange}
+            className="border p-2 w-full"
+          />
+        </div>
 
-          <label className="block mb-1 font-semibold">
-            Aadhar
-          </label>
+        <div>
+          <label className="block mb-1 font-semibold">Date Of Birth *</label>
+          <input
+            type="date"
+            name="dob"
+            value={form.dob}
+            onChange={handleChange}
+            className="border p-2 w-full"
+            required
+          />
+        </div>
 
+        <div>
+          <label className="block mb-1 font-semibold">Gender</label>
+          <select
+            name="gender"
+            value={form.gender}
+            onChange={handleChange}
+            className="border p-2 w-full"
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block mb-1 font-semibold">Aadhar</label>
           <input
             name="aadhar"
             value={form.aadhar}
             onChange={handleChange}
             className="border p-2 w-full"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            qualification
-          </label>
-
+          <label className="block mb-1 font-semibold">qualification</label>
           <input
             name="qualification"
             value={form.qualification}
             onChange={handleChange}
             className="border p-2 w-full"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            occupation
-          </label>
-
+          <label className="block mb-1 font-semibold">occupation</label>
           <input
             name="occupation"
             value={form.occupation}
             onChange={handleChange}
             className="border p-2 w-full"
           />
-
         </div>
-
-
-
       </div>
 
-      {/* Fees Section */}
-
       <div className="grid grid-cols-6 gap-4 border p-4 mb-6 bg-white">
-
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Course Fees
-          </label>
-
+          <label className="block mb-1 font-semibold">Course Fees</label>
           <input
             type="number"
             value={form.courseFees}
-            onChange={(e) =>
-  setForm({ ...form, courseFees: e.target.value })
-}
+            onChange={(e) => setForm({ ...form, courseFees: e.target.value })}
             className="border p-2 w-full"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Discount
-          </label>
-
+          <label className="block mb-1 font-semibold">Discount</label>
           <input
             type="number"
             value={form.discount}
-         onChange={(e) =>
-  setForm({
-    ...form,
-    discount: Number(e.target.value) || 0
-  })
-}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                discount: Number(e.target.value) || 0
+              })
+            }
             className="border p-2 w-full"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Total Fees
-          </label>
-
+          <label className="block mb-1 font-semibold">Total Fees</label>
           <input
             value={form.totalFees}
             readOnly
             className="border p-2 bg-gray-200 w-full"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Fees Received
-          </label>
-
+          <label className="block mb-1 font-semibold">Fees Received</label>
           <input
             type="number"
             value={form.feesReceived}
-           onChange={(e) =>
-  setForm({ ...form, feesReceived: e.target.value })
-}
+            onChange={(e) => setForm({ ...form, feesReceived: e.target.value })}
             className="border p-2 w-full"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Balance
-          </label>
-
+          <label className="block mb-1 font-semibold">Balance</label>
           <input
             value={form.balance}
             readOnly
             className="border p-2 bg-gray-200 w-full"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Exam Fees
-          </label>
-<input
-  name="examFees"
-  value={form.examFees}
-  readOnly
-  className="border p-2 w-full bg-gray-200"
-/>
-
+          <label className="block mb-1 font-semibold">Exam Fees</label>
+          <input
+            name="examFees"
+            value={form.examFees}
+            readOnly
+            className="border p-2 w-full bg-gray-200"
+          />
         </div>
-
       </div>
 
-      {/* Admission Date */}
-
       <div className="grid grid-cols-3 gap-6 mb-6">
-
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Admission Date
-          </label>
-
+          <label className="block mb-1 font-semibold">Admission Date</label>
           <input
             type="date"
             name="admissionDate"
@@ -1332,54 +940,39 @@ semesterNumber: selectedSemester ? Number(selectedSemester) : null,
             onChange={handleChange}
             className="border p-2 w-full"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Batch
-          </label>
-
+          <label className="block mb-1 font-semibold">Batch</label>
           <input
             name="batch"
             value={form.batch}
             onChange={handleChange}
             className="border p-2 w-full"
           />
-
         </div>
 
         <div>
-
-          <label className="block mb-1 font-semibold">
-            Remark
-          </label>
-
+          <label className="block mb-1 font-semibold">Remark</label>
           <textarea
             name="remark"
             value={form.remark}
             onChange={handleChange}
             className="border p-2 w-full"
           />
-
         </div>
-
       </div>
 
       <div className="flex gap-4">
-
-     <button
-  type="submit"
-  disabled={loading}
-  className={`px-6 py-2 rounded text-white transition-all duration-300 ${
-    loading
-      ? "bg-gray-400 cursor-not-allowed"
-      : "bg-blue-600 hover:bg-blue-700"
-  }`}
->
-  {loading ? "Processing Admission..." : "Register Admission"}
-</button>
+        <button
+          type="submit"
+          disabled={loading}
+          className={`px-6 py-2 rounded text-white transition-all duration-300 ${
+            loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+          }`}
+        >
+          {loading ? "Processing Admission..." : "Register Admission"}
+        </button>
 
         <button
           type="button"
@@ -1388,11 +981,8 @@ semesterNumber: selectedSemester ? Number(selectedSemester) : null,
         >
           Cancel
         </button>
-
       </div>
-
     </form>
-
   );
-
 }
+

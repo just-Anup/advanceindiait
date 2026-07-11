@@ -435,154 +435,136 @@ if (studentData.courseType === "beauty") {
 
   return (
 
-    <div className="min-h-screen bg-gray-100 p-3 sm:p-5 lg:p-10">
+    <div className="relative min-h-screen bg-[#0A1229] px-8 py-28 text-[#FBF9F4] overflow-hidden">
 
-      {/* HEADER */}
-      <div className="mb-6">
-
-        <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
-          Approved Certificates
-        </h1>
-
+      {/* Ambient glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-40 left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-[#C9A24B]/10 blur-3xl" />
+        <div className="absolute top-1/3 -left-24 h-[420px] w-[420px] rounded-full bg-[#C9A24B]/5 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-[360px] w-[520px] rounded-full bg-[#C9A24B]/10 blur-3xl" />
       </div>
 
-      {/* TABLE CARD */}
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+      {/* Subtle grid texture */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(to_right,rgba(251,249,244,0.35)_1px,transparent_1px),linear-gradient(to_bottom,rgba(251,249,244,0.35)_1px,transparent_1px)] [background-size:56px_56px]"
+      />
 
-        <div className="overflow-x-auto">
+      <div className="relative mx-auto max-w-6xl">
+        {/* HEADER */}
+        <header className="mb-10">
+          <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-xl">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#C9A24B] shadow-[0_0_24px_rgba(201,162,75,0.35)]" />
+            <p className="text-sm text-white/80 font-[Inter]">Institute Certificate Vault</p>
+          </div>
 
-          <table className="w-full min-w-[900px] border-collapse text-xs sm:text-sm">
+          <h1 className="mt-4 text-3xl font-bold tracking-wide font-[Playfair_Display]">
+            Approved Certificates
+          </h1>
+          <p className="mt-2 max-w-2xl text-white/70 font-[Inter]">
+            View and print certificates with a premium glass experience.
+          </p>
+        </header>
 
-            <thead className="bg-gray-100">
-
-              <tr>
-
-                <th className="border p-3 whitespace-nowrap">
-                  #
-                </th>
-
-                <th className="border p-3 whitespace-nowrap">
-                  Photo
-                </th>
-
-                <th className="border p-3 whitespace-nowrap">
-                  Student
-                </th>
-
-                <th className="border p-3 whitespace-nowrap">
-                  Course
-                </th>
-
-                <th className="border p-3 whitespace-nowrap">
-                  Marks
-                </th>
-
-                <th className="border p-3 whitespace-nowrap">
-                  Grade
-                </th>
-
-                <th className="border p-3 whitespace-nowrap">
-                  Action
-                </th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {certificates.map((c, i) => (
-
-                <tr
-                  key={c.$id}
-                  className="hover:bg-gray-50 transition"
-                >
-
-                  {/* INDEX */}
-                  <td className="border p-3 whitespace-nowrap">
-                    {i + 1}
-                  </td>
-
-                  {/* PHOTO */}
-                  <td className="border p-3">
-
-                    {getPhoto(c.photoId) ? (
-
-                      <img
-                        src={getPhoto(c.photoId)}
-                        alt="student"
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover mx-auto border"
-                      />
-
-                    ) : (
-
-                      <span className="text-gray-500">
-                        N/A
-                      </span>
-
-                    )}
-
-                  </td>
-
-                  {/* STUDENT */}
-                  <td className="border p-3 min-w-[180px] break-words">
-                    {c.studentName}
-                  </td>
-
-                  {/* COURSE */}
-                  <td className="border p-3 min-w-[200px] break-words">
-                    {c.course}
-                  </td>
-
-                  {/* MARKS */}
-                  <td className="border p-3 whitespace-nowrap">
-                    {c.marks}
-                  </td>
-
-                  {/* GRADE */}
-                  <td className="border p-3 whitespace-nowrap">
-                    {c.grade}
-                  </td>
-
-                  {/* ACTION */}
-                  <td className="border p-3">
-
-                    <div className="flex flex-col sm:flex-row gap-2 min-w-[180px]">
-
-                      <button
-                        onClick={() =>
-                          printCertificate(c)
-                        }
-                        className="bg-blue-600 hover:bg-blue-700 transition text-white px-3 py-2 rounded-lg text-xs sm:text-sm"
-                      >
-                        Certificate
-                      </button>
-
-                      <button
-                        onClick={() =>
-                          printMarksheet(c)
-                        }
-                        className="bg-purple-600 hover:bg-purple-700 transition text-white px-3 py-2 rounded-lg text-xs sm:text-sm"
-                      >
-                        Marksheet
-                      </button>
-
-                    </div>
-
-                  </td>
-
+        {/* TABLE CARD */}
+        <section className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_20px_80px_rgba(0,0,0,0.55)]">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[900px] border-separate border-spacing-0">
+              <thead className="bg-[#0A1229]/60">
+                <tr>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">#</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Photo</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Student</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Course</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Marks</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Grade</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Action</th>
                 </tr>
+              </thead>
 
-              ))}
+              <tbody>
+                {certificates.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-center p-10 text-white/60 font-[Inter]">
+                      No approved certificates found
+                    </td>
+                  </tr>
+                ) : (
+                  certificates.map((c, i) => (
+                    <tr
+                      key={c.$id}
+                      className="group transition-all duration-300 hover:bg-white/[0.04]"
+                    >
+                      {/* INDEX */}
+                      <td className="px-4 py-4 border-b border-white/10 whitespace-nowrap font-medium text-white/85">
+                        {i + 1}
+                      </td>
 
-            </tbody>
+                      {/* PHOTO */}
+                      <td className="px-4 py-4 border-b border-white/10">
+                        {getPhoto(c.photoId) ? (
+                          <div className="group relative inline-flex h-14 w-14 items-center justify-center">
+                            <img
+                              src={getPhoto(c.photoId)}
+                              alt={c.studentName || "student"}
+                              className="h-14 w-14 rounded-2xl object-cover border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] transition-transform duration-300 group-hover:scale-110"
+                            />
+                            <div className="pointer-events-none absolute inset-0 rounded-2xl border border-[#C9A24B]/0 transition-colors duration-300 group-hover:border-[#C9A24B]/60" />
+                          </div>
+                        ) : (
+                          <span className="text-white/50 font-[Inter]">N/A</span>
+                        )}
+                      </td>
 
-          </table>
+                      {/* STUDENT */}
+                      <td className="px-4 py-4 border-b border-white/10 min-w-[180px] break-words font-semibold text-[#FBF9F4]">
+                        {c.studentName}
+                      </td>
 
-        </div>
+                      {/* COURSE */}
+                      <td className="px-4 py-4 border-b border-white/10 min-w-[200px] break-words text-white/70">
+                        {c.course}
+                      </td>
 
+                      {/* MARKS */}
+                      <td className="px-4 py-4 border-b border-white/10 whitespace-nowrap font-medium text-white/85">
+                        {c.marks}
+                      </td>
+
+                      {/* GRADE */}
+                      <td className="px-4 py-4 border-b border-white/10 whitespace-nowrap">
+                        <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold text-[#FBF9F4]">
+                          {c.grade}
+                        </span>
+                      </td>
+
+                      {/* ACTION */}
+                      <td className="px-4 py-4 border-b border-white/10">
+                        <div className="flex flex-col sm:flex-row gap-2 min-w-[180px]">
+                          <button
+                            onClick={() => printCertificate(c)}
+                            className="relative inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs sm:text-sm font-semibold text-[#FBF9F4] backdrop-blur-xl transition-all duration-300 hover:border-[#C9A24B]/70 hover:shadow-[0_0_30px_rgba(201,162,75,0.25)] hover:-translate-y-[1px]"
+                          >
+                            <span className="absolute -inset-px rounded-xl bg-gradient-to-r from-[#C9A24B]/0 via-[#C9A24B]/10 to-[#C9A24B]/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                            <span className="relative">Certificate</span>
+                          </button>
+
+                          <button
+                            onClick={() => printMarksheet(c)}
+                            className="relative inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs sm:text-sm font-semibold text-[#FBF9F4] backdrop-blur-xl transition-all duration-300 hover:border-[#C9A24B]/70 hover:shadow-[0_0_30px_rgba(201,162,75,0.25)] hover:-translate-y-[1px]"
+                          >
+                            <span className="absolute -inset-px rounded-xl bg-gradient-to-r from-[#C9A24B]/0 via-[#C9A24B]/10 to-[#C9A24B]/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                            <span className="relative">Marksheet</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
-
     </div>
   );
 }

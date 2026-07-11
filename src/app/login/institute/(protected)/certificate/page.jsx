@@ -28,34 +28,58 @@ export default function CertificatePage() {
       const user = await account.get();
 
       // ✅ LOAD RESULTS
-      const res = await databases.listDocuments(
-        DATABASE_ID,
-        RESULT_COLLECTION,
-        [Query.orderDesc("$createdAt")]
-      );
+    const res = await databases.listDocuments(
+  DATABASE_ID,
+  RESULT_COLLECTION,
+  [
+    Query.orderDesc("$createdAt"),
+    Query.limit(500),
+  ]
+);
 
       // ✅ LOAD CERTIFICATES
-      const certRes = await databases.listDocuments(
-        DATABASE_ID,
-        CERT_COLLECTION
-      );
+     const certRes = await databases.listDocuments(
+  DATABASE_ID,
+  CERT_COLLECTION,
+  [
+    Query.limit(500)
+  ]
+);
 
       // ✅ CREATE APPLIED ARRAY
-      const appliedStudents = certRes.documents.map(
-        cert => cert.studentId
-      );
+     const appliedStudents = certRes.documents.map(
+  (cert) => String(cert.studentId)
+);
 
       // ✅ FILTER RESULTS
-      const passedStudents = res.documents
-        .filter(
-          r =>
-            r.grade !== "F" &&
-            r.createdById === user.$id
-        )
-       .map(r => ({
-  ...r,
-  alreadyApplied: r.certificateApplied === true
-}));
+ // Only passed students of this institute
+const passed = res.documents.filter(
+  (r) =>
+    r.grade !== "F" &&
+    r.createdById === user.$id
+);
+
+// Remove duplicate studentIds (keep latest result)
+const uniqueMap = new Map();
+
+passed.forEach((r) => {
+
+  if (!uniqueMap.has(r.studentId)) {
+
+    const isApplied = certRes.documents.some(
+      cert => cert.studentId === r.studentId
+    );
+
+    uniqueMap.set(r.studentId, {
+      ...r,
+      alreadyApplied: isApplied,
+    });
+
+  }
+
+});
+
+const passedStudents = [...uniqueMap.values()];
 
       setResults(passedStudents);
 
@@ -147,7 +171,7 @@ export default function CertificatePage() {
 } catch (error) {
   console.log("UPDATE ERROR:", error);
 }
-console.log("UPDATED RESULT:", updatedResult);
+
       }
 
 
@@ -189,211 +213,174 @@ setSelected([]);
 
   return (
 
-    <div className="p-8 md:p-10 bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen">
-
-      {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">
-            All Exam Results
-          </h1>
-
-          <p className="text-gray-500 mt-1">
-            Apply certificates for passed students
-          </p>
-        </div>
-
-        <button
-          onClick={applyCertificate}
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:scale-105 transition-all duration-300 text-white px-6 py-3 rounded-xl shadow-lg font-semibold"
-        >
-          Apply For Certificate
-        </button>
-
+    <div className="relative min-h-screen bg-[#0A1229] px-8 py-28 text-[#FBF9F4] overflow-hidden">
+      {/* Ambient glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-40 left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-[#C9A24B]/10 blur-3xl" />
+        <div className="absolute top-1/3 -left-24 h-[420px] w-[420px] rounded-full bg-[#C9A24B]/5 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-[360px] w-[520px] rounded-full bg-[#C9A24B]/10 blur-3xl" />
       </div>
 
-      {/* TABLE CARD */}
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+      {/* Subtle grid texture */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(to_right,rgba(251,249,244,0.35)_1px,transparent_1px),linear-gradient(to_bottom,rgba(251,249,244,0.35)_1px,transparent_1px)] [background-size:56px_56px]"
+      />
 
-        <div className="overflow-x-auto">
+      <div className="relative mx-auto max-w-6xl">
+        {/* HEADER */}
+        <header className="mb-10">
+          <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-xl">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#C9A24B] shadow-[0_0_24px_rgba(201,162,75,0.35)]" />
+            <p className="text-sm text-white/80 font-[Inter]">Institute Certificate Requests</p>
+          </div>
 
-          <table className="w-full">
+          <h2 className="mt-4 text-3xl font-bold tracking-wide font-[Playfair_Display]">All Exam Results</h2>
+          <p className="mt-2 max-w-2xl text-white/70 font-[Inter]">Apply certificates for passed students using a premium glass interface.</p>
 
-            <thead className="bg-gradient-to-r from-yellow-400 to-yellow-300 text-gray-800">
+          <button
+            onClick={applyCertificate}
+            className="mt-6 inline-flex items-center justify-center gap-2 rounded-2xl border border-[#C9A24B]/50 bg-[#0A1229]/30 px-8 py-3 font-semibold text-[#FBF9F4] backdrop-blur-xl transition-all duration-300 shadow-[0_0_0_1px_rgba(201,162,75,0.06)] hover:border-[#C9A24B]/90 hover:shadow-[0_0_30px_rgba(201,162,75,0.28)]"
+          >
+            <span>Apply For Certificate</span>
+            <span className="text-[#C9A24B]">→</span>
+          </button>
+        </header>
 
-              <tr>
-                <th className="p-4 text-left"></th>
-                <th className="p-4 text-left">#</th>
-                <th className="p-4 text-left">Photo</th>
-                <th className="p-4 text-left">Student</th>
-                <th className="p-4 text-left">Course</th>
-                <th className="p-4 text-left">Exam Mode</th>
-                <th className="p-4 text-left">Objective</th>
-                <th className="p-4 text-left">Practical</th>
-                <th className="p-4 text-left">Percentage</th>
-                <th className="p-4 text-left">Grade</th>
-                <th className="p-4 text-left">Result</th>
-                <th className="p-4 text-left">Exam Date</th>
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {loading ? (
-
+        {/* TABLE CARD */}
+        <section className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_20px_80px_rgba(0,0,0,0.55)]">
+          <div className="overflow-x-auto">
+            <table className="w-full border-separate border-spacing-0">
+              <thead className="bg-[#0A1229]/60">
                 <tr>
-                  <td
-                    colSpan="12"
-                    className="text-center p-10 text-gray-500"
-                  >
-                    Loading...
-                  </td>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10"> </th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">#</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Photo</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Student</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Course</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Exam Mode</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Objective</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Practical</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Percentage</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Grade</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Result</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-white/70 border-b border-white/10">Exam Date</th>
                 </tr>
+              </thead>
 
-              ) : results.length === 0 ? (
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan="12" className="text-center p-10 text-white/60 font-[Inter]">Loading...</td>
+                  </tr>
+                ) : results.length === 0 ? (
+                  <tr>
+                    <td colSpan="12" className="text-center p-10 text-white/60 font-[Inter]">No Passed Students Found</td>
+                  </tr>
+                ) : (
+                  results.map((r, index) => {
+                    const photoUrl = getPhoto(r.photoId);
 
-                <tr>
-                  <td
-                    colSpan="12"
-                    className="text-center p-10 text-gray-500"
-                  >
-                    No Passed Students Found
-                  </td>
-                </tr>
+                    let objective = 0;
+                    let practical = 0;
 
-              ) : (
+                    try {
+                      const marks = JSON.parse(r.marks);
+                      marks.forEach((m) => {
+                        objective += Number(m.theory || 0);
+                        practical += Number(m.practical || 0);
+                      });
+                    } catch {}
 
-                results.map((r, index) => {
+                    return (
+                      <tr
+                        key={r.$id}
+                        className="group transition-all duration-300 hover:bg-white/[0.04]"
+                      >
+                        {/* CHECKBOX */}
+                        <td className="px-4 py-4 border-b border-white/10">
+                          {r.alreadyApplied ? (
+                            <span className="inline-flex items-center rounded-full border border-[#C9A24B]/40 bg-[#C9A24B]/10 px-3 py-1 text-[11px] font-semibold text-[#C9A24B]">
+                              Applied
+                            </span>
+                          ) : (
+                            <input
+                              type="checkbox"
+                              checked={selected.includes(r.$id)}
+                              onChange={() => toggleSelect(r.$id)}
+                              className="w-5 h-5 accent-[#C9A24B] cursor-pointer"
+                            />
+                          )}
+                        </td>
 
-                  const photoUrl = getPhoto(r.photoId);
+                        <td className="px-4 py-4 border-b border-white/10 font-medium text-white/85">{index + 1}</td>
 
-                  let objective = 0;
-                  let practical = 0;
+                        {/* PHOTO */}
+                        <td className="px-4 py-4 border-b border-white/10">
+                          {photoUrl ? (
+                            <div className="group relative inline-flex h-14 w-14 items-center justify-center">
+                              <img
+                                src={photoUrl}
+                                alt={r.studentName}
+                                className="h-14 w-14 rounded-2xl object-cover border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] transition-transform duration-300 group-hover:scale-110"
+                              />
+                              <div className="pointer-events-none absolute inset-0 rounded-2xl border border-[#C9A24B]/0 transition-colors duration-300 group-hover:border-[#C9A24B]/60" />
+                            </div>
+                          ) : (
+                            <span className="text-white/50 font-[Inter]">N/A</span>
+                          )}
+                        </td>
 
-                  try {
+                        {/* NAME */}
+                        <td className="px-4 py-4 border-b border-white/10 font-semibold text-[#FBF9F4]">
+                          {r.studentName}
+                        </td>
 
-                    const marks = JSON.parse(r.marks);
+                        {/* COURSE */}
+                        <td className="px-4 py-4 border-b border-white/10 text-white/70">{r.course}</td>
 
-                    marks.forEach(m => {
-                      objective += Number(m.theory || 0);
-                      practical += Number(m.practical || 0);
-                    });
+                        {/* EXAM MODE */}
+                        <td className="px-4 py-4 border-b border-white/10">
+                          <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold text-white/80">
+                            OFFLINE
+                          </span>
+                        </td>
 
-                  } catch { }
+                        {/* OBJECTIVE */}
+                        <td className="px-4 py-4 border-b border-white/10 font-medium text-white/85">{objective}</td>
 
-                  return (
+                        {/* PRACTICAL */}
+                        <td className="px-4 py-4 border-b border-white/10 font-medium text-white/85">{practical}</td>
 
-                    <tr
-                      key={r.$id}
-                      className="border-b hover:bg-blue-50 transition-all duration-200"
-                    >
+                        {/* PERCENTAGE */}
+                        <td className="px-4 py-4 border-b border-white/10 font-bold text-[#C9A24B]">{r.percentage}%</td>
 
-                      {/* CHECKBOX */}
-                     <td className="p-4">
-  {r.alreadyApplied ? (
-    <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-xs font-semibold">
-      Applied
-    </span>
-  ) : (
-    <input
-      type="checkbox"
-      checked={selected.includes(r.$id)}
-      onChange={() => toggleSelect(r.$id)}
-      className="w-5 h-5 accent-blue-600 cursor-pointer"
-    />
-  )}
-</td>
+                        {/* GRADE */}
+                        <td className="px-4 py-4 border-b border-white/10">
+                          <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold text-[#FBF9F4]">
+                            {r.grade}
+                          </span>
+                        </td>
 
-                      <td className="p-4 font-medium">
-                        {index + 1}
-                      </td>
+                        {/* RESULT */}
+                        <td className="px-4 py-4 border-b border-white/10">
+                          <span className="inline-flex items-center rounded-full border border-[#C9A24B]/40 bg-[#C9A24B]/10 px-3 py-1 text-[11px] font-semibold text-[#C9A24B]">
+                            Passed
+                          </span>
+                        </td>
 
-                      {/* PHOTO */}
-                      <td className="p-4">
-
-                        {photoUrl && (
-                          <img
-                            src={photoUrl}
-                            className="w-14 h-14 rounded-full object-cover border-2 border-blue-200 shadow"
-                          />
-                        )}
-
-                      </td>
-
-                      {/* NAME */}
-                      <td className="p-4 font-semibold text-gray-700">
-                        {r.studentName}
-                      </td>
-
-                      {/* COURSE */}
-                      <td className="p-4 text-gray-600">
-                        {r.course}
-                      </td>
-
-                      {/* EXAM MODE */}
-                      <td className="p-4">
-                        <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
-                          OFFLINE
-                        </span>
-                      </td>
-
-                      {/* OBJECTIVE */}
-                      <td className="p-4 font-medium">
-                        {objective}
-                      </td>
-
-                      {/* PRACTICAL */}
-                      <td className="p-4 font-medium">
-                        {practical}
-                      </td>
-
-                      {/* PERCENTAGE */}
-                      <td className="p-4 font-bold text-blue-700">
-                        {r.percentage}%
-                      </td>
-
-                      {/* GRADE */}
-                      <td className="p-4">
-
-                        <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-semibold text-sm">
-                          {r.grade}
-                        </span>
-
-                      </td>
-
-                      {/* RESULT */}
-                      <td className="p-4">
-
-                        <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                          Passed
-                        </span>
-
-                      </td>
-
-                      {/* DATE */}
-                      <td className="p-4 text-gray-600">
-                        {r.examDate || "-"}
-                      </td>
-
-                    </tr>
-
-                  );
-
-                })
-
-              )}
-
-            </tbody>
-
-          </table>
-
-        </div>
-
+                        {/* DATE */}
+                        <td className="px-4 py-4 border-b border-white/10 text-white/70">{r.examDate || "-"}</td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
-
     </div>
+
 
   );
 
