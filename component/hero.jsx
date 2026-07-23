@@ -234,7 +234,7 @@ export default function HeroSection() {
     {/* ================= GOLD GLOW ================= */}
 
     <div
-      className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full blur-[170px] opacity-[0.12] pointer-events-none"
+      className="absolute -top-42 -left-32 w-[520px] h-[520px] rounded-full blur-[170px] opacity-[0.12] pointer-events-none"
       style={{
         background:
           "radial-gradient(circle,#C9A24B 0%,transparent 70%)",

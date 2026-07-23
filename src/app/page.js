@@ -8,35 +8,37 @@ import StagesSection from '../../component/StagesSection'
 import WorkShowcase from '../../component/WorkShowcase'
 import TeamSection from '../../component/TeamSection'
 import BrandSlider from '../../component/brandlogo'
+import AnnouncementBar from '../../component/anouncement'
 
 export default function Page() {
   return (
     <>
       <Navbar />
+  
+        <AnnouncementBar />
 
-      <Hero />
+        <Hero />
 
-      <ServicesSection />
+        <ServicesSection />
 
-      <StagesSection />
+        <StagesSection />
 
-      {/* ABOUT SECTION */}
-      <div id="about">
-        <StatsSection />
-      </div>
+        <div id="about">
+          <StatsSection />
+        </div>
 
-      {/* COURSE SECTION */}
-      <div id="courses">
-        <WorkShowcase />
-      </div>
+        <div id="courses">
+          <WorkShowcase />
+        </div>
 
-      <TestimonialsSection />
+        <TestimonialsSection />
 
-      <TeamSection />
+        <TeamSection />
 
-      <BrandSlider />
+        <BrandSlider />
 
-      <Footer />
+        <Footer />
+      
     </>
   )
 }

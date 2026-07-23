@@ -38,7 +38,7 @@ export default function Navbar() {
 
   return (
 
-<header className="bnmi-font-body fixed top-0 left-0 w-full z-50">
+<header className="bnmi-font-body sticky top-0 left-0 w-full z-50">
 
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
